@@ -12,3 +12,4 @@ public interface Constants {
     public static final double maxChassisTurnSpeed = maxSpeed/Math.hypot(botLength, botWidth); // Max Speed divided by the circumference a circle determined by the distance of the module from the center, divided by 2 pi to convert to radians
     public double conversionFactor = 1.0/19.85; 
 }
+//sayges
