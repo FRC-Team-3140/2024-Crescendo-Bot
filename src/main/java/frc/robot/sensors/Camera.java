@@ -12,27 +12,29 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class Camera extends SubsystemBase {
   
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private PhotonCamera april = new PhotonCamera(inst, "april"); 
+  private PhotonCamera april; 
   
-  public Camera() {}
+  public Camera() {
+    april = new PhotonCamera(inst, "april");
+  }
 
   @Override
   public void periodic() {
-    faceAprilTagID(1);
+    faceAprilTagID(1, true);
   }
 
   public int getAprilTagID() {
     /* If this function returns a 0, that means that PhotonVision either isn't configured
      * correctly, not connected, or their is some other issue (e.g. Camera name isn't matching 
      * the code).
-     * If this function returns a 1, that means there is not any detected targets
+     * If this function returns a -1, that means there is not any detected targets
      */
     
     if (inst.getTable("photonvision") != null){
       if (april.getLatestResult().getBestTarget() != null) {
         return april.getLatestResult().getBestTarget().getFiducialId();
       } else {
-        return 1;
+        return -1;
       }
     } else {
       return 0;
@@ -43,21 +45,41 @@ public class Camera extends SubsystemBase {
     /* If this function returns a 0, that means that PhotonVision either isn't configured
      * correctly, not connected, or their is some other issue (e.g. Camera name isn't matching 
      * the code).
-     * If this function returns a 1, that means there is not any detected targets
+     * If this function returns a -1, that means there is not any detected targets
      */
 
     if (inst.getTable("photonvision") != null){
       if (april.getLatestResult().getBestTarget() != null) {
         return april.getLatestResult().getBestTarget().getYaw();
       } else {
-        return 1;
+        return -1;
       }
     } else {
       return 0;
     }
   }
 
-  public void faceAprilTagID(int ID){
-    System.out.println(getAprilTagID() + " " + getAprilTagYaw());
+  public double getAprilTagPitch() {
+    /* If this function returns a 0, that means that PhotonVision either isn't configured
+     * correctly, not connected, or their is some other issue (e.g. Camera name isn't matching 
+     * the code).
+     * If this function returns a -1, that means there is not any detected targets
+     */
+
+    if (inst.getTable("photonvision") != null){
+      if (april.getLatestResult().getBestTarget() != null) {
+        return april.getLatestResult().getBestTarget().getPitch();
+      } else {
+        return -1;
+      }
+    } else {
+      return 0;
+    }
+  }
+
+  public void faceAprilTagID(int ID, boolean verbose){
+    if (verbose == true) {
+      System.out.println("----------------\nID: " + getAprilTagID() + "\nYaw:" + getAprilTagYaw() + "\nPitch: " + getAprilTagPitch() + "\n----------------");
+    }
   }
 }
