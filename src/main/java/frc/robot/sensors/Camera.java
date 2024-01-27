@@ -49,7 +49,9 @@ public class Camera extends SubsystemBase {
 
   @Override
   public void periodic() {
-    turnToFaceAprilTagID(1, true);
+    while (connected == true) {
+      turnToFaceAprilTagID(1, true);
+    }
   }
 
   public int getAprilTagID() {
