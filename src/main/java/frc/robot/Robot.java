@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.libs.XboxCotroller;
-import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends TimedRobot implements Constants{
@@ -16,7 +15,6 @@ public class Robot extends TimedRobot implements Constants{
   private RobotContainer m_robotContainer; 
   private static XboxCotroller m_controller = RobotContainer.controller;
   private static SwerveDrive swerve = RobotContainer.swerve;
-  private Camera camera;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   @Override
@@ -41,7 +39,6 @@ public class Robot extends TimedRobot implements Constants{
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    camera = new Camera();
   }
 
   /**
