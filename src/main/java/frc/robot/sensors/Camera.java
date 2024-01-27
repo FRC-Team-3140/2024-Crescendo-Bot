@@ -45,10 +45,8 @@ public class Camera extends SubsystemBase {
   public int getAprilTagID() {
     /*
      * If this function returns a 0, that means that PhotonVision either isn't
-     * configured
-     * correctly, not connected, or their is some other issue (e.g. Camera name
-     * isn't matching
-     * the code).
+     * configured correctly, not connected, or their is some other issue (e.g. Camera name
+     * isn't matching the code).
      * If this function returns a -1, that means there is not any detected targets
      */
 
@@ -62,10 +60,8 @@ public class Camera extends SubsystemBase {
   public double getAprilTagYaw() {
     /*
      * If this function returns a 0, that means that PhotonVision either isn't
-     * configured
-     * correctly, not connected, or their is some other issue (e.g. Camera name
-     * isn't matching
-     * the code).
+     * configured correctly, not connected, or their is some other issue (e.g. Camera name
+     * isn't matching the code).
      * If this function returns a -1, that means there is not any detected targets
      */
 
@@ -79,10 +75,8 @@ public class Camera extends SubsystemBase {
   public double getAprilTagPitch() {
     /*
      * If this function returns a 0, that means that PhotonVision either isn't
-     * configured
-     * correctly, not connected, or their is some other issue (e.g. Camera name
-     * isn't matching
-     * the code).
+     * configured correctly, not connected, or their is some other issue (e.g. Camera name
+     * isn't matching the code).
      * If this function returns a -1, that means there is not any detected targets
      */
 
@@ -103,10 +97,8 @@ public class Camera extends SubsystemBase {
   public double getNoteDistance() {
     /*
      * If this function returns a 0, that means that PhotonVision either isn't
-     * configured
-     * correctly, not connected, or their is some other issue (e.g. Camera name
-     * isn't matching
-     * the code).
+     * configured correctly, not connected, or their is some other issue (e.g. Camera name
+     * isn't matching the code).
      * If this function returns a -1, that means there is not any detected targets
      */
 
