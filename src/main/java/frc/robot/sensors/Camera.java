@@ -14,13 +14,15 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Camera extends SubsystemBase {
 
+  private static Camera instance = null;
+
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private PhotonCamera april;
   private PhotonCamera notes;
 
   private boolean connected = false;
 
-  public Camera() {
+  private Camera() {
     april = new PhotonCamera(inst, "april");
     notes = new PhotonCamera(inst, "notes");
 
@@ -36,6 +38,15 @@ public class Camera extends SubsystemBase {
       }
     }
   }
+
+  public static Camera getInstance() {
+    if (instance == null) {
+      instance = new Camera();
+    }
+    return instance;
+  }
+
+
 
   @Override
   public void periodic() {
