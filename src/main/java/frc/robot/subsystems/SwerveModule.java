@@ -38,7 +38,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
     
     public double P = .008;
 
-    public double driveSetpointTolerance = .2;
+    public double driveSetpointTolerance = .5;
     public double turnSetpointTolerance;
     public double turnVelocityTolerance;
 
@@ -62,7 +62,6 @@ public class SwerveModule extends SubsystemBase implements Constants {
 
         driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
         driveMotor.setIdleMode(IdleMode.kBrake);
-        driveMotor.getEncoder().setVelocityConversionFactor(conversionFactor);
         driveMotor.setInverted(false);
         driveMotor.burnFlash();
 
@@ -75,21 +74,24 @@ public class SwerveModule extends SubsystemBase implements Constants {
         turnEncoder = new AbsoluteEncoder(analogID);
         turnEncoder.setPositionOffset(baseAngle);
         driveEncoder = driveMotor.getEncoder();
-
+        
         turnPID = new PIDController(P, 0, 0);
         //we don't use I or D 
         turnPID.enableContinuousInput(0,360);
         turnPID.setTolerance(turnSetpointTolerance, turnVelocityTolerance);
         //determined from a SYSID scan
-        drivePID = new PIDController(0.057715, 0, 0);
+        drivePID = new PIDController(0.09, 0, .02);
         drivePID.setTolerance(driveSetpointTolerance);
 
     }
   
-
+    boolean encoderSets = false;
     //runs while the bot is running
     @Override
     public void periodic() {
+        if(!encoderSets){
+            driveEncoder.setVelocityConversionFactor(encoderRotationToMeters);
+        }
         
     }
 
@@ -107,8 +109,10 @@ public class SwerveModule extends SubsystemBase implements Constants {
 
     public void setDriveSpeed(double velocity){
         drivePID.setSetpoint(velocity);
-        driveMotor.setVoltage(driveFeedforward.calculate(velocity)); 
-        // +drivePID.calculate(driveEncoder.getVelocity())); drivePID added too much instability
+        driveMotor.setVoltage(driveFeedforward.calculate(velocity));
+        NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Set Speed").setDouble(velocity);
+        NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Actual Speed").setDouble(driveEncoder.getVelocity()); 
+        // drivePID.calculate(driveEncoder.getVelocity())); ///drivePID added too much instability
     }
     
     public void setTurnSpeed(double speed){

@@ -5,6 +5,10 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -16,37 +20,41 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.sensors.ExampleGlobalMeasurementSensor;
 
 /** Represents a swerve drive style drivetrain. */
-public class SwerveDrive implements Constants{
+public class SwerveDrive extends SubsystemBase implements Constants {
   private final Translation2d[] locations = {
-    new Translation2d(botLength, botWidth),
-    new Translation2d(botLength, -botWidth),
-    new Translation2d(-botLength, botWidth),
-    new Translation2d(-botLength, -botWidth)
+    new Translation2d(botLength, botLength),
+    new Translation2d(botLength, -botLength),
+    new Translation2d(-botLength, botLength),
+    new Translation2d(-botLength, -botLength)
   };
 
   SwerveModule[] modules = {
-    new SwerveModule("frontLeft", 0, 2, 1, 0.969279),
-    new SwerveModule("frontRight", 1, 4, 3, 0.697409),
-    new SwerveModule("backLeft", 2, 6, 5, 0.707867),
-    new SwerveModule("backRight", 3, 8, 7,  0.701239),
+    new SwerveModule("frontLeft", 3, 8, 7,  0.701239),
+    new SwerveModule("frontRight", 2, 6, 5, 0.707867),
+    new SwerveModule("backLeft", 0, 2, 1, 0.219279),
+    new SwerveModule("backRight", 1, 4, 3, 0.447409),
+
   };
 
   private static AHRS gyro = RobotContainer.gyro;
+  private ChassisSpeeds botSpeeds;
+  private boolean pathInverted = false;
 
-  private final SwerveDriveKinematics m_kinematics =
+  private final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           locations[0],locations[1],locations[2],locations[3]);
 
   /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
   below are robot specific, and should be tuned. */
-  private final SwerveDrivePoseEstimator m_poseEstimator =
+  private final SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(
-          m_kinematics,
+          kinematics,
           gyro.getRotation2d(),
           new SwerveModulePosition[] {
             modules[0].getSwerveModulePosition(),
@@ -60,21 +68,22 @@ public class SwerveDrive implements Constants{
 
   public SwerveDrive() {
     gyro.reset();
-    // AutoBuilder.configureHolonomic(
-    //             this::getPose, // Robot pose supplier
-    //             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-    //             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-    //             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-    //             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-    //                                              // Constants class
-    //                     new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-    //                     new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-    //                     4.5, // Max module speed, in m/s
-    //                     0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-    //                     new ReplanningConfig() // Default path replanning config. See the API for the options here
-    //             ),
-    //             this // Reference to this subsystem to set requirements
-    //     );
+    AutoBuilder.configureHolonomic(
+                this::getPose, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
+                                                 // Constants class
+                        new PIDConstants(0.000001, 0.0, 0), // Translation PID constants
+                        new PIDConstants(0.000001, 0.0, 0), // Rotation PID constants
+                        maxSpeed, // Max module speed, in m/s
+                        botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                this::shouldFlipPath,
+                this // Reference to this subsystem to set requirements
+        );
   }
 
   /**
@@ -85,23 +94,38 @@ public class SwerveDrive implements Constants{
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether  the provided x and y speeds are relative to the field.
    */
+
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    botSpeeds = ChassisSpeeds.discretize(new ChassisSpeeds(xSpeed,ySpeed,rot), .02);
     SwerveModuleState[] swerveModuleStates =
-        m_kinematics.toSwerveModuleStates(
+        kinematics.toSwerveModuleStates(
+          ChassisSpeeds.discretize(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot));
+                : new ChassisSpeeds(xSpeed, ySpeed, rot),.02));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
     
     for (int i = 0; i < 4; i++) {
       modules[i].setStates(swerveModuleStates[i], false);
     }
   }
+
+  public void resetPose(Pose2d pose){
+    poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
+  }
+
+  public void driveRobotRelative(ChassisSpeeds speeds){
+    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
+  }
+
+  public void setPathInverted(Boolean inverted){
+    pathInverted = inverted;
+  }
   
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
-    m_poseEstimator.update(
+    poseEstimator.update(
         gyro.getRotation2d(),
         new SwerveModulePosition[] {
           modules[0].getSwerveModulePosition(),
@@ -112,9 +136,31 @@ public class SwerveDrive implements Constants{
 
     // Also apply vision measurements. We use 0.3 seconds in the past as an example -- on
     // a real robot, this must be calculated based either on latency or timestamps.
-    m_poseEstimator.addVisionMeasurement(
-        ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
-            m_poseEstimator.getEstimatedPosition()),
-        Timer.getFPGATimestamp() - 0.3);
+    // poseEstimator.addVisionMeasurement(
+    //     ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
+    //         poseEstimator.getEstimatedPosition()),
+    //     Timer.getFPGATimestamp() - 0.3);
   }
+
+  
+  public SwerveModulePosition[] getModulePositions(){
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+    for(int i = 0; i < 4; i++){
+      positions[i] = modules[i].getSwerveModulePosition();
+    }
+    return positions;
+  }
+
+  public boolean shouldFlipPath(){
+    return pathInverted;
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds(){
+    return botSpeeds;
+  }
+
+  public Pose2d getPose(){
+    return poseEstimator.getEstimatedPosition();
+  }
+  
 }
