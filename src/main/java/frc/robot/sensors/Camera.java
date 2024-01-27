@@ -17,7 +17,7 @@ public class Camera extends SubsystemBase {
   private static Camera instance = null;
 
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  
+
   private PhotonCamera april;
   private PhotonCamera notes;
 
@@ -46,8 +46,6 @@ public class Camera extends SubsystemBase {
     }
     return instance;
   }
-
-
 
   @Override
   public void periodic() {
@@ -114,9 +112,11 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  /*public Transform2d moveToAprilTag() {
-
-  }*/
+  /*
+   * public Transform2d moveToAprilTag() {
+   * 
+   * }
+   */
 
   public double getNoteDistance() {
     // If this function returns a 0, that means there is not any detected targets
