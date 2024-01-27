@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -13,6 +14,8 @@ import frc.robot.libs.XboxCotroller;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,12 +31,20 @@ public class RobotContainer {
   public static AHRS gyro = new AHRS(Port.kMXP);
   public static SwerveDrive swerve = new SwerveDrive();
   private final Camera camera;
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     camera = Camera.getInstance();
+    autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
+    autoChooser.addOption("Auto2", new PathPlannerAuto("Auto2"));
+    autoChooser.addOption("Auto3", new PathPlannerAuto("Auto3"));
+
+    SmartDashboard.putData("Auto", autoChooser);
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -69,6 +80,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 }
