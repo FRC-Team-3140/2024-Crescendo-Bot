@@ -14,9 +14,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.libs.XboxCotroller;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Commands.Pathfinding;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -88,6 +91,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    Pose2d test = new Pose2d(1, 1, new Rotation2d(0));
+    return new Pathfinding(test, camera);
   }
 }

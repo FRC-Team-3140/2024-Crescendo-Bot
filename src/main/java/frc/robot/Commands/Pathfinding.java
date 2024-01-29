@@ -8,17 +8,21 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.sensors.Camera;
 
-public class Pathfinding extends Command {
+public class Pathfinding extends Command implements Constants {
   private Pose2d targetPosition;
+  private Command pathfindingCommand;
 
-  /** Creates a new Pathfinding. 
-   * @param Camera */
+  /**
+   * Creates a new Pathfinding.
+   * 
+   * @param Camera
+   */
   public Pathfinding(Pose2d targetPose, Subsystem Camera) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Camera);
@@ -29,18 +33,13 @@ public class Pathfinding extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Since we are using a holonomic drivetrain, the rotation component of this
-    // pose
-    // represents the goal holonomic rotation
-     targetPosition = new Pose2d(10, 5, Rotation2d.fromDegrees(180));
-
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        3.0, 4.0,
+        maxSpeed, 4.0,
         Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    Command pathfindingCommand = AutoBuilder.pathfindToPose(
+    pathfindingCommand = AutoBuilder.pathfindToPose(
         targetPosition,
         constraints,
         0.0, // Goal end velocity in meters/sec
@@ -52,6 +51,7 @@ public class Pathfinding extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    pathfindingCommand.schedule();
   }
 
   // Called once the command ends or is interrupted.
