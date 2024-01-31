@@ -70,11 +70,12 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 
 Overview of commands and how they support actions here...
 
-| Command Name | Game Mode | Priority | Difficulty | Description |
-|---|---|---|---|---|
-| SwerveController | Teleop | **Required** | 2 | Joystick control for controlling the swerve drive. Adopted and updated from 2023. |
-| RunIntakeGround | Both | **Required** | 3 | Position and run the intake to load a note from the ground. |
-| OneNoteAutoLeft | Auto | Medium | 5 | Shoot a note into the speaker and then move out of the zone. Starting in the left position. **## Points** | 
+| Command Name | Subsystems | Game Mode | Priority | Difficulty | Description |
+|---|---|---|---|---|---|
+| SwerveController | Swerve Drive | Teleop | **Required** | 2 | Joystick control for controlling the swerve drive. Adopted and updated from 2023. |
+| RunIntakeGround | Intake | Both | **Required** | 3 | Position and run the intake to load a note from the ground. |
+| OneNoteAutoLeft | ??? | Auto | Medium | 5 | Shoot a note into the speaker and then move out of the zone. Starting in the left position. **## Points** | 
+| ??? | ??? | ??? | ??? | ??? | ??? | 
 
 
 
