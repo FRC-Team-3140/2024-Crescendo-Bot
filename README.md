@@ -29,7 +29,7 @@ The arm uses two motors to move up and down, which are configured as a group, al
 |---|---|---|---|
 | Arm Motor 1 | CANSparkMax |CAN ID: 9| A **motor** for controlling the arm |
 | Arm Motor 2 | CANSparkMax |CAN ID: 10| A **motor** for controlling the arm |
-| Arm Encoder | Through Bore Absolute Encoder | PWM Ports 0 & 1 | An **absolute encoder** for sensing the arm angle |
+| Arm Encoder | DutyCycleEncoder | PWM Ports 0 & 1 | An **absolute encoder** for sensing the arm angle |
 
 ## Intake/Shooter
 
