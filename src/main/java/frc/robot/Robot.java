@@ -7,25 +7,25 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.libs.XboxCotroller;
-import frc.robot.subsystems.SwerveDrive;
+// import frc.robot.libs.XboxCotroller;
+// import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends TimedRobot implements Constants{
-  private Command m_autonomousCommand;
+  // private Command m_autonomousCommand;
   private RobotContainer m_robotContainer; 
-  private static XboxCotroller m_controller = RobotContainer.controller;
-  private static SwerveDrive swerve = RobotContainer.swerve;
+  // private static XboxCotroller m_controller = RobotContainer.controller;
+  // private static SwerveDrive swerve = RobotContainer.swerve;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   @Override
   public void autonomousPeriodic() {
-    driveWithJoystick(false);
-    swerve.updateOdometry();
+    // driveWithJoystick(false);
+    // swerve.updateOdometry();
   }
 
   @Override
   public void teleopPeriodic() {
-    driveWithJoystick(true);
+    // driveWithJoystick(true);
     
   }
 
@@ -67,12 +67,12 @@ public class Robot extends TimedRobot implements Constants{
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
   }
 
   /** This function is called periodically during autonomous. */
@@ -83,15 +83,15 @@ public class Robot extends TimedRobot implements Constants{
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.cancel();
+    // }
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+    // CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically during test mode. */
@@ -111,19 +111,19 @@ public class Robot extends TimedRobot implements Constants{
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var xSpeed = -m_controller.getLeftY() * maxSpeed;
+    // final var xSpeed = -m_controller.getLeftY() * maxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed = m_controller.getLeftX() * maxSpeed;
+    // final var ySpeed = m_controller.getLeftX() * maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot = -m_controller.getRightX() * maxChassisTurnSpeed;
+    // final var rot = -m_controller.getRightX() * maxChassisTurnSpeed;
 
-    swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
+    // swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
   }
 }
