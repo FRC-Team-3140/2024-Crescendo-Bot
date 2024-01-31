@@ -25,13 +25,25 @@ The robot has 3 main subsystems and utilizes swerve drive for movement:
 
 The arm uses one motor to move up and down, allowing the intake/shooter subsystem to move to the ground to pick up the notes and move back up to shoot them.
 
+| Component ID | Interface | Connection | Role |
+|---|---|---|---|
+| ??? | ??? | ??? | ??? |
+
 ## Intake/Shooter
 
 The intake and shooter are both in one subsystem, connected to the top of the arm and using one motor. It picks up a ground note using 2 sets of wheels, then another set of wheels pushes the note into a shooter where it is then shot into the air through another set of wheels.
 
+| Component ID | Interface | Connection | Role |
+|---|---|---|---|
+| ??? | ??? | ??? | ??? |
+
 ## Climber
 
 The robot will grab onto the chain using a two-piece cranberry elevator with a specially designed hook to grab onto the chain.
+
+| Component ID | Interface | Connection | Role |
+|---|---|---|---|
+| ??? | ??? | ??? | ??? |
 
 ## Swerve Drive
 
@@ -40,21 +52,18 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 | Turn Motor Front Left | CANSparkMax | CAN ID: 8 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Front Left | CANSparkMax | CAN ID: 7 | A **motor** and **encoder** for changing the swerve module speed. |
 | Turn Encoder | ThriftyBot | Analog Core ID: 3 | An **absolute encoder** for sensing swerve module angle. |
-
+| | | | |
 | Turn Motor Front Right | CANSparkMax | CAN ID: 6 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Front Right | CANSparkMax | CAN ID: 5 | A **motor** and **encoder** for changing the swerve module speed. |
 | Turn Encoder | ThriftyBot | Analog Core ID: 2 | An **absolute encoder** for sensing swerve module angle. |
-
+| | | | |
 | Turn Motor Back Left | CANSparkMax | CAN ID: 2 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Back Left | CANSparkMax | CAN ID: 1 | A **motor** and **encoder** for changing the swerve module speed. |
 | Turn Encoder | ThriftyBot | Analog Core ID: 0 | An **absolute encoder** for sensing swerve module angle. |
-
+| | | | |
 | Turn Motor Back Right | CANSparkMax | CAN ID: 4 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Back Right | CANSparkMax | CAN ID: 3 | A **motor** and **encoder** for changing the swerve module speed. |
 | Turn Encoder | ThriftyBot | Analog Core ID: 1 | An **absolute encoder** for sensing swerve module angle. |
-
-
-
 
 
 # Commands
