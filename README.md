@@ -23,11 +23,13 @@ The robot has 3 main subsystems and utilizes swerve drive for movement:
 
 ## Arm
 
-The arm uses one motor to move up and down, allowing the intake/shooter subsystem to move to the ground to pick up the notes and move back up to shoot them.
+The arm uses two motors to move up and down, which are configured as a group, allowing the intake/shooter subsystem to move to the ground to pick up the notes and move back up to shoot them.
 
 | Component ID | Interface | Connection | Role |
 |---|---|---|---|
-| ??? | ??? | ??? | ??? |
+| Arm Motor 1 | CANSparkMax |CAN ID: 9| A **motor** for controlling the arm |
+| Arm Motor 2 | CANSparkMax |CAN ID: 10| A **motor** for controlling the arm |
+| Arm Encoder | Through Bore Absolute Encoder | PWM Ports 0 & 1 | An **absolute encoder** for sensing the arm angle |
 
 ## Intake/Shooter
 
@@ -35,15 +37,21 @@ The intake and shooter are both in one subsystem, connected to the top of the ar
 
 | Component ID | Interface | Connection | Role |
 |---|---|---|---|
-| ??? | ??? | ??? | ??? |
-
+| Intake Motor | CANSparkMax | CAN ID: 11, PDH Port 6 | A **motor** for controlling the intake. If necessary, the current may be measured from the PDH port |
+| Color Sensor V3/Proximity Sensor | ColorSensor | I^2C Port | A **color sensor** that detects when a piece has been received |
+| Note Camera | PhotonCamera | Raspberry PI USB | A **camera** that can identify notes | 
+| Shooter Motor | CANSparkMax | CAN ID: 12 | A **motor** for controlling the shooter |
+| Shooter Motor | CANSparkMax | CAN ID: 13 | A **motor** for controlling the shooter |
 ## Climber
 
 The robot will grab onto the chain using a two-piece cranberry elevator with a specially designed hook to grab onto the chain.
 
 | Component ID | Interface | Connection | Role |
 |---|---|---|---|
-| ??? | ??? | ??? | ??? |
+| Climer Motor Left | CANSparkMax | CAN ID: 14 | A **motor** for controlling the left climber |
+| Climer Motor Right | CANSparkMax | CAN ID: 15 | A **motor** for controlling the right climber |
+| Solenoid Left | Relay | Relay Port: 0 | A solenoid that is powered by a **relay** that locks the position of the left climber |
+| Solenoid Right | Relay | Relay Port: 1 | A solenoid that is powered by a **relay** that locks the position of the right climber |
 
 ## Swerve Drive
 
@@ -51,19 +59,19 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 |---|---|---|---|
 | Turn Motor Front Left | CANSparkMax | CAN ID: 8 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Front Left | CANSparkMax | CAN ID: 7 | A **motor** and **encoder** for changing the swerve module speed. |
-| Turn Encoder | ThriftyBot | Analog Core ID: 3 | An **absolute encoder** for sensing swerve module angle. |
+| Turn Encoder | Absolute Encoder (Analog Encoder) | Analog Input ID: 3 | An **absolute encoder** for sensing swerve module angle. It is a custom class extending the WPILib-provided class of analog encoder|
 | | | | |
 | Turn Motor Front Right | CANSparkMax | CAN ID: 6 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Front Right | CANSparkMax | CAN ID: 5 | A **motor** and **encoder** for changing the swerve module speed. |
-| Turn Encoder | ThriftyBot | Analog Core ID: 2 | An **absolute encoder** for sensing swerve module angle. |
+| Turn Encoder | Absolute Encoder (Analog Encoder) | Analog Input ID: 2 | An **absolute encoder** for sensing swerve module angle. |
 | | | | |
 | Turn Motor Back Left | CANSparkMax | CAN ID: 2 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Back Left | CANSparkMax | CAN ID: 1 | A **motor** and **encoder** for changing the swerve module speed. |
-| Turn Encoder | ThriftyBot | Analog Core ID: 0 | An **absolute encoder** for sensing swerve module angle. |
+| Turn Encoder | Absolute Encoder (Analog Encoder) | Analog Input ID: 0 | An **absolute encoder** for sensing swerve module angle. |
 | | | | |
 | Turn Motor Back Right | CANSparkMax | CAN ID: 4 | A **motor** and **encoder** for changing the swerve module angle. |
 | Drive Motor Back Right | CANSparkMax | CAN ID: 3 | A **motor** and **encoder** for changing the swerve module speed. |
-| Turn Encoder | ThriftyBot | Analog Core ID: 1 | An **absolute encoder** for sensing swerve module angle. |
+| Turn Encoder | Absolute Encoder (Analog Encoder) | Analog Input ID: 1 | An **absolute encoder** for sensing swerve module angle. |
 
 
 # Commands
@@ -74,7 +82,7 @@ Overview of commands and how they support actions here...
 |---|---|---|---|---|---|
 | SwerveController | Swerve Drive | Teleop | **Required** | 2 | Joystick control for controlling the swerve drive. Adopted and updated from 2023. |
 | RunIntakeGround | Intake | Both | **Required** | 3 | Position and run the intake to load a note from the ground. |
-| OneNoteAutoLeft | ??? | Auto | Medium | 5 | Shoot a note into the speaker and then move out of the zone. Starting in the left position. **## Points** | 
+| OneNoteAutoLeft | All | Auto | Medium | 5 | Shoot a note into the speaker and then move out of the zone. Starting in the left position. **7 points** | 
 | ??? | ??? | ??? | ??? | ??? | ??? | 
 
 
