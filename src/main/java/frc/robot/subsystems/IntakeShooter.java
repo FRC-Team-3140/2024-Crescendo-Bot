@@ -18,26 +18,30 @@ public class IntakeAndShooter extends SubsystemBase {
     private CANSparkMax shooterB = new CANSparkMax(3, MotorType.kUnbrushed);
     private DigitalInput noteSensor;
 
+// Returns the instance
     public static synchronized IntakeAndShooter getInstance() {
         if (instance == null) {
             instance = new IntakeAndShooter();
         }
         return instance;
     }
-
+// Sets the motor to neutral
     private IntakeAndShooter() {
         intakeMotor.setNeutralMode(NeutralMode.Brake);
     }
 
+// Sets the speed of the intake motor through power
     public void intake(double power) {
         intakeMotor.set(ControlMode.PercentOutput, power);
     }
 
+// Sets the speed of the shooter's motor, make sure one is negative and one is postive
     public void shoot(double power) {
         shooterA.set(ControlMode.PercentOutput, -power);
-        shooterB.set(ControlMode.PercentOutput, -power);
+        shooterB.set(ControlMode.PercentOutput, power);
     }
 
+// Not filled out yet, will do when shooter/intake is done
     public boolean getNoteSensor() {
         return noteSensor.get();
     }
@@ -47,5 +51,4 @@ public class IntakeAndShooter extends SubsystemBase {
 
     }
 }
-
 
