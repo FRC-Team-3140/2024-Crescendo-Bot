@@ -5,40 +5,48 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
-public class IntakeAndShooter extends SubsystemBase {
+public class IntakeShooter extends SubsystemBase {
 
-    private static IntakeAndShooter instance = null;
-    private CANSparkMax intakeMotor = new CANSparkMax(1, MotorType.kUnbrushed);
-    private CANSparkMax shooterA = new CANSparkMax(2, MotorType.kUnbrushed);
-    private CANSparkMax shooterB = new CANSparkMax(3, MotorType.kUnbrushed);
+    private static IntakeShooter instance = null;
+    private CANSparkMax intakeMotor = new CANSparkMax(1, MotorType.kBrushless);
+    private CANSparkMax shooterA = new CANSparkMax(2, MotorType.kBrushless);
+    private CANSparkMax shooterB = new CANSparkMax(3, MotorType.kBrushless);
     private DigitalInput noteSensor;
 
+    public IntakeShooter(){
+        intakeMotor = new CANSparkMax(1, MotorType.kBrushless);
+        shooterA = new CANSparkMax(2, MotorType.kBrushless);
+        shooterB = new CANSparkMax(3, MotorType.kBrushless);
+        noteSensor = new DigitalInput(0); //Random number, once we put it on there we will update it
+
+        intakeMotor.setIdleMode(IdleMode.kBrake);
+
+        
+    }
+
 // Returns the instance
-    public static synchronized IntakeAndShooter getInstance() {
+    public static IntakeShooter getInstance() {
         if (instance == null) {
-            instance = new IntakeAndShooter();
+            instance = new IntakeShooter();
         }
         return instance;
-    }
-// Sets the motor to neutral
-    private IntakeAndShooter() {
-        intakeMotor.setNeutralMode(NeutralMode.Brake);
     }
 
 // Sets the speed of the intake motor through power
     public void intake(double power) {
-        intakeMotor.set(ControlMode.PercentOutput, power);
+        intakeMotor.set(power);
     }
 
 // Sets the speed of the shooter's motor, make sure one is negative and one is postive
     public void shoot(double power) {
-        shooterA.set(ControlMode.PercentOutput, -power);
-        shooterB.set(ControlMode.PercentOutput, power);
+        shooterA.set(-power);
+        shooterB.set(power);
     }
 
 // Not filled out yet, will do when shooter/intake is done
