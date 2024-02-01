@@ -91,6 +91,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public void periodic() {
         if(!encoderSets){
             driveEncoder.setVelocityConversionFactor(encoderRotationToMeters);
+            driveEncoder.setPositionConversionFactor(42*encoderRotationToMeters);
         }
         
     }
@@ -135,5 +136,9 @@ public class SwerveModule extends SubsystemBase implements Constants {
     }
     public String getModuleID(){
         return this.moduleID;
+    }
+
+    public SwerveModuleState getState(){
+        return new SwerveModuleState(driveEncoder.getVelocity(), Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()));
     }
 }

@@ -8,12 +8,16 @@ import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.libs.XboxCotroller;
-import frc.robot.sensors.Camera;
+// import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -30,7 +34,7 @@ public class RobotContainer {
   public static XboxCotroller controller = new XboxCotroller(0);
   public static AHRS gyro = new AHRS(Port.kMXP);
   public static SwerveDrive swerve = new SwerveDrive();
-  private final Camera camera;
+  // private final Camera camera;
   SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 
@@ -38,7 +42,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    camera = Camera.getInstance();
+    // camera = Camera.getInstance();
     autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
     autoChooser.addOption("Auto2", new PathPlannerAuto("Auto2"));
     autoChooser.addOption("Auto3", new PathPlannerAuto("Auto3"));
@@ -64,7 +68,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
+    new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
+    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d())));
   }
 
   public void resetGyro() {

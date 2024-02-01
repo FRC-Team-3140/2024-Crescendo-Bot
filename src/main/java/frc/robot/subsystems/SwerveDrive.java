@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -19,6 +21,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -75,17 +80,38 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                                  // Constants class
-                        new PIDConstants(0.000001, 0.0, 0), // Translation PID constants
-                        new PIDConstants(0.000001, 0.0, 0), // Rotation PID constants
-                        maxSpeed, // Max module speed, in m/s
+                        new PIDConstants(0.1, 0.0, 0), // Translation PID constants
+                        new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
+                        3, // Max module speed, in m/s
                         botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
                 this::shouldFlipPath,
                 this // Reference to this subsystem to set requirements
         );
+    Logger.recordOutput("Actual States", states);
+    Logger.recordOutput("Set States", swerveModuleStates);
+    Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
+      
   }
 
+  // WPILib
+  StructArrayPublisher<SwerveModuleState> actualStates = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("Actual States", SwerveModuleState.struct).publish();
+  StructArrayPublisher<SwerveModuleState> setStates = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("Set States", SwerveModuleState.struct).publish();
+  StructPublisher<Pose2d> odometryStruct = NetworkTableInstance.getDefault()
+    .getStructTopic("Odometry", Pose2d.struct).publish();
+      SwerveModuleState[] states = new SwerveModuleState[4];
+  public void periodic() {
+      for(int i = 0; i < 4; i++){
+        states[i] = modules[i].getState();
+      }
+      updateOdometry();
+      actualStates.set(swerveModuleStates);
+      setStates.set(states);
+      odometryStruct.set(poseEstimator.getEstimatedPosition());
+  }
   /**
    * Method to drive the robot using joystick info.
    *
@@ -94,10 +120,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether  the provided x and y speeds are relative to the field.
    */
-
+  SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     botSpeeds = ChassisSpeeds.discretize(new ChassisSpeeds(xSpeed,ySpeed,rot), .02);
-    SwerveModuleState[] swerveModuleStates =
+    swerveModuleStates =
         kinematics.toSwerveModuleStates(
           ChassisSpeeds.discretize(
             fieldRelative

@@ -4,13 +4,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import org.littletonrobotics.junction.LoggedRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.libs.XboxCotroller;
 import frc.robot.subsystems.SwerveDrive;
 
-public class Robot extends TimedRobot implements Constants{
+public class Robot extends LoggedRobot implements Constants{
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer; 
   private static XboxCotroller m_controller = RobotContainer.controller;
