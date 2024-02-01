@@ -7,12 +7,18 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import frc.robot.subsystems.IntakeShooter;
+import frc.robot.RobotContainer;
 
 
 public class Robot extends TimedRobot implements Constants{
   private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer; 
+  private RobotContainer m_robotContainer;
+  private IntakeShooter intake = new IntakeShooter();
 
+  public static XboxController xbox = new XboxController(0);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   @Override
@@ -22,7 +28,19 @@ public class Robot extends TimedRobot implements Constants{
 
   @Override
   public void teleopPeriodic() {
-    
+    //intake speed: 0.5
+    if(xbox.getRightBumper()){
+      intake.intake(0.5);
+    }else {
+      intake.intake(0);
+    }
+ // shooter speed: 0.6
+    if(xbox.getLeftTriggerAxis()>0){
+      intake.shoot(xbox.getLeftTriggerAxis());
+     System.out.println(xbox.getLeftTriggerAxis());
+    }else {
+      intake.shoot(0);
+    }
   }
 
   // Copyright (c) FIRST and other WPILib contributors.

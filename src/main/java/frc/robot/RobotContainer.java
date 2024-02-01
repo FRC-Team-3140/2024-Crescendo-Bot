@@ -15,6 +15,10 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -27,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotContainer {
 
   SendableChooser<Command> autoChooser = new SendableChooser<>();
+  public static XboxController xbox = Robot.xbox;
 
 
   /**
@@ -54,7 +59,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-  }
+  } 
 
 
   /**

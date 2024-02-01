@@ -7,26 +7,27 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.IdleMode;
 
-public class IntakeAndShooter extends SubsystemBase {
+public class IntakeShooter extends SubsystemBase {
 
-    private static IntakeAndShooter instance = null;
-    private CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
-  // private CANSparkMax shooterA = new CANSparkMax(2, MotorType.kUnbrushed);
-   // private CANSparkMax shooterB = new CANSparkMax(3, MotorType.kUnbrushed);
-    private DigitalInput noteSensor;
+    public  static IntakeShooter instance = null;
+    public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
+    private CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
+    private CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
+    // private DigitalInput noteSensor;
 
 // Returns the instance
-    public static synchronized IntakeAndShooter getInstance() {
+    public static synchronized IntakeShooter getInstance() {
         if (instance == null) {
-            instance = new IntakeAndShooter();
+            instance = new IntakeShooter();
         }
         return instance;
     }
 // Sets the motor to neutral
-    private IntakeAndShooter() {
+    public  IntakeShooter() {
         intakeMotor.setIdleMode(IdleMode.kBrake);
     }
 
@@ -35,20 +36,20 @@ public class IntakeAndShooter extends SubsystemBase {
         intakeMotor.set(power);
     }
 
-/*Sets the speed of the shooter's motor, make sure one is negative and one is postive
+//Sets the speed of the shooter's motor, make sure one is negative and one is postive
     public void shoot(double power) {
-        shooterA.set(ControlMode.PercentOutput, -power);
-        shooterB.set(ControlMode.PercentOutput, power);
-    } */
+        shooterA.set(-power);
+        shooterB.set(power);
+    } 
 
 // Not filled out yet, will do when shooter/intake is done
-    public boolean getNoteSensor() {
-        return noteSensor.get();
-    }
+    // public boolean getNoteSensor() {
+    //     return noteSensor.get();
+    // }
 
     @Override
     public void periodic() {
-
+    // SysIdRoutine routine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(this::voltageDrive, this::logMotors, this));
     }
 }
 
