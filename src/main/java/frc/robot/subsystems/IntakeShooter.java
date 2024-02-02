@@ -4,25 +4,20 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import static edu.wpi.first.units.Units.Meters;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.RobotController;
-import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.MutableMeasure.mutable;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
+// Intake and Shooter related
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+// Color sensor related
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorMatch;
 
 public class IntakeShooter extends SubsystemBase {
 
@@ -30,52 +25,21 @@ public class IntakeShooter extends SubsystemBase {
     public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
     public CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
     public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
-    // private DigitalInput noteSensor;
     public RelativeEncoder encoderA = shooterA.getEncoder();
     public RelativeEncoder encoderB = shooterB.getEncoder();
 
-    
-    
-    private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-    private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-    private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+// Change the I2C port below to match the connection of the color sensor
+    private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
-    SysIdRoutine routine = new SysIdRoutine(
-          new SysIdRoutine.Config(),
-          new SysIdRoutine.Mechanism(
-              // Tell SysId how to plumb the driving voltage to the motors.
-              (Measure<Voltage> volts) -> {
-                shooterA.setVoltage(volts.in(Volts));
-                shooterB.setVoltage(volts.in(Volts));
-              },
-              // Tell SysId how to record a frame of data for each motor on the mechanism being
-              // characterized.
-              log -> {
-                // Record a frame for the left motors.  Since these share an encoder, we consider
-                // the entire group to be one motor.
-                log.motor("drive-left")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            shooterA.get() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(m_leftEncoder.getDistance(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(m_leftEncoder.getRate(), MetersPerSecond));
-                // Record a frame for the right motors.  Since these share an encoder, we consider
-                // the entire group to be one motor.
-                log.motor("drive-right")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            shooterB.get() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
-              },
-              // Tell SysId to make generated commands require this subsystem, suffix test state in
-              // WPILog with this subsystem's name ("drive")
-              this));   
+// This object is constructed with an I2C port as a parameter
+// This device will be automatically initialized with default parameters
+    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
 
+// ColorMatch object is used to register and detect known colors
+// This object uses a simple euclidian distance to estimate the closest match with the given confidence range
+    private final ColorMatch m_colorMatcher = new ColorMatch();
+
+    private final Color kOrangeTarget = new Color(255, 85, 0);
 
 // Returns the instance
     public static synchronized IntakeShooter getInstance() {
@@ -87,6 +51,7 @@ public class IntakeShooter extends SubsystemBase {
 // Sets the motor to neutral
     public  IntakeShooter() {
         intakeMotor.setIdleMode(IdleMode.kBrake);
+        m_colorMatcher.addColorMatch(kOrangeTarget);
     }
 
 // Sets the speed of the intake motor through power
@@ -104,13 +69,28 @@ public class IntakeShooter extends SubsystemBase {
 
     }
 
-// Not filled out yet, will do when shooter/intake is done
-    // public boolean getNoteSensor() {
-    //     return noteSensor.get();
-    // }
-
     @Override
     public void periodic() {
+    
+    // The method GetColor() returns a normalized color value from the sensor
+    // To read the raw color, use GetRawColor()
+    Color detectedColor = m_colorSensor.getColor();
+
+    // Run the color match algorithm on our detected color
+    String colorString;
+    match = m_colorMatcher.matchClosestColor(detectedColor);
+
+    
+    if (match.color == kOrangeTarget) {
+      colorString = "Orange";
+    } else {
+      colorString = "Unknown";
+    }
+
+    //Open Smart Dashboard to see the color detected by the sensor.
+    SmartDashboard.putNumber("Orange", detectedColor.orange);
+    SmartDashboard.putNumber("Confidence", match.confidence);
+    SmartDashboard.putString("Detected Color", colorString);
     }
 
 

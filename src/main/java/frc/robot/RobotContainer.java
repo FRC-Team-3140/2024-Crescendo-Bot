@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.IntakeAndShooter;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -36,7 +35,7 @@ public class RobotContainer {
  // private final Camera camera;
  // SendableChooser<Command> autoChooser = new SendableChooser<>();
 
- public IntakeShooter intakeShooter; 
+  public static XboxController xbox = Robot.xbox;
 
 
   /**
