@@ -78,13 +78,30 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 
 Overview of commands and how they support actions here...
 
-| Command Name | Subsystems | Game Mode | Priority | Difficulty | Description |
+| Command Name | Subsystems | Game Mode | Priority | Complexity | Description | Status |
 |---|---|---|---|---|---|
-| SwerveController | Swerve Drive | Teleop | **Required** | 2 | Joystick control for controlling the swerve drive. Adopted and updated from 2023. |
-| RunIntakeGround | Intake | Both | **Required** | 3 | Position and run the intake to load a note from the ground. |
-| OneNoteAutoLeft | All | Auto | Medium | 5 | Shoot a note into the speaker and then move out of the zone. Starting in the left position. **7 points** | 
-| ??? | ??? | ??? | ??? | ??? | ??? | 
-
+| Driving with Controller | Swerve Drive | Teleop | **Required** | 5 | Joystick control for controlling the swerve drive. In RobotContainer. |
+| SpinTillSensor | IntakeShooter | Both | **Required** | 1 | Run the intake until sensor identifies a note. |
+| SpeakerShoot | IntakeShooter | Both | **Required** | 1 | Shooting a note into a speaker. Pass in speeds |
+| AmpShoot | IntakeShooter | Both | **Required** | 1 | Shooting a note into a amp. Pass in speeds |
+| SetArmAngle | Arm | Both | **Required** | 1 | Setting the arm to an angle |
+| IntakePosition | Arm | Both |
+| CarryPosition | Arm | 
+| AmpPosition | Arm |
+| Left Climb Up | Climber |
+| Right Climb Up | Climber |
+| Left Climb Down | Climber |
+| Right Climb Down | Climber |
+| Lock Solenoid Left | Climber |
+| Lock Solenoid Right | Climber |
+| SpeakerScore |
+| AmpScore |
+| ShootingFallback | Camera | 
+| ComplicatedPickupCommand | 
+| PassToTeammate | 
+| Mobility |
+| ShootToSpeakerInAuto | 
+| ShootToAmpInAuto | 
 
 
 
