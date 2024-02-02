@@ -24,8 +24,6 @@ import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-
-
 public class IntakeShooter extends SubsystemBase {
 
     public  static IntakeShooter instance = null;

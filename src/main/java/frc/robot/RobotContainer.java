@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.IntakeAndShooter;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -29,16 +30,28 @@ import edu.wpi.first.wpilibj.XboxController.Button;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+ // public static XboxCotroller controller = new XboxCotroller(0);
+ // public static AHRS gyro = new AHRS(Port.kMXP);
+ // public static SwerveDrive swerve = new SwerveDrive();
+ // private final Camera camera;
+ // SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  SendableChooser<Command> autoChooser = new SendableChooser<>();
-  public static XboxController xbox = Robot.xbox;
+ public IntakeShooter intakeShooter; 
 
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    
+      intakeshooter = IntakeShooter.getInstance();
+
+    // camera = Camera.getInstance();
+    // autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
+    // autoChooser.addOption("Auto2", new PathPlannerAuto("Auto2"));
+    // autoChooser.addOption("Auto3", new PathPlannerAuto("Auto3"));
+
+    // SmartDashboard.putData("Auto", autoChooser);
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -57,7 +70,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+ /* private void configureBindings() {
 
   } 
 
@@ -66,11 +79,15 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   *         //
+   * 
    */
 
-  public Command getAutonomousCommand() {
+ /* public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
-  }
+    }
+
+ */ public Command get(IntakeAndShooter)
+
+
 }

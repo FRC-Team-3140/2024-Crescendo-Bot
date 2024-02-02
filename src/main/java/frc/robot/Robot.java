@@ -15,19 +15,34 @@ import frc.robot.RobotContainer;
 
 public class Robot extends TimedRobot implements Constants{
   private Command m_autonomousCommand;
+<<<<<<< HEAD
+  // private RobotContainer m_robotContainer; 
+  // private static XboxCotroller m_controller = RobotContainer.controller;
+  // private static SwerveDrive swerve = RobotContainer.swerve;
+=======
   private RobotContainer m_robotContainer;
   private IntakeShooter intake = new IntakeShooter();
+>>>>>>> f7a4e90bdd749b85b4c86310ad5b1408effbbcc5
 
   public static XboxController xbox = new XboxController(0);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   @Override
   public void autonomousPeriodic() {
+<<<<<<< HEAD
+    // driveWithJoystick(false);
+    swerve.updateOdometry();
+=======
    
+>>>>>>> f7a4e90bdd749b85b4c86310ad5b1408effbbcc5
   }
 
   @Override
   public void teleopPeriodic() {
+<<<<<<< HEAD
+    // driveWithJoystick(true);
+    
+=======
     //intake speed: 0.5
     if(xbox.getRightBumper()){
       intake.intake(0.5);
@@ -41,6 +56,7 @@ public class Robot extends TimedRobot implements Constants{
     }else {
       intake.shoot(0);
     }
+>>>>>>> f7a4e90bdd749b85b4c86310ad5b1408effbbcc5
   }
 
   // Copyright (c) FIRST and other WPILib contributors.
@@ -120,4 +136,27 @@ public class Robot extends TimedRobot implements Constants{
   @Override
   public void simulationPeriodic() {}
 
+<<<<<<< HEAD
+
+
+  // private void driveWithJoystick(boolean fieldRelative) {
+  //   // Get the x speed. We are inverting this because Xbox controllers return
+  //   // negative values when we push forward.
+  //   final var xSpeed = -m_controller.getLeftY() * maxSpeed;
+
+  //   // Get the y speed or sideways/strafe speed. We are inverting this because
+  //   // we want a positive value when we pull to the left. Xbox controllers
+  //   // return positive values when you pull to the right by default.
+  //   final var ySpeed = m_controller.getLeftX() * maxSpeed;
+
+  //   // Get the rate of angular rotation. We are inverting this because we want a
+  //   // positive value when we pull to the left (remember, CCW is positive in
+  //   // mathematics). Xbox controllers return positive values when you pull to
+  //   // the right by default.
+  //   final var rot = -m_controller.getRightX() * maxChassisTurnSpeed;
+
+  //   swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
+  // }
+=======
+>>>>>>> f7a4e90bdd749b85b4c86310ad5b1408effbbcc5
 }
