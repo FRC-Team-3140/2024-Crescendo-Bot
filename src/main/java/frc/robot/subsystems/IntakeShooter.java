@@ -49,25 +49,21 @@ public class IntakeShooter extends SubsystemBase {
         return instance;
     }
 // Sets the motor to neutral
-    public  IntakeShooter() {
+    public IntakeShooter() {
         intakeMotor.setIdleMode(IdleMode.kBrake);
         m_colorMatcher.addColorMatch(kOrangeTarget);
     }
 
 // Sets the speed of the intake motor through power
     public void intake(double power) {
-        intakeMotor.setVoltage(power);
+        intakeMotor.set(power);
     }
 
 //Sets the speed of the shooter's motor, make sure one is negative and one is postive
-    public void voltageDrive(double power) {
-        shooterA.setVoltage(-power);
-        shooterB.setVoltage(power);
+    public void shoot (double power) {
+        shooterA.set(-power);
+        shooterB.set(power);
     } 
-
-    public void logMotors(){
-
-    }
 
     @Override
     public void periodic() {
@@ -80,18 +76,18 @@ public class IntakeShooter extends SubsystemBase {
     String colorString;
     match = m_colorMatcher.matchClosestColor(detectedColor);
 
-    
     if (match.color == kOrangeTarget) {
       colorString = "Orange";
     } else {
       colorString = "Unknown";
     }
 
+    System.out.println(colorString);
+
     //Open Smart Dashboard to see the color detected by the sensor.
     SmartDashboard.putNumber("Orange", detectedColor.orange);
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
     }
-
 
 }
