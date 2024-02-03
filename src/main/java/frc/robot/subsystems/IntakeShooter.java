@@ -26,53 +26,53 @@ import com.revrobotics.ColorMatch;
 public class IntakeShooter extends SubsystemBase {
 
     public  static IntakeShooter instance = null;
-    //public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
-    //public CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
-    //public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
-    //public RelativeEncoder encoderA = shooterA.getEncoder();
-    //public RelativeEncoder encoderB = shooterB.getEncoder();
+    public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
+    public CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
+    public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
+    public RelativeEncoder encoderA = shooterA.getEncoder();
+    public RelativeEncoder encoderB = shooterB.getEncoder();
 
-// Change the I2C port below to match the connection of the color sensor
+    // Change the I2C port below to match the connection of the color sensor
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
-// This object is constructed with an I2C port as a parameter
-// This device will be automatically initialized with default parameters
+    // This object is constructed with an I2C port as a parameter
+    // This device will be automatically initialized with default parameters
     private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
 
-// ColorMatch object is used to register and detect known colors
-// This object uses a simple euclidian distance to estimate the closest match with the given confidence range
+    // ColorMatch object is used to register and detect known colors
+    // This object uses a simple euclidian distance to estimate the closest match with the given confidence range
     private final ColorMatch m_colorMatcher = new ColorMatch();
 
     private final Color kOrangeTarget = new Color(255, 85, 0);
 
-// Returns the instance
+    // Returns the instance
     public static synchronized IntakeShooter getInstance() {
         if (instance == null) {
             instance = new IntakeShooter();
         }
         return instance;
     }
-// Sets the motor to neutral
+    // Sets the motor to neutral
     public IntakeShooter() {
-        //intakeMotor.setIdleMode(IdleMode.kBrake);
+        intakeMotor.setIdleMode(IdleMode.kBrake);
         m_colorMatcher.addColorMatch(kOrangeTarget);
     }
 
-// Sets the speed of the intake motor through power
+    // Sets the speed of the intake motor through power
     public void intake(double power) {
-        //intakeMotor.set(power);
+        intakeMotor.set(power);
     }
 
-//Sets the speed of the shooter's motor, make sure one is negative and one is postive
+    //Sets the speed of the shooter's motor, make sure one is negative and one is postive
     public void shoot (double power) {
-        //shooterA.set(-power);
-        //shooterB.set(power);
+        shooterA.set(-power);
+        shooterB.set(power);
     } 
 
     @Override
     public void periodic() {
         
-        // The method GetColor() returns a normalized color value from the sensor
+        // The method getProximity() returns a value 0 - 2047, with the closest being 
         // To read the raw color, use GetRawColor()
         int detectedProximity = m_colorSensor.getProximity();
 
