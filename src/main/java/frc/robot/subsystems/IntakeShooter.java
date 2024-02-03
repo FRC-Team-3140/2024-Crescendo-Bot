@@ -54,54 +54,38 @@ public class IntakeShooter extends SubsystemBase {
         }
         return instance;
     }
+
     // Sets the motor to neutral
     public IntakeShooter() {
         intakeMotor.setIdleMode(IdleMode.kBrake);
         m_colorMatcher.addColorMatch(kOrangeTarget);
     }
 
-    // Sets the speed of the intake motor through power
-    public void intake(double power) {
-        intakeMotor.set(power);
+    /** 
+     * Sets the speed of the intake motor through voltage
+     */
+    public void intake(double voltage) {
+        intakeMotor.setVoltage(voltage);
     }
 
-    //Sets the speed of the shooter's motor, make sure one is negative and one is postive
-    public void shoot (double power) {
-        shooterA.set(-power);
-        shooterB.set(power);
-    }  
-    public static boolean proximityThresholdExeeded;
-    boolean toggleFlag = false;
-    public void toggleTestMotor() {
-        if(proximityThresholdExeeded) {
-
-            if(!toggleFlag) {
-                
-                System.out.println("Stop");
-                toggleFlag = true;
-            }
-            
-        } else {
-            if(toggleFlag) {
-                System.out.println("Start");
-                toggleFlag = false;
-            }
-        } 
-        
+    /** 
+     * Sets the speed of the shooter's motor, make sure one is negative and one is postive
+     */
+    public void shoot (double voltage) {
+        shooterA.setVoltage(-voltage);
+        shooterB.setVoltage(voltage);
     }
     
+    /** 
+     * True when a note reaches the sensor
+     */
+    public static boolean proximityThresholdExeeded;
+
     @Override
     public void periodic() {
         
         // The method getProximity() returns a value 0 - 2047, with the closest being 
-        // To read the raw color, use GetRawColor()
         int detectedProximity = m_colorSensor.getProximity();
-
-        // Run the color match algorithm on our detected color
-        proximityThresholdExeeded = detectedProximity > Constants.detectThreshold;
-        toggleTestMotor();
-
-        System.out.println(proximityThresholdExeeded);
 
         //Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putNumber("Proximity", detectedProximity);
