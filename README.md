@@ -88,13 +88,11 @@ Overview of commands and how they support actions here...
 | IntakePosition | Arm | Both | **Required** | L1 | Arm near ground to intake notes | CRL 0 |
 | CarryPosition | Arm | Both | **Required** | L1 | Arm raised to a safe movement position | CRL 0 |
 | AmpPosition | Arm | Both | **Required** | L1 | Arm at position to score in Amp | CRL 0 |
+| ClimberReady | Climber | Endgame | **Required** | L1 | hooks go up, ready to climb | CRL 0 |
+| ClimberLift | Climber | Endgame | **Required** | L1 | hooks go down, bot lifts off ground | CRL 0 |
+| ClimberLock | Climber | Endgame | **Required** | L1 | locks climber in place | CRL 0 |
+| ClimberUnlock | Climber | Endgame | **Required** | L1 | releases climber | CRL 0 |
 
-| Left Climb Up | Climber | **Required**
-| Right Climb Up | Climber | **Required**
-| Left Climb Down | Climber | **Required**
-| Right Climb Down | Climber | **Required**
-| Lock Solenoid Left | Climber | **Required**
-| Lock Solenoid Right | Climber | **Required**
 | SpeakerScore |
 | AmpScore |
 | ShootingFallback | Camera | 
@@ -108,8 +106,8 @@ Overview of commands and how they support actions here...
 
 | Level | Label | Description | Completion Criteria | 
 | --- | --- | --- | --- |
-| 0 | Experimentation | Just testing a new idea or not started. | N/A |
-| 1 | In Progress | Developing a basic capability | Code compiles and runs on subsystem in testing mode. |
+| 0 | Not Started | Subsystem not built or programming not started | Machanical subsystem design complete and programming started |
+| 1 | In Progress | Developing a basic capability | Code compiles and runs on subsystem in testing mode, subsystem compleated by machanicle. |
 | 2 | MVP | Minimal Viable Product. Could be used in competition. | Integrated and tested with competition bot. Can be manually controlled by drivers to meet basic competition needs. | 
 | 3 | Prototype | Capability meets competition expectations. Most issues resolved and ready for competition if needed. | Verified to meet specs. Well tested by programming team. Approved by programming lead and mentor. | 
 | 4 | Tested | Ready for drive team practice. Is fast, reliable, and easy to use. | Drive team tested in competition-like scenarios. Drive team approval. |
