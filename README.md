@@ -79,12 +79,13 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 Overview of commands and how they support actions here...
 
 | Command Name | Subsystems | Game Mode | Priority | Complexity | Description | Status |
-|---|---|---|---|---|---|
-| Driving with Controller | Swerve Drive | Teleop | **Required** | 5 | Joystick control for controlling the swerve drive | In RobotContainer. |
-| SpinTillSensor | IntakeShooter | Both | **Required** | 1 | Run the intake until sensor identifies a note. |
-| SpeakerShoot | IntakeShooter | Both | **Required** | 1 | Shooting a note into a speaker. Pass in speeds |
-| AmpShoot | IntakeShooter | Both | **Required** | 1 | Shooting a note into a amp. Pass in speeds |
-| SetArmAngle | Arm | Both | **Required** | 1 | Setting the arm to an angle |
+|---|---|---|---|---|---|---|
+| In RobotContainer | Swerve Drive | Teleop | **Required** | L2 | Joystick control for controlling the swerve drive | CRL 2 |
+| SpinTillSensor | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note. | CRL 1 |
+| SpeakerShoot | IntakeShooter | Both | **Required** | L1 | Shooting a note into a speaker. Pass in speeds | CRL 1 |
+| AmpShoot | IntakeShooter | Both | **Required** | L1 | Shooting a note into a amp. Pass in speeds | CRL 0 |
+| SetArmAngle | Arm | Both | **Required** | L1 | Setting the arm to an angle | CRL 0 |
+
 | IntakePosition | Arm | Both |
 | CarryPosition | Arm | 
 | AmpPosition | Arm |
@@ -103,11 +104,11 @@ Overview of commands and how they support actions here...
 | ShootToSpeakerInAuto | 
 | ShootToAmpInAuto | 
 
-## Compitition Readiness Level (CRL)
+## Competition Readiness Level (CRL)
 
 | Level | Label | Description | Completion Criteria | 
 | --- | --- | --- | --- |
-| 0 | Experimentation | Just testing a new idea | N/A |
+| 0 | Experimentation | Just testing a new idea or not started. | N/A |
 | 1 | In Progress | Developing a basic capability | Code compiles and runs on subsystem in testing mode. |
 | 2 | MVP | Minimal Viable Product. Could be used in competition. | Integrated and tested with competition bot. Can be manually controlled by drivers to meet basic competition needs. | 
 | 3 | Prototype | Capability meets competition expectations. Most issues resolved and ready for competition if needed. | Verified to meet specs. Well tested by programming team. Approved by programming lead and mentor. | 
