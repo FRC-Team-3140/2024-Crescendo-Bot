@@ -9,7 +9,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.IntakeUntilNoteDetected;
 import frc.robot.subsystems.IntakeShooter;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -50,7 +52,7 @@ public class RobotContainer {
     // autoChooser.addOption("Auto3", new PathPlannerAuto("Auto3"));
 
     // SmartDashboard.putData("Auto", autoChooser);
-
+    configureBindings();
     // Configure the trigger bindings
   }
 
@@ -68,8 +70,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
- /* private void configureBindings() {
-
+  private void configureBindings() {
+    new JoystickButton(xbox, Button.kA.value).onTrue(new IntakeUntilNoteDetected());
   } 
 
 

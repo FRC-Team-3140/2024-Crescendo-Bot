@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 // Intake and Shooter related
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorMatch;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -13,6 +14,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 // Color sensor related
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -74,6 +76,11 @@ public class IntakeShooter extends SubsystemBase {
 
     // Sets the motor to neutral on creation of the class.
     public IntakeShooter() {
+        matcher.addColorMatch(Color.kBlack);
+        matcher.addColorMatch(Color.kWhite);
+        matcher.addColorMatch(Color.kBlue);
+        matcher.addColorMatch(Color.kGreen);
+        matcher.addColorMatch(Color.kOrange);
         intakeMotor.setIdleMode(IdleMode.kBrake);
     }
 
@@ -89,7 +96,7 @@ public class IntakeShooter extends SubsystemBase {
      * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
      */
     public void setShooterVoltage(double voltage) {
-        shooterA.setVoltage(-voltage);
+        shooterA.setVoltage(voltage);
         shooterB.setVoltage(voltage);
     }
     
@@ -97,14 +104,15 @@ public class IntakeShooter extends SubsystemBase {
      * True when a note reaches the sensor.
      */
     public static boolean proximityThresholdExeeded;
-
+    ColorMatch matcher = new ColorMatch();
+    
     final int detectThreshold = Constants.detectThreshold;
     @Override
     public void periodic() {
         
         // The method getProximity() returns a value 0 - 2047, with the closest being .
         int detectedProximity = proximitySensor.getProximity();
-        proximityThresholdExeeded = detectedProximity > detectThreshold;
+        proximityThresholdExeeded = matcher.matchClosestColor(proximitySensor.getColor()).color == Color.kOrange;
         //Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putNumber("Proximity", detectedProximity);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);

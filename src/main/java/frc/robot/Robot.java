@@ -16,7 +16,7 @@ import frc.robot.RobotContainer;
 public class Robot extends TimedRobot implements Constants{
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private IntakeShooter intakeShooter = new IntakeShooter();
+  private IntakeShooter intakeShooter = IntakeShooter.getInstance();
 
   public static XboxController xbox = new XboxController(0);
 
@@ -29,11 +29,11 @@ public class Robot extends TimedRobot implements Constants{
   @Override
   public void teleopPeriodic() {
     //intake speed: 0.5
-    if(xbox.getRightBumper()){
-      intakeShooter.setIntakeVoltage(intakeVoltage);
-    }else {
-      intakeShooter.setIntakeVoltage(0);
-    }
+    // if(xbox.getRightBumper()){
+    //   intakeShooter.setIntakeVoltage(intakeVoltage);
+    // }else {
+    //   intakeShooter.setIntakeVoltage(0);
+    // }
 
     if(xbox.getLeftBumper()){
       intakeShooter.setShooterVoltage(10);
