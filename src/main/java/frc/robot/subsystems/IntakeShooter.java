@@ -25,29 +25,51 @@ import com.revrobotics.ColorMatch;
 
 public class IntakeShooter extends SubsystemBase {
 
-    public  static IntakeShooter instance = null;
+    public static IntakeShooter instance = null;
+
+    /**
+     * The motor that controls the intake.
+     */
     public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
+
+    /**
+     * Flywheel 1 on the shooter.
+     */
     public CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
-    public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
+    /**
+     * Relative Encoder from flywheel 1's neo.
+     */
     public RelativeEncoder encoderA = shooterA.getEncoder();
+
+    /**
+     * Flywheel 2 on the shooter.
+     */
+    public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
+    /**
+     * Relative Encoder from flywheel 2's neo.
+     */
     public RelativeEncoder encoderB = shooterB.getEncoder();
 
-    public CANSparkMax testMotor = new CANSparkMax(3, MotorType.kBrushless);
-
-    // Change the I2C port below to match the connection of the color sensor
+    // Change the I2C port below to match the connection of the color sensor.
+    /**
+     * The I2C port the proximity sensor is connected to.
+     */
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
-    // This object is constructed with an I2C port as a parameter
-    // This device will be automatically initialized with default parameters
-    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
+    /** 
+     * This object is constructed with an I2C port as a parameter.
+     * This device will be automatically initialized with default parameters.
+     */
+    private final ColorSensorV3 proximitySensor = new ColorSensorV3(i2cPort);
 
-    // ColorMatch object is used to register and detect known colors
-    // This object uses a simple euclidian distance to estimate the closest match with the given confidence range
-    private final ColorMatch m_colorMatcher = new ColorMatch();
+    /**
+     * True if a piece is in the intake.
+     */
+    public static boolean holdingPiece = false;
 
-    private final Color kOrangeTarget = new Color(255, 85, 0);
-
-    // Returns the instance
+    /**
+     * Returns the instance.
+     */
     public static synchronized IntakeShooter getInstance() {
         if (instance == null) {
             instance = new IntakeShooter();
@@ -55,21 +77,20 @@ public class IntakeShooter extends SubsystemBase {
         return instance;
     }
 
-    // Sets the motor to neutral
+    // Sets the motor to neutral on creation of the class.
     public IntakeShooter() {
         intakeMotor.setIdleMode(IdleMode.kBrake);
-        m_colorMatcher.addColorMatch(kOrangeTarget);
     }
 
     /** 
-     * Sets the speed of the intake motor through voltage
+     * Sets the speed of the intake motor through voltage.
      */
     public void intake(double voltage) {
         intakeMotor.setVoltage(voltage);
     }
 
     /** 
-     * Sets the speed of the shooter's motor, make sure one is negative and one is postive
+     * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
      */
     public void shoot (double voltage) {
         shooterA.setVoltage(-voltage);
@@ -77,19 +98,19 @@ public class IntakeShooter extends SubsystemBase {
     }
     
     /** 
-     * True when a note reaches the sensor
+     * True when a note reaches the sensor.
      */
     public static boolean proximityThresholdExeeded;
 
     @Override
     public void periodic() {
         
-        // The method getProximity() returns a value 0 - 2047, with the closest being 
-        int detectedProximity = m_colorSensor.getProximity();
+        // The method getProximity() returns a value 0 - 2047, with the closest being .
+        int detectedProximity = proximitySensor.getProximity();
 
         //Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putNumber("Proximity", detectedProximity);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
     }
-//fuck you grace 
+//fuck you grace - joseph
 }
