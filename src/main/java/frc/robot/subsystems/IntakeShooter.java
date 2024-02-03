@@ -74,16 +74,16 @@ public class IntakeShooter extends SubsystemBase {
         
         // The method GetColor() returns a normalized color value from the sensor
         // To read the raw color, use GetRawColor()
-        int detectedColor = m_colorSensor.getProximity();
+        int detectedProximity = m_colorSensor.getProximity();
 
         // Run the color match algorithm on our detected color
-        boolean proximityThresholdExeeded = detectedColor > Constants.detectThreshold;
+        boolean proximityThresholdExeeded = detectedProximity > Constants.detectThreshold;
         
 
         System.out.println(proximityThresholdExeeded);
 
         //Open Smart Dashboard to see the color detected by the sensor.
-        SmartDashboard.putNumber("Proximity", detectedColor);
+        SmartDashboard.putNumber("Proximity", detectedProximity);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
     }
 
