@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 // Made AmpShoot the Y keybind on the xbox controller so we can test it
+// We don't have an end or execute cause initialize and what's in RobotContainer takes care of it
 
 package frc.robot.commands;
 
