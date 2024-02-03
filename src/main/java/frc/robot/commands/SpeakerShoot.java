@@ -2,6 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// We don't have an end or execute cause initialize and what's in RobotContainer takes care of it
+// SpeakerShoot uses the X keybind on the xbox controller temporarily for testing purposes
+
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
