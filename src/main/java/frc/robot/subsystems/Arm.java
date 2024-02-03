@@ -62,7 +62,7 @@ public class Arm extends SubsystemBase {
     pid.setD(inst.getTable("Arm").getEntry("D: ").getDouble(0));
   }
 
-  public static Arm getInstance(int rightID, int leftID, int encoderID) {
+  public static Arm getInstance() {
     if (instance == null) {
       instance = new Arm();
     }

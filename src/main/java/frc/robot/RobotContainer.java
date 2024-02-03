@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.libs.XboxCotroller;
 import frc.robot.sensors.Camera;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -31,6 +32,7 @@ public class RobotContainer {
   public static AHRS gyro = new AHRS(Port.kMXP);
   public static SwerveDrive swerve = new SwerveDrive();
   private final Camera camera;
+  private final Arm arm = Arm.getInstance();
   SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 
