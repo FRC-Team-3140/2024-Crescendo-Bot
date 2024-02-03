@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.dnn.Net;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
 
+  private static final String kFCP = "ForwardParam";
   private static final String kSetpoint = "Setpoint";
   private static final String kArm = "Arm";
   private static final String kD = "D";
@@ -33,6 +36,8 @@ public class Arm extends SubsystemBase {
 
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm, About 90 degrees from the
                                                       // ground
+
+  private static final double kDefaultForwardParam = 0.0; // The default forward control parameter
   // limits on the setpoint
   private static final double kMaxSetpoint = 120.0; // Sligtly forward in amp position
   private static final double kMinSetpoint = 30.0; // On the ground in intake position
@@ -40,7 +45,6 @@ public class Arm extends SubsystemBase {
   // Absolute encoder angle offsets
   private static final double kArmEncoderOffset = 0.0; // The offset of the arm encoder from the zero position in
                                                        // degrees
-                                                      
 
   // Create a NetworkTable instance to enable the use of NetworkTables
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -70,10 +74,11 @@ public class Arm extends SubsystemBase {
     return instance;
   }
 
- /**
-  * The constructor for the Arm class. It is private to prevent multiple instances
-  * of the class from being created.
-  */
+  /**
+   * The constructor for the Arm class. It is private to prevent multiple
+   * instances
+   * of the class from being created.
+   */
   private Arm() {
     armR = new CANSparkMax(kArmRightID, MotorType.kBrushless);
     armL = new CANSparkMax(kArmLeftID, MotorType.kBrushless);
@@ -93,17 +98,21 @@ public class Arm extends SubsystemBase {
     NetworkTableEntry iEntry = inst.getTable(kArm).getEntry(kI);
     NetworkTableEntry dEntry = inst.getTable(kArm).getEntry(kD);
     NetworkTableEntry setpointEntry = inst.getTable(kArm).getEntry(kSetpoint);
+    NetworkTableEntry fcpEntry = inst.getTable(kArm).getEntry(kFCP);
+
 
     // Set the entries to be persistent
     pEntry.setPersistent();
     iEntry.setPersistent();
     dEntry.setPersistent();
     setpointEntry.setPersistent();
+    fcpEntry.setPersistent();
 
     double p = inst.getTable(kArm).getEntry(kP).getDouble(kDefaultP);
     double i = inst.getTable(kArm).getEntry(kI).getDouble(kDefaultI);
     double d = inst.getTable(kArm).getEntry(kD).getDouble(kDefaultD);
     double setpoint = inst.getTable(kArm).getEntry(kSetpoint).getDouble(kDefaultSetpoint);
+    double fcp = inst.getTable(kArm).getEntry(kFCP).getDouble(kDefaultForwardParam);
 
     pid = new PIDController(p, i, d);
     pid.setSetpoint(setpoint);
@@ -115,10 +124,12 @@ public class Arm extends SubsystemBase {
       has_error = true;
     }
   }
-/**
- * This method is called periodically and updates the PID controller with the current setpoint
- * and PID values from the network table.
- */
+
+  /**
+   * This method is called periodically and updates the PID controller with the
+   * current setpoint
+   * and PID values from the network table.
+   */
   @Override
   public void periodic() {
     // make shure pid values are updated from the network table
@@ -126,7 +137,7 @@ public class Arm extends SubsystemBase {
     pid.setI(inst.getTable(kArm).getEntry(kI).getDouble(kDefaultI));
     pid.setD(inst.getTable(kArm).getEntry(kI).getDouble(kDefaultD));
 
-    // Get the current setpoint in the network table. Check the limits and then 
+    // Get the current setpoint in the network table. Check the limits and then
     // update the PID controller with the current setpoint
     double setpoint = inst.getTable(kArm).getEntry(kSetpoint).getDouble(kDefaultSetpoint);
     if (setpoint > kMaxSetpoint) {
@@ -136,8 +147,8 @@ public class Arm extends SubsystemBase {
     }
     pid.setSetpoint(setpoint);
 
-    //Set motor power
-    if(has_error) {
+    // Set motor power
+    if (has_error) {
       System.err.println("Arm Encoder not connected. Disabled.");
       armR.set(0);
       armL.set(0);
@@ -159,15 +170,26 @@ public class Arm extends SubsystemBase {
    */
   private void setPower(double power) {
     // check that the arm is not disabled
-    if(has_error) {
+    if (has_error) {
       System.err.println("Arm Encoder not connected. Disabled.");
       armR.set(0);
       armL.set(0);
       return;
     }
-    armR.set(power);
-    armL.set(power);
-  }  
+
+    // Add a forward control component based on the current angle
+    // This is to prevent the arm from falling under gravity
+    // An angle of 0 level with the ground
+    // An angle of 90 is straight up
+
+    double angle = getAngle();
+
+    // The forward controll needed is proportional to the cosine of the angle
+    double forwardControl = inst.getTable(kArm).getEntry(kFCP).getDouble(kDefaultForwardParam) * Math.cos(Math.toRadians(angle));
+
+    armR.set(power*forwardControl);
+    armL.set(power*forwardControl);
+  }
 
   /**
    * Sets the setpoint of the PID controller
