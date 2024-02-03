@@ -24,6 +24,11 @@ public class IntakeUntilNoteDetected extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // holding piece is static, so it is refrenced staticly.
+    // !interrupted makes it false when it is manually shut off, but true when it ends due to the sensor
+    IntakeShooter.holdingPiece = !interrupted;
+
+    // this method isn't, so it is called via the local refrence
     intakeShooter.setIntakeVoltage(0);
   }
 

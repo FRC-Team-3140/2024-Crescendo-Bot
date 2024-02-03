@@ -14,6 +14,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import com.revrobotics.ColorSensorV3;
 
 public class IntakeShooter extends SubsystemBase {
@@ -95,12 +97,13 @@ public class IntakeShooter extends SubsystemBase {
      */
     public static boolean proximityThresholdExeeded;
 
+    final int detectThreshold = Constants.detectThreshold;
     @Override
     public void periodic() {
         
         // The method getProximity() returns a value 0 - 2047, with the closest being .
         int detectedProximity = proximitySensor.getProximity();
-
+        proximityThresholdExeeded = detectedProximity > detectThreshold;
         //Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putNumber("Proximity", detectedProximity);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
