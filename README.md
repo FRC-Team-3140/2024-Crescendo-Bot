@@ -82,8 +82,8 @@ This table is a strategic tool for FRC robot development. It outlines all robot 
 |---|---|---|---|---|---|---|
 | ControlSwerveDrive (In RobotContainer) | SwerveDrive | Teleop | **Required** | L2 | Joystick control for the swerve drive | CRL 2 |
 | IntakeUntilNoteDetected | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note | CRL 1 |
-| ShootNoteIntoSpeaker | IntakeShooter | Both | **Required** | L1 | Shoot a note into a speaker. At kSpeakerSpeed. | CRL 1 |
-| ShootNoteIntoAmp | IntakeShooter | Both | **Required** | L1 | Shoot a note into an amp. At kAmpSpeed. | CRL 0 |
+| ShootNoteIntoSpeaker | IntakeShooter | Both | **Required** | L1 | Shoot a note into a speaker. At kSpeakerSpeed. | CRL 2 |
+| ShootNoteIntoAmp | IntakeShooter | Both | **Required** | L1 | Shoot a note into an amp. At kAmpSpeed. | CRL 2 |
 | SetArmToAngle | Arm | Both | **Required** | L1 | Set the arm to an angle | CRL 0 |
 | LowerArmForIntake | Arm | Both | **Required** | L1 | Position arm near ground to intake notes | CRL 0 |
 | RaiseArmForMovement | Arm | Both | **Required** | L1 | Raise arm to a safe movement position | CRL 0 |
@@ -107,9 +107,9 @@ This table outlines the Competition Readiness Level (CRL) system used to track t
 
 | Level | Label | Description | Completion Criteria | 
 | --- | --- | --- | --- |
-| CRL 0 | Concept | Idea for a subsystem or capability is proposed. | Concept is documented and approved by team lead |
-| CRL 1 | Designed | Detailed design of the subsystem or capability. | Design is documented and approved by team lead |
-| CRL 2 | Developed | Code has been written and tested in isolation | Code compiles, runs, and passes initial tests |
+| CRL 0 | Concept | Idea for a command or capability is proposed. | Concept is documented and approved by team lead |
+| CRL 1 | Designed | Detailed design with optional incomplete/untested implementation. | Design is documented and approved by team lead |
+| CRL 2 | Developed | Code is complete and tested in isolation | Code compiles, runs, and passes initial tests |
 | CRL 3 | Integrated | Code has been integrated with other subsystems | Code is integrated, compiles, and runs on the competition bot |
 | CRL 4 | Tested | Subsystem or capability has been tested in competition-like scenarios | Passes all tests, approved by programming lead and mentor |
 | CRL 5 | Practice Ready | Ready for drive team practice. Is fast, reliable, and easy to use | Drive team tested in practice scenarios, drive team approval |
