@@ -107,11 +107,11 @@ This table outlines the Competition Readiness Level (CRL) system used to track t
 
 | Level | Label | Description | Completion Criteria | 
 | --- | --- | --- | --- |
-| CRL 0 | Concept | Idea for a subsystem or capability is proposed | Concept is documented and approved by team lead |
-| CRL 1 | Design | Detailed design of the subsystem or capability is in progress | Design is documented and approved by team lead |
-| CRL 2 | Development | Code is being written and tested in isolation | Code compiles, runs, and passes initial tests |
-| CRL 3 | Integration | Code is being integrated with other subsystems | Code is integrated, compiles, and runs on the competition bot |
-| CRL 4 | Testing | Subsystem or capability is being tested in competition-like scenarios | Passes all tests, approved by programming lead and mentor |
+| CRL 0 | Concept | Idea for a subsystem or capability is proposed. | Concept is documented and approved by team lead |
+| CRL 1 | Designed | Detailed design of the subsystem or capability. | Design is documented and approved by team lead |
+| CRL 2 | Developed | Code has been written and tested in isolation | Code compiles, runs, and passes initial tests |
+| CRL 3 | Integrated | Code has been integrated with other subsystems | Code is integrated, compiles, and runs on the competition bot |
+| CRL 4 | Tested | Subsystem or capability has been tested in competition-like scenarios | Passes all tests, approved by programming lead and mentor |
 | CRL 5 | Practice Ready | Ready for drive team practice. Is fast, reliable, and easy to use | Drive team tested in practice scenarios, drive team approval |
 | CRL 6 | Competition Ready | Fully integrated with other functions and well tested | Passes all final tests, programming and drive team approval |
 
