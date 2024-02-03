@@ -76,7 +76,7 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 
 # Commands
 
-Overview of commands and how they support actions here...
+This table is a strategic tool for FRC robot development. It outlines all robot commands, their complexity, and current readiness levels. Start by implementing **Required** commands, beginning with simpler ones. The Status column helps track progress and identify areas needing attention. The goal is to create a robot that can efficiently execute game actions, ideally at a button press, to score points, speed up movements, and simplify the driver interface.
 
 | Command Name | Subsystems | Game Mode | Priority | Complexity | Description | Status |
 |---|---|---|---|---|---|---|
@@ -103,13 +103,25 @@ Overview of commands and how they support actions here...
 
 ## Competition Readiness Level (CRL)
 
+The Competition Readiness Level (CRL) is a system we use to track the progress of our robot's subsystems and capabilities. It helps us ensure that each part of the robot is ready for competition. Each level, from 0 to 5, represents a different stage of readiness, from initial development to full competition readiness. The CRL is updated regularly and used to prioritize work and identify any areas that need attention.
+
 | Level | Label | Description | Completion Criteria | 
 | --- | --- | --- | --- |
-| 0 | Not Started | Subsystem not built or programming not started | Machanical subsystem design complete and programming started |
-| 1 | In Progress | Developing a basic capability | Code compiles and runs on subsystem in testing mode, subsystem compleated by machanicle. |
-| 2 | MVP | Minimal Viable Product. Could be used in competition. | Integrated and tested with competition bot. Can be manually controlled by drivers to meet basic competition needs. | 
-| 3 | Prototype | Capability meets competition expectations. Most issues resolved and ready for competition if needed. | Verified to meet specs. Well tested by programming team. Approved by programming lead and mentor. | 
-| 4 | Tested | Ready for drive team practice. Is fast, reliable, and easy to use. | Drive team tested in competition-like scenarios. Drive team approval. |
-| 5 | Competition Ready | Fully integrated with other functions and well tested. | Programming and Drive Team Approval |
+| CRL 0 | Not Started | Subsystem not built or programming not started | Mechanical subsystem design complete and programming started |
+| CRL 1 | In Progress | Developing a basic capability | Code compiles and runs on subsystem in testing mode, subsystem completed by mechanical team |
+| CRL 2 | MVP | Minimal Viable Product. Could be used in competition | Integrated and tested with competition bot. Can be manually controlled by drivers to meet basic competition needs | 
+| CRL 3 | Prototype | Capability meets competition expectations. Most issues resolved and ready for competition if needed | Verified to meet specs. Well tested by programming team. Approved by programming lead and mentor | 
+| CRL 4 | Tested | Ready for drive team practice. Is fast, reliable, and easy to use | Drive team tested in competition-like scenarios. Drive team approval |
+| CRL 5 | Competition Ready | Fully integrated with other functions and well tested | Programming and Drive Team Approval |
 
+## Command Complexity Levels for FRC Robot Commands
+
+In the context of FRC robot programming, we categorize our commands into different complexity levels. This helps us manage the development process, prioritize tasks, and communicate about the functionality of our robot. Each level, from L1 to L4, represents a different degree of complexity, from simple commands that control a single subsystem to highly complex commands that can autonomously complete game objectives.
+
+| Level | Label | Description | 
+| --- | --- | --- |
+| L1 | Simple Command | Simple to implement and achieves a basic game objective. Typically uses one subsystem and is executed by drivers. |
+| L2 | Complex Command | Involves multiple subsystems or commands working together to execute more complex tasks quickly or to simplify driver controls. |
+| L3 | Intelligent Command | Completes complex tasks that integrate sensing and control, and may be composed of multiple simpler commands. Can complete complex objectives autonomously or with minimal driver control. | 
+| L4 | Skynet | Wins the game autonomously. No human intervention needed. |
 
