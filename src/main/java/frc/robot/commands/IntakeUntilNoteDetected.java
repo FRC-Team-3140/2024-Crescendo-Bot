@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
@@ -12,15 +14,23 @@ public class IntakeUntilNoteDetected extends Command {
   // Refrence to the intake shooter refrence
   IntakeShooter intakeShooter = IntakeShooter.getInstance();
   final double intakeVoltage = Constants.intakeVoltage; 
+  PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
   /** Creates a new IntakeUntilNoteDetected. */
   public IntakeUntilNoteDetected() { }
-
-  // Called when the command is initially scheduled.
+  long startTime;  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(intakeVoltage);
   }
+  public void execute(){
 
+    //Starts running the intake at a slower speed when there is a current spike; The color sensor takes some time to recognize it. 
+    if(pdp.getCurrent(17) > 4 && System.currentTimeMillis() - startTime > 1000){
+      intakeShooter.setIntakeVoltage(.5);
+      
+    }
+  }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
@@ -36,6 +46,7 @@ public class IntakeUntilNoteDetected extends Command {
   @Override
   public boolean isFinished() {
     return IntakeShooter.proximityThresholdExeeded;
+    // return false;
   }
 
 }
