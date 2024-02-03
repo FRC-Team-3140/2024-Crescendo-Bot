@@ -103,16 +103,17 @@ This table is a strategic tool for FRC robot development. It outlines all robot 
 
 ## Competition Readiness Level (CRL)
 
-The Competition Readiness Level (CRL) is a system we use to track the progress of our robot's subsystems and capabilities. It helps us ensure that each part of the robot is ready for competition. Each level, from 0 to 5, represents a different stage of readiness, from initial development to full competition readiness. The CRL is updated regularly and used to prioritize work and identify any areas that need attention.
+This table outlines the Competition Readiness Level (CRL) system used to track the progress of subsystems and capabilities in our FRC robot development. It ranges from CRL 0, where a concept is proposed, to CRL 6, indicating full competition readiness. Each level has specific completion criteria, providing a clear roadmap for development and integration. This system ensures that our robot is thoroughly tested and ready for competition.
 
 | Level | Label | Description | Completion Criteria | 
 | --- | --- | --- | --- |
-| CRL 0 | Not Started | Subsystem not built or programming not started | Mechanical subsystem design complete and programming started |
-| CRL 1 | In Progress | Developing a basic capability | Code compiles and runs on subsystem in testing mode, subsystem completed by mechanical team |
-| CRL 2 | MVP | Minimal Viable Product. Could be used in competition | Integrated and tested with competition bot. Can be manually controlled by drivers to meet basic competition needs | 
-| CRL 3 | Prototype | Capability meets competition expectations. Most issues resolved and ready for competition if needed | Verified to meet specs. Well tested by programming team. Approved by programming lead and mentor | 
-| CRL 4 | Tested | Ready for drive team practice. Is fast, reliable, and easy to use | Drive team tested in competition-like scenarios. Drive team approval |
-| CRL 5 | Competition Ready | Fully integrated with other functions and well tested | Programming and Drive Team Approval |
+| CRL 0 | Concept | Idea for a subsystem or capability is proposed | Concept is documented and approved by team lead |
+| CRL 1 | Design | Detailed design of the subsystem or capability is in progress | Design is documented and approved by team lead |
+| CRL 2 | Development | Code is being written and tested in isolation | Code compiles, runs, and passes initial tests |
+| CRL 3 | Integration | Code is being integrated with other subsystems | Code is integrated, compiles, and runs on the competition bot |
+| CRL 4 | Testing | Subsystem or capability is being tested in competition-like scenarios | Passes all tests, approved by programming lead and mentor |
+| CRL 5 | Practice Ready | Ready for drive team practice. Is fast, reliable, and easy to use | Drive team tested in practice scenarios, drive team approval |
+| CRL 6 | Competition Ready | Fully integrated with other functions and well tested | Passes all final tests, programming and drive team approval |
 
 ## Command Complexity Levels for FRC Robot Commands
 
