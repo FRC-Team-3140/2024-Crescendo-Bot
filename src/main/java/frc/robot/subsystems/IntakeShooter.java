@@ -32,6 +32,8 @@ public class IntakeShooter extends SubsystemBase {
     public RelativeEncoder encoderA = shooterA.getEncoder();
     public RelativeEncoder encoderB = shooterB.getEncoder();
 
+    public CANSparkMax testMotor = new CANSparkMax(3, MotorType.kBrushless);
+
     // Change the I2C port below to match the connection of the color sensor
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
@@ -67,8 +69,27 @@ public class IntakeShooter extends SubsystemBase {
     public void shoot (double power) {
         shooterA.set(-power);
         shooterB.set(power);
-    } 
+    }  
+    public static boolean proximityThresholdExeeded;
+    boolean toggleFlag = false;
+    public void toggleTestMotor() {
+        if(proximityThresholdExeeded) {
 
+            if(!toggleFlag) {
+                
+                System.out.println("Stop");
+                toggleFlag = true;
+            }
+            
+        } else {
+            if(toggleFlag) {
+                System.out.println("Start");
+                toggleFlag = false;
+            }
+        } 
+        
+    }
+    
     @Override
     public void periodic() {
         
@@ -77,8 +98,8 @@ public class IntakeShooter extends SubsystemBase {
         int detectedProximity = m_colorSensor.getProximity();
 
         // Run the color match algorithm on our detected color
-        boolean proximityThresholdExeeded = detectedProximity > Constants.detectThreshold;
-        
+        proximityThresholdExeeded = detectedProximity > Constants.detectThreshold;
+        toggleTestMotor();
 
         System.out.println(proximityThresholdExeeded);
 
