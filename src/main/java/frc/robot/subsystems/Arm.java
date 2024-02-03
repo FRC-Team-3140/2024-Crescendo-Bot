@@ -16,6 +16,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
 
+  private static final String kSetpoint = "Setpoint";
+  private static final String kArm = "Arm";
+  private static final String kD = "D";
+  private static final String kI = "I";
+  private static final String kP = "P";
+  private static final String kCurrentAngle = "CurrentAngle";
   // Constants for the arm connection info
   private static final int kArmRightID = 9;
   private static final int kArmLeftID = 10;
@@ -27,9 +33,19 @@ public class Arm extends SubsystemBase {
 
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm, About 90 degrees from the
                                                       // ground
+  // limits on the setpoint
+  private static final double kMaxSetpoint = 120.0; // Sligtly forward in amp position
+  private static final double kMinSetpoint = 30.0; // On the ground in intake position
+
+  // Absolute encoder angle offsets
+  private static final double kArmEncoderOffset = 0.0; // The offset of the arm encoder from the zero position in
+                                                       // degrees
+                                                      
 
   // Create a NetworkTable instance to enable the use of NetworkTables
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+  private boolean has_error = false; // Disables the arm if the encoder is not connected
 
   private CANSparkMax armR;
   private CANSparkMax armL;
@@ -47,14 +63,17 @@ public class Arm extends SubsystemBase {
    * 
    * @return The instance of the Arm class
    */
-  public static Arm getInstance() {
+  public static synchronized Arm getInstance() {
     if (instance == null) {
       instance = new Arm();
     }
     return instance;
   }
 
-  /** Creates a new Arm. */
+ /**
+  * The constructor for the Arm class. It is private to prevent multiple instances
+  * of the class from being created.
+  */
   private Arm() {
     armR = new CANSparkMax(kArmRightID, MotorType.kBrushless);
     armL = new CANSparkMax(kArmLeftID, MotorType.kBrushless);
@@ -70,10 +89,10 @@ public class Arm extends SubsystemBase {
     armL.burnFlash();
 
     // Create entries for P, I, and D values
-    NetworkTableEntry pEntry = inst.getTable("Arm").getEntry("P");
-    NetworkTableEntry iEntry = inst.getTable("Arm").getEntry("I");
-    NetworkTableEntry dEntry = inst.getTable("Arm").getEntry("D");
-    NetworkTableEntry setpointEntry = inst.getTable("Arm").getEntry("Setpoint");
+    NetworkTableEntry pEntry = inst.getTable(kArm).getEntry(kP);
+    NetworkTableEntry iEntry = inst.getTable(kArm).getEntry(kI);
+    NetworkTableEntry dEntry = inst.getTable(kArm).getEntry(kD);
+    NetworkTableEntry setpointEntry = inst.getTable(kArm).getEntry(kSetpoint);
 
     // Set the entries to be persistent
     pEntry.setPersistent();
@@ -81,15 +100,20 @@ public class Arm extends SubsystemBase {
     dEntry.setPersistent();
     setpointEntry.setPersistent();
 
-    double p = inst.getTable("Arm").getEntry("P: ").getDouble(kDefaultP);
-    double i = inst.getTable("Arm").getEntry("I: ").getDouble(kDefaultI);
-    double d = inst.getTable("Arm").getEntry("D: ").getDouble(kDefaultD);
-    double setpoint = inst.getTable("Arm").getEntry("Setpoint: ").getDouble(kDefaultSetpoint);
+    double p = inst.getTable(kArm).getEntry(kP).getDouble(kDefaultP);
+    double i = inst.getTable(kArm).getEntry(kI).getDouble(kDefaultI);
+    double d = inst.getTable(kArm).getEntry(kD).getDouble(kDefaultD);
+    double setpoint = inst.getTable(kArm).getEntry(kSetpoint).getDouble(kDefaultSetpoint);
 
     pid = new PIDController(p, i, d);
     pid.setSetpoint(setpoint);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
+    // check that ArmEncoder is connected
+    if (!armEncoder.isConnected()) {
+      System.err.println("Arm Encoder not connected. Arm subsystem will not be initialized.");
+      has_error = true;
+    }
   }
 /**
  * This method is called periodically and updates the PID controller with the current setpoint
@@ -98,18 +122,52 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // make shure pid values are updated from the network table
-    pid.setP(inst.getTable("Arm").getEntry("P: ").getDouble(kDefaultP));
-    pid.setI(inst.getTable("Arm").getEntry("I: ").getDouble(kDefaultI));
-    pid.setD(inst.getTable("Arm").getEntry("D: ").getDouble(kDefaultD));
+    pid.setP(inst.getTable(kArm).getEntry(kP).getDouble(kDefaultP));
+    pid.setI(inst.getTable(kArm).getEntry(kI).getDouble(kDefaultI));
+    pid.setD(inst.getTable(kArm).getEntry(kI).getDouble(kDefaultD));
 
-    // Update the PID controller with the current setpoint
-    pid.setSetpoint(inst.getTable("Arm").getEntry("Setpoint: ").getDouble(kDefaultSetpoint));
+    // Get the current setpoint in the network table. Check the limits and then 
+    // update the PID controller with the current setpoint
+    double setpoint = inst.getTable(kArm).getEntry(kSetpoint).getDouble(kDefaultSetpoint);
+    if (setpoint > kMaxSetpoint) {
+      setpoint = kMaxSetpoint;
+    } else if (setpoint < kMinSetpoint) {
+      setpoint = kMinSetpoint;
+    }
+    pid.setSetpoint(setpoint);
 
     //Set motor power
-    armR.set(pid.calculate(armEncoder.getAbsolutePosition()));
-    armL.set(pid.calculate(armEncoder.getAbsolutePosition()));
+    if(has_error) {
+      System.err.println("Arm Encoder not connected. Disabled.");
+      armR.set(0);
+      armL.set(0);
+      return;
+    }
+
+    // set the arm motor power
+    setPower(pid.calculate(getAngle()));
+
+    // save the current arm angle to the network table
+    inst.getTable(kArm).getEntry(kCurrentAngle).setDouble(getAngle());
 
   }
+
+  /**
+   * Sets the power of the arm motors
+   * 
+   * @param power
+   */
+  private void setPower(double power) {
+    // check that the arm is not disabled
+    if(has_error) {
+      System.err.println("Arm Encoder not connected. Disabled.");
+      armR.set(0);
+      armL.set(0);
+      return;
+    }
+    armR.set(power);
+    armL.set(power);
+  }  
 
   /**
    * Sets the setpoint of the PID controller
@@ -119,18 +177,23 @@ public class Arm extends SubsystemBase {
   public void setAngle(double point) {
     // Was setPoit : LOL ;)
 
-    pid.setSetpoint(point);
+    // check that the setpoint is within the limits
+    if (point > kMaxSetpoint) {
+      point = kMaxSetpoint;
+    } else if (point < kMinSetpoint) {
+      point = kMinSetpoint;
+    }
 
     // update network table
-    inst.getTable("Arm").getEntry("Setpoint: ").setDouble(point);
-
+    inst.getTable(kArm).getEntry(kSetpoint).setDouble(point);
   }
 
   /**
    * @return The current angle of the arm
    */
   public double getAngle() {
-    return armEncoder.getAbsolutePosition();
+    // This is the only place where the arm encoder is read
+    return armEncoder.getAbsolutePosition() + kArmEncoderOffset;
   }
 
   /**
