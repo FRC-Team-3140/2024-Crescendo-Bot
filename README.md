@@ -85,16 +85,16 @@ Overview of commands and how they support actions here...
 | SpeakerShoot | IntakeShooter | Both | **Required** | L1 | Shooting a note into a speaker. Pass in speeds | CRL 1 |
 | AmpShoot | IntakeShooter | Both | **Required** | L1 | Shooting a note into a amp. Pass in speeds | CRL 0 |
 | SetArmAngle | Arm | Both | **Required** | L1 | Setting the arm to an angle | CRL 0 |
+| IntakePosition | Arm | Both | **Required** | L1 | Arm near ground to intake notes | CRL 0 |
+| CarryPosition | Arm | Both | **Required** | L1 | Arm raised to a safe movement position | CRL 0 |
+| AmpPosition | Arm | Both | **Required** | L1 | Arm at position to score in Amp | CRL 0 |
 
-| IntakePosition | Arm | Both |
-| CarryPosition | Arm | 
-| AmpPosition | Arm |
-| Left Climb Up | Climber |
-| Right Climb Up | Climber |
-| Left Climb Down | Climber |
-| Right Climb Down | Climber |
-| Lock Solenoid Left | Climber |
-| Lock Solenoid Right | Climber |
+| Left Climb Up | Climber | **Required**
+| Right Climb Up | Climber | **Required**
+| Left Climb Down | Climber | **Required**
+| Right Climb Down | Climber | **Required**
+| Lock Solenoid Left | Climber | **Required**
+| Lock Solenoid Right | Climber | **Required**
 | SpeakerScore |
 | AmpScore |
 | ShootingFallback | Camera | 
