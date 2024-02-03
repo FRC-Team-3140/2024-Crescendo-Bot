@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AmpShoot;
 import frc.robot.commands.IntakeUntilNoteDetected;
 import frc.robot.commands.SpeakerShoot;
 import frc.robot.subsystems.IntakeShooter;
@@ -54,7 +55,6 @@ public class RobotContainer {
     // autoChooser.addOption("Auto3", new PathPlannerAuto("Auto3"));
 
     // SmartDashboard.putData("Auto", autoChooser);
-    configureBindings();
     // Configure the trigger bindings
 
     configureBindings();
@@ -76,7 +76,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     new JoystickButton(xbox, Button.kX.value).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
-    
+    new JoystickButton(xbox, Button.kY.value).onTrue(new AmpShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
+
 
     new JoystickButton(xbox, Button.kA.value).onTrue(new IntakeUntilNoteDetected());
   } 
