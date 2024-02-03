@@ -5,40 +5,36 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeAndShooter;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.subsystems.IntakeShooter;
 
-public class SpeakerShoot extends CommandBase {
+public class SpeakerShoot extends Command {
 
     private final SpeakerShoot IntakeAndShooter;
     private final XboxController xboxController;
 
     public SpeakerShoot(SpeakerShoot IntakeAndShooter, XboxController xboxController) {
-        this.SpeakerShoot = IntakeAndShooter;
+        this.IntakeAndShooter = IntakeAndShooter;
         this.xboxController = xboxController;
-        addRequirements(IntakeAndShooter);
-    }
-
-    @Override
-    public void initialize() {
-        // You can add any initialization logic here.
     }
 
 // Using Y to test this code
-
     @Override
     public void execute() {
         // Check if the Y button on the Xbox controller is pressed
         if (xboxController.getYButtonPressed()) {
             // Shoot at high speed into the speaker
-            SpeakerShoot.shoot(1.0); // Adjust power as needed
+            shooterA.setVoltage(-voltage);
+            shooterB.setVoltage(voltage); // Adjust power as needed
         }
     }
 
     @Override
     public void end(boolean interrupted) {
         // Stop shooting when the command ends
-        SpeakerShoot.shoot(0.0);
+          shooterA.setVoltage(-voltage);
+          shooterB.setVoltage(voltage); 
     }
 
     @Override
