@@ -24,7 +24,10 @@ public class Arm extends SubsystemBase {
   private static final double kDefaultP = 0.0; // Proportional gain. Adjusts output based on current error.
   private static final double kDefaultI = 0.0; // Integral gain. Adjusts output based on accumulated error over time.
   private static final double kDefaultD = 0.0; // Derivative gain. Adjusts output based on rate of change of error.
-  
+
+  private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm, About 90 degrees from the
+                                                      // ground
+
   // Create a NetworkTable instance to enable the use of NetworkTables
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
@@ -38,8 +41,8 @@ public class Arm extends SubsystemBase {
   // Create a single instance of the Arm class
   private static Arm instance = null;
 
-  /** 
-   * Returns the instance of the Arm class. If the instance does not exist, 
+  /**
+   * Returns the instance of the Arm class. If the instance does not exist,
    * it creates a new one.
    * 
    * @return The instance of the Arm class
@@ -50,8 +53,6 @@ public class Arm extends SubsystemBase {
     }
     return instance;
   }
-
-
 
   /** Creates a new Arm. */
   private Arm() {
@@ -68,43 +69,74 @@ public class Arm extends SubsystemBase {
     armL.setInverted(true);
     armL.burnFlash();
 
-    
-
-     // Create entries for P, I, and D values
+    // Create entries for P, I, and D values
     NetworkTableEntry pEntry = inst.getTable("Arm").getEntry("P");
     NetworkTableEntry iEntry = inst.getTable("Arm").getEntry("I");
     NetworkTableEntry dEntry = inst.getTable("Arm").getEntry("D");
+    NetworkTableEntry setpointEntry = inst.getTable("Arm").getEntry("Setpoint");
 
     // Set the entries to be persistent
     pEntry.setPersistent();
     iEntry.setPersistent();
     dEntry.setPersistent();
-
+    setpointEntry.setPersistent();
 
     double p = inst.getTable("Arm").getEntry("P: ").getDouble(kDefaultP);
     double i = inst.getTable("Arm").getEntry("I: ").getDouble(kDefaultI);
     double d = inst.getTable("Arm").getEntry("D: ").getDouble(kDefaultD);
+    double setpoint = inst.getTable("Arm").getEntry("Setpoint: ").getDouble(kDefaultSetpoint);
 
     pid = new PIDController(p, i, d);
+    pid.setSetpoint(setpoint);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
   }
-
+/**
+ * This method is called periodically and updates the PID controller with the current setpoint
+ * and PID values from the network table.
+ */
   @Override
   public void periodic() {
-    pid.setP(inst.getTable("Arm").getEntry("P: ").getDouble(0));
-    pid.setI(inst.getTable("Arm").getEntry("I: ").getDouble(0));
-    pid.setD(inst.getTable("Arm").getEntry("D: ").getDouble(0));
+    // make shure pid values are updated from the network table
+    pid.setP(inst.getTable("Arm").getEntry("P: ").getDouble(kDefaultP));
+    pid.setI(inst.getTable("Arm").getEntry("I: ").getDouble(kDefaultI));
+    pid.setD(inst.getTable("Arm").getEntry("D: ").getDouble(kDefaultD));
+
+    // Update the PID controller with the current setpoint
+    pid.setSetpoint(inst.getTable("Arm").getEntry("Setpoint: ").getDouble(kDefaultSetpoint));
+
+    //Set motor power
+    armR.set(pid.calculate(armEncoder.getAbsolutePosition()));
+    armL.set(pid.calculate(armEncoder.getAbsolutePosition()));
+
   }
 
-
+  /**
+   * Sets the setpoint of the PID controller
+   * 
+   * @param point The new setpoint
+   */
   public void setAngle(double point) {
     // Was setPoit : LOL ;)
 
     pid.setSetpoint(point);
+
+    // update network table
+    inst.getTable("Arm").getEntry("Setpoint: ").setDouble(point);
+
   }
 
+  /**
+   * @return The current angle of the arm
+   */
   public double getAngle() {
     return armEncoder.getAbsolutePosition();
+  }
+
+  /**
+   * @return The current setpoint of the PID controller
+   */
+  public double getSetpoint() {
+    return pid.getSetpoint();
   }
 }
