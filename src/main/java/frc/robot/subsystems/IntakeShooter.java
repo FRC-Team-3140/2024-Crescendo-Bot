@@ -15,6 +15,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
@@ -74,7 +77,7 @@ public class IntakeShooter extends SubsystemBase {
 
     // Run the color match algorithm on our detected color
     String colorString;
-    match = m_colorMatcher.matchClosestColor(detectedColor);
+    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
 
     if (match.color == kOrangeTarget) {
       colorString = "Orange";
@@ -85,7 +88,9 @@ public class IntakeShooter extends SubsystemBase {
     System.out.println(colorString);
 
     //Open Smart Dashboard to see the color detected by the sensor.
-    SmartDashboard.putNumber("Orange", detectedColor.orange);
+    SmartDashboard.putNumber("R", detectedColor.red);
+    SmartDashboard.putNumber("G", detectedColor.green);
+    SmartDashboard.putNumber("B", detectedColor.blue);
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
     }
