@@ -84,7 +84,7 @@ This table is a strategic tool for FRC robot development. It outlines all robot 
 | IntakeUntilNoteDetected | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note | CRL 1 |
 | ShootNoteIntoSpeaker | IntakeShooter | Both | **Required** | L1 | Shoot a note into a speaker. At kSpeakerSpeed. | CRL 2 |
 | ShootNoteIntoAmp | IntakeShooter | Both | **Required** | L1 | Shoot a note into an amp. At kAmpSpeed. | CRL 2 |
-| SetArmToAngle | Arm | Both | **Required** | L1 | Set the arm to an angle | CRL 0 |
+| SetArmToAngle | Arm | Both | **Required** | L1 | Set the arm to an angle | CRL 2 |
 | LowerArmForIntake | Arm | Both | **Required** | L1 | Position arm near ground to intake notes | CRL 0 |
 | RaiseArmForMovement | Arm | Both | **Required** | L1 | Raise arm to a safe movement position | CRL 0 |
 | PositionArmForAmp | Arm | Both | **Required** | L1 | Position arm to score in Amp | CRL 0 |
