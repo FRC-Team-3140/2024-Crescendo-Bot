@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import org.opencv.dnn.Net;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -18,38 +16,59 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
 
-  private static final String kFCP = "ForwardParam";
-  private static final String kSetpoint = "Setpoint";
-  private static final String kArm = "Arm";
-  private static final String kD = "D";
-  private static final String kI = "I";
-  private static final String kP = "P";
-  private static final String kCurrentAngle = "CurrentAngle";
+  // Constants for the PID controller
+  private static final String kNTP = "P";
+  private static final String kNTI = "I";
+  private static final String kNTD = "D";
+
+  // Constants for the arm state
+  private static final String kNTCurrentAngle = "CurrentAngle";
+  private static final String kNTIsEnabled = "IsEnabled";
+  private static final String kNTErrorCode = "ErrorCode";
+
+  // Constants for the arm power
+  private static final String kNTForwardParam = "ForwardParam";
+  private static final String kForwardPower = "ForwardPower";
+  private static final String kNTPidPower = "PidPower";
+
+  // Constants for the arm setpoint and motor speed
+  private static final String kNTSetpoint = "Setpoint";
+  private static final String kNTMotorSpeed = "MotorSpeed";
+
+  // Constant for the arm network table
+  private static final String kNTArm = "Arm";
+
+
   // Constants for the arm connection info
   private static final int kArmRightID = 9;
   private static final int kArmLeftID = 10;
   private static final int kArmEncoderID = 0;
 
-  private static final double kDefaultP = 0.0; // Proportional gain. Adjusts output based on current error.
-  private static final double kDefaultI = 0.0; // Integral gain. Adjusts output based on accumulated error over time.
-  private static final double kDefaultD = 0.0; // Derivative gain. Adjusts output based on rate of change of error.
+  // Constants for the arm motor configuration
+  private static final int kMotorCurrentLimit = 40; // The current limit for the arm motors
+  private static final boolean kArmRightReversed = false; // Motor direction for right arm
+  private static final boolean kArmLeftReversed = false; // Motor direction for left arm
+  private static final IdleMode kEnabledMotorMode = IdleMode.kCoast; // Motor mode when enabled
+  private static final IdleMode kDisabledMotorMode = IdleMode.kCoast; // Motor mode when disabled
 
-  private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm, About 90 degrees from the
-                                                      // ground
+  // Constants for the PID controller
+  private static final double kDefaultP = 0.0; // Proportional gain
+  private static final double kDefaultI = 0.0; // Integral gain
+  private static final double kDefaultD = 0.0; // Derivative gain
 
+  // Constants for the arm setpoint
+  private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
+  private static final double kMaxSetpoint = 120.0; // Maximum setpoint
+  private static final double kMinSetpoint = 30.0; // Minimum setpoint
+
+  // Constants for the arm control
   private static final double kDefaultForwardParam = 0.0; // The default forward control parameter
-  // limits on the setpoint
-  private static final double kMaxSetpoint = 120.0; // Sligtly forward in amp position
-  private static final double kMinSetpoint = 30.0; // On the ground in intake position
-
-  // Absolute encoder angle offsets
-  private static final double kArmEncoderOffset = 0.0; // The offset of the arm encoder from the zero position in
-                                                       // degrees
+  private static final double kArmEncoderOffset = 0.0; // The offset of the arm encoder from the zero position                                                       // degrees
 
   // Create a NetworkTable instance to enable the use of NetworkTables
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  private boolean has_error = false; // Disables the arm if the encoder is not connected
+  private boolean is_disabled = false; // Disables the arm if the encoder is not connected
 
   private CANSparkMax armR;
   private CANSparkMax armL;
@@ -84,22 +103,23 @@ public class Arm extends SubsystemBase {
     armL = new CANSparkMax(kArmLeftID, MotorType.kBrushless);
 
     armR.restoreFactoryDefaults();
-    armR.setIdleMode(IdleMode.kBrake);
-    armR.setInverted(false);
+    armR.setIdleMode(kDisabledMotorMode);
+    armR.setInverted(kArmRightReversed);
+    armR.setSmartCurrentLimit(kMotorCurrentLimit);
     armR.burnFlash();
 
     armL.restoreFactoryDefaults();
-    armL.setIdleMode(IdleMode.kBrake);
-    armL.setInverted(true);
+    armL.setIdleMode(kDisabledMotorMode);
+    armL.setInverted(kArmLeftReversed);
+    armR.setSmartCurrentLimit(kMotorCurrentLimit);
     armL.burnFlash();
 
     // Create entries for P, I, and D values
-    NetworkTableEntry pEntry = inst.getTable(kArm).getEntry(kP);
-    NetworkTableEntry iEntry = inst.getTable(kArm).getEntry(kI);
-    NetworkTableEntry dEntry = inst.getTable(kArm).getEntry(kD);
-    NetworkTableEntry setpointEntry = inst.getTable(kArm).getEntry(kSetpoint);
-    NetworkTableEntry fcpEntry = inst.getTable(kArm).getEntry(kFCP);
-
+    NetworkTableEntry pEntry = inst.getTable(kNTArm).getEntry(kNTP);
+    NetworkTableEntry iEntry = inst.getTable(kNTArm).getEntry(kNTI);
+    NetworkTableEntry dEntry = inst.getTable(kNTArm).getEntry(kNTD);
+    NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
+    NetworkTableEntry fcpEntry = inst.getTable(kNTArm).getEntry(kNTForwardParam);
 
     // Set the entries to be persistent
     pEntry.setPersistent();
@@ -108,20 +128,27 @@ public class Arm extends SubsystemBase {
     setpointEntry.setPersistent();
     fcpEntry.setPersistent();
 
-    double p = inst.getTable(kArm).getEntry(kP).getDouble(kDefaultP);
-    double i = inst.getTable(kArm).getEntry(kI).getDouble(kDefaultI);
-    double d = inst.getTable(kArm).getEntry(kD).getDouble(kDefaultD);
-    double setpoint = inst.getTable(kArm).getEntry(kSetpoint).getDouble(kDefaultSetpoint);
-    double fcp = inst.getTable(kArm).getEntry(kFCP).getDouble(kDefaultForwardParam);
+    double p = inst.getTable(kNTArm).getEntry(kNTP).getDouble(kDefaultP);
+    double i = inst.getTable(kNTArm).getEntry(kNTI).getDouble(kDefaultI);
+    double d = inst.getTable(kNTArm).getEntry(kNTD).getDouble(kDefaultD);
+    double setpoint = inst.getTable(kNTArm).getEntry(kNTSetpoint).getDouble(kDefaultSetpoint);
+    double fcp = inst.getTable(kNTArm).getEntry(kNTForwardParam).getDouble(kDefaultForwardParam);
 
     pid = new PIDController(p, i, d);
     pid.setSetpoint(setpoint);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
+    encoderConnected();
+
+    // Set the arm to disabled by default.
+    disable();
+  }
+
+  private void encoderConnected() {
     // check that ArmEncoder is connected
     if (!armEncoder.isConnected()) {
-      System.err.println("Arm Encoder not connected. Arm subsystem will not be initialized.");
-      has_error = true;
+      inst.getTable(kNTArm).getEntry(kNTErrorCode).setString("Arm encoder not connected");
+      is_disabled = true;
     }
   }
 
@@ -133,34 +160,25 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // make shure pid values are updated from the network table
-    pid.setP(inst.getTable(kArm).getEntry(kP).getDouble(kDefaultP));
-    pid.setI(inst.getTable(kArm).getEntry(kI).getDouble(kDefaultI));
-    pid.setD(inst.getTable(kArm).getEntry(kI).getDouble(kDefaultD));
+    pid.setP(inst.getTable(kNTArm).getEntry(kNTP).getDouble(kDefaultP));
+    pid.setI(inst.getTable(kNTArm).getEntry(kNTI).getDouble(kDefaultI));
+    pid.setD(inst.getTable(kNTArm).getEntry(kNTI).getDouble(kDefaultD));
 
     // Get the current setpoint in the network table. Check the limits and then
     // update the PID controller with the current setpoint
-    double setpoint = inst.getTable(kArm).getEntry(kSetpoint).getDouble(kDefaultSetpoint);
+    double setpoint = inst.getTable(kNTArm).getEntry(kNTSetpoint).getDouble(kDefaultSetpoint);
+
     if (setpoint > kMaxSetpoint) {
       setpoint = kMaxSetpoint;
     } else if (setpoint < kMinSetpoint) {
       setpoint = kMinSetpoint;
     }
-    pid.setSetpoint(setpoint);
 
-    // Set motor power
-    if (has_error) {
-      System.err.println("Arm Encoder not connected. Disabled.");
-      armR.set(0);
-      armL.set(0);
-      return;
-    }
+    // Update the setpoint incase it has changed
+    inst.getTable(kNTArm).getEntry(kNTSetpoint).setDouble(setpoint);
 
     // set the arm motor power
-    setPower(pid.calculate(getAngle()));
-
-    // save the current arm angle to the network table
-    inst.getTable(kArm).getEntry(kCurrentAngle).setDouble(getAngle());
-
+    updatePower(pid.calculate(getAngle()));
   }
 
   /**
@@ -168,9 +186,9 @@ public class Arm extends SubsystemBase {
    * 
    * @param power
    */
-  private void setPower(double power) {
+  private void updatePower(double power) {
     // check that the arm is not disabled
-    if (has_error) {
+    if (is_disabled || !armEncoder.isConnected()) {
       System.err.println("Arm Encoder not connected. Disabled.");
       armR.set(0);
       armL.set(0);
@@ -183,12 +201,24 @@ public class Arm extends SubsystemBase {
     // An angle of 90 is straight up
 
     double angle = getAngle();
+    double setpoint = inst.getTable(kNTArm).getEntry(kNTSetpoint).getDouble(kDefaultSetpoint);
 
     // The forward controll needed is proportional to the cosine of the angle
-    double forwardControl = inst.getTable(kArm).getEntry(kFCP).getDouble(kDefaultForwardParam) * Math.cos(Math.toRadians(angle));
+    double forward_power = inst.getTable(kNTArm).getEntry(kNTForwardParam).getDouble(kDefaultForwardParam)
+        * Math.cos(Math.toRadians(angle));
 
-    armR.set(power*forwardControl);
-    armL.set(power*forwardControl);
+    pid.setSetpoint(setpoint);
+    double pid_power = pid.calculate(angle);
+
+    double speed = pid_power + forward_power;
+
+    // Update the network table with the forward and PID power
+    inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);
+    inst.getTable(kNTArm).getEntry(kNTPidPower).setDouble(pid_power);
+    inst.getTable(kNTArm).getEntry(kNTMotorSpeed).setDouble(speed);
+
+    armR.set(speed);
+    armL.set(speed);
   }
 
   /**
@@ -207,7 +237,7 @@ public class Arm extends SubsystemBase {
     }
 
     // update network table
-    inst.getTable(kArm).getEntry(kSetpoint).setDouble(point);
+    inst.getTable(kNTArm).getEntry(kNTSetpoint).setDouble(point);
   }
 
   /**
@@ -215,7 +245,9 @@ public class Arm extends SubsystemBase {
    */
   public double getAngle() {
     // This is the only place where the arm encoder is read
-    return armEncoder.getAbsolutePosition() + kArmEncoderOffset;
+    double angle = armEncoder.getAbsolutePosition() + kArmEncoderOffset;
+    inst.getTable(kNTArm).getEntry(kNTCurrentAngle).setDouble(angle);
+    return angle;
   }
 
   /**
@@ -224,4 +256,40 @@ public class Arm extends SubsystemBase {
   public double getSetpoint() {
     return pid.getSetpoint();
   }
+
+  /**
+   * Enable the arm for movement and set the motors to coast
+   */
+  public void enable(boolean setpoint_update) {
+    if (setpoint_update) {
+      setAngle(getAngle());
+    }
+    is_disabled = false;
+    armR.setIdleMode(kEnabledMotorMode);
+    armL.setIdleMode(kEnabledMotorMode);
+
+    // Clear network table error code
+    inst.getTable(kNTArm).getEntry(kNTErrorCode).setString("");
+    inst.getTable(kNTArm).getEntry(kNTIsEnabled).setBoolean(true);
+
+  }
+
+  /**
+   * Enable the arm for movement and set the motors to coast.
+   * Setpoint is updated to prevent the sudden movement of the arm.
+   */
+  public void enable() {
+    enable(true);
+  }
+
+  /**
+   * Put arm in a safe state.
+   */
+  public void disable() {
+    is_disabled = true;
+    armR.setIdleMode(kDisabledMotorMode);
+    armL.setIdleMode(kDisabledMotorMode);
+    inst.getTable(kNTArm).getEntry(kNTIsEnabled).setBoolean(false);
+  }
+
 }
