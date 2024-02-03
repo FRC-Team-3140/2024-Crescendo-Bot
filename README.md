@@ -80,7 +80,7 @@ Overview of commands and how they support actions here...
 
 | Command Name | Subsystems | Game Mode | Priority | Complexity | Description | Status |
 |---|---|---|---|---|---|---|
-| In RobotContainer | Swerve Drive | Teleop | **Required** | L2 | Joystick control for controlling the swerve drive | CRL 2 |
+| In RobotContainer | SwerveDrive | Teleop | **Required** | L2 | Joystick control for controlling the swerve drive | CRL 2 |
 | SpinTillSensor | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note. | CRL 1 |
 | SpeakerShoot | IntakeShooter | Both | **Required** | L1 | Shooting a note into a speaker. Pass in speeds | CRL 1 |
 | AmpShoot | IntakeShooter | Both | **Required** | L1 | Shooting a note into a amp. Pass in speeds | CRL 0 |
@@ -92,15 +92,14 @@ Overview of commands and how they support actions here...
 | ClimberLift | Climber | Endgame | **Required** | L1 | hooks go down, bot lifts off ground | CRL 0 |
 | ClimberLock | Climber | Endgame | **Required** | L1 | locks climber in place | CRL 0 |
 | ClimberUnlock | Climber | Endgame | **Required** | L1 | releases climber | CRL 0 |
-
-| SpeakerScore |
-| AmpScore |
-| ShootingFallback | Camera | 
-| ComplicatedPickupCommand | 
-| PassToTeammate | 
-| Mobility |
-| ShootToSpeakerInAuto | 
-| ShootToAmpInAuto | 
+| SpeakerScore | IntakeShooter, Arm | Both | **Required** | L2 | Bumper on Speaker, shoot note at Speaker speed | CRL 0 |
+| AmpScore | IntakeShooter, Arm | Both | **Required** | L2 | Bumper on Amp, Direct arm to AmpPosition, Shoot note at Amp speed | CRL 0 |
+| ShootingFallback | Camera, Drivetrain, Arm, IntakeShooter | Both | Optonal | L3 | Shoot from a distance auto aim and setup using camera | CRL 0 |
+| ComplicatedPickupCommand | Drivetrain, Arm, IntakeShooter | Teleop | Optonal | L2 | Move intake to ground, run intake, move backward until sensor triggers | CRL 0 |
+| PassToTeammate | Arm, IntakeShooter | Teleop | Optonal | L2 | shoot note horozontally at toward teammate | CRL 0 |
+| Mobility | SwerveDrive | Auto | **Required** | L1 | move Drivetrain in that specific way to score mobility point | CRL 0 |
+| ShootToSpeakerInAuto | IntakeShooter, Arm, SwervDrive | Auto | **Required** | L2 | set up bot toward speaker, set arm position, speaker shoot, move to score mobility point | CRL 0 |
+| ShootToAmpInAuto | IntakeShooter, Arm, SwervDrive | Auto | Optonal | L2 | set up bot toward Amp, set arm position, Amp shoot, move to score mobility point | CRL 0 |
 
 ## Competition Readiness Level (CRL)
 
