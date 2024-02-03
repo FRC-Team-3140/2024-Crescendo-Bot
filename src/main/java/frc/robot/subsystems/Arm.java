@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,9 +21,12 @@ public class Arm extends SubsystemBase {
   private static final int kArmLeftID = 10;
   private static final int kArmEncoderID = 0;
 
+  private static final double kDefaultP = 0.0; // Proportional gain. Adjusts output based on current error.
+  private static final double kDefaultI = 0.0; // Integral gain. Adjusts output based on accumulated error over time.
+  private static final double kDefaultD = 0.0; // Derivative gain. Adjusts output based on rate of change of error.
+  
+  // Create a NetworkTable instance to enable the use of NetworkTables
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
-
-  private static Arm instance = null;
 
   private CANSparkMax armR;
   private CANSparkMax armL;
@@ -30,6 +34,24 @@ public class Arm extends SubsystemBase {
   private PIDController pid;
 
   private DutyCycleEncoder armEncoder;
+
+  // Create a single instance of the Arm class
+  private static Arm instance = null;
+
+  /** 
+   * Returns the instance of the Arm class. If the instance does not exist, 
+   * it creates a new one.
+   * 
+   * @return The instance of the Arm class
+   */
+  public static Arm getInstance() {
+    if (instance == null) {
+      instance = new Arm();
+    }
+    return instance;
+  }
+
+
 
   /** Creates a new Arm. */
   private Arm() {
@@ -46,11 +68,24 @@ public class Arm extends SubsystemBase {
     armL.setInverted(true);
     armL.burnFlash();
 
-    pid = new PIDController(0, 0, 0);
+    
 
-    inst.getTable("Arm").getEntry("P: ").setDouble(pid.getP());
-    inst.getTable("Arm").getEntry("I: ").setDouble(pid.getI());
-    inst.getTable("Arm").getEntry("D: ").setDouble(pid.getD());
+     // Create entries for P, I, and D values
+    NetworkTableEntry pEntry = inst.getTable("Arm").getEntry("P");
+    NetworkTableEntry iEntry = inst.getTable("Arm").getEntry("I");
+    NetworkTableEntry dEntry = inst.getTable("Arm").getEntry("D");
+
+    // Set the entries to be persistent
+    pEntry.setPersistent();
+    iEntry.setPersistent();
+    dEntry.setPersistent();
+
+
+    double p = inst.getTable("Arm").getEntry("P: ").getDouble(kDefaultP);
+    double i = inst.getTable("Arm").getEntry("I: ").getDouble(kDefaultI);
+    double d = inst.getTable("Arm").getEntry("D: ").getDouble(kDefaultD);
+
+    pid = new PIDController(p, i, d);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
   }
@@ -62,12 +97,6 @@ public class Arm extends SubsystemBase {
     pid.setD(inst.getTable("Arm").getEntry("D: ").getDouble(0));
   }
 
-  public static Arm getInstance() {
-    if (instance == null) {
-      instance = new Arm();
-    }
-    return instance;
-  }
 
   public void setAngle(double point) {
     // Was setPoit : LOL ;)
