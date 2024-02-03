@@ -7,21 +7,14 @@ package frc.robot.subsystems;
 // Intake and Shooter related
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 // Color sensor related
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorMatch;
 
 public class IntakeShooter extends SubsystemBase {
 
@@ -85,14 +78,14 @@ public class IntakeShooter extends SubsystemBase {
     /** 
      * Sets the speed of the intake motor through voltage.
      */
-    public void intake(double voltage) {
+    public void setIntakeVoltage(double voltage) {
         intakeMotor.setVoltage(voltage);
     }
 
     /** 
      * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
      */
-    public void shoot (double voltage) {
+    public void setShooterVoltage(double voltage) {
         shooterA.setVoltage(-voltage);
         shooterB.setVoltage(voltage);
     }
