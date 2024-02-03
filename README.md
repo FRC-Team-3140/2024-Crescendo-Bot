@@ -80,7 +80,7 @@ Overview of commands and how they support actions here...
 
 | Command Name | Subsystems | Game Mode | Priority | Complexity | Description | Status |
 |---|---|---|---|---|---|
-| Driving with Controller | Swerve Drive | Teleop | **Required** | 5 | Joystick control for controlling the swerve drive. In RobotContainer. |
+| Driving with Controller | Swerve Drive | Teleop | **Required** | 5 | Joystick control for controlling the swerve drive | In RobotContainer. |
 | SpinTillSensor | IntakeShooter | Both | **Required** | 1 | Run the intake until sensor identifies a note. |
 | SpeakerShoot | IntakeShooter | Both | **Required** | 1 | Shooting a note into a speaker. Pass in speeds |
 | AmpShoot | IntakeShooter | Both | **Required** | 1 | Shooting a note into a amp. Pass in speeds |
@@ -103,5 +103,15 @@ Overview of commands and how they support actions here...
 | ShootToSpeakerInAuto | 
 | ShootToAmpInAuto | 
 
+## Compitition Readiness Level (CRL)
+
+| Level | Label | Description | Completion Criteria | 
+| --- | --- | --- | --- |
+| 0 | Experimentation | Just testing a new idea | N/A |
+| 1 | In Progress | Developing a basic capability | Code compiles and runs on subsystem in testing mode. |
+| 2 | MVP | Minimal Viable Product. Could be used in competition. | Integrated and tested with competition bot. Can be manually controlled by drivers to meet basic competition needs. | 
+| 3 | Prototype | Capability meets competition expectations. Most issues resolved and ready for competition if needed. | Verified to meet specs. Well tested by programming team. Approved by programming lead and mentor. | 
+| 4 | Tested | Ready for drive team practice. Is fast, reliable, and easy to use. | Drive team tested in competition-like scenarios. Drive team approval. |
+| 5 | Competition Ready | Fully integrated with other functions and well tested. | Programming and Drive Team Approval |
 
 
