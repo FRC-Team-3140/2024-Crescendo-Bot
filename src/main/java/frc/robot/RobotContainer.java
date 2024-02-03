@@ -10,7 +10,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.subsystems.IntakeShooter;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,13 +36,13 @@ public class RobotContainer {
  // SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   public static XboxController xbox = Robot.xbox;
-
+  public static IntakeShooter intakeShooter;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-      intakeshooter = IntakeShooter.getInstance();
+    intakeShooter = IntakeShooter.getInstance();
 
     // camera = Camera.getInstance();
     // autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
@@ -52,7 +52,6 @@ public class RobotContainer {
     // SmartDashboard.putData("Auto", autoChooser);
 
     // Configure the trigger bindings
-    configureBindings();
   }
 
   /**
@@ -81,12 +80,11 @@ public class RobotContainer {
    * 
    */
 
- /* public Command getAutonomousCommand() {
+  /*public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
-    }
+  }
 
- */ public Command get(IntakeAndShooter)
-
+ */ 
 
 }

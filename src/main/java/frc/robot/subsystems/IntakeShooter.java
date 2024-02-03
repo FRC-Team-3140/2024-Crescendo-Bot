@@ -15,6 +15,10 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
@@ -22,11 +26,11 @@ import com.revrobotics.ColorMatch;
 public class IntakeShooter extends SubsystemBase {
 
     public  static IntakeShooter instance = null;
-    public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
-    public CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
-    public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
-    public RelativeEncoder encoderA = shooterA.getEncoder();
-    public RelativeEncoder encoderB = shooterB.getEncoder();
+    //public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
+    //public CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
+    //public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
+    //public RelativeEncoder encoderA = shooterA.getEncoder();
+    //public RelativeEncoder encoderB = shooterB.getEncoder();
 
 // Change the I2C port below to match the connection of the color sensor
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -50,44 +54,37 @@ public class IntakeShooter extends SubsystemBase {
     }
 // Sets the motor to neutral
     public IntakeShooter() {
-        intakeMotor.setIdleMode(IdleMode.kBrake);
+        //intakeMotor.setIdleMode(IdleMode.kBrake);
         m_colorMatcher.addColorMatch(kOrangeTarget);
     }
 
 // Sets the speed of the intake motor through power
     public void intake(double power) {
-        intakeMotor.set(power);
+        //intakeMotor.set(power);
     }
 
 //Sets the speed of the shooter's motor, make sure one is negative and one is postive
     public void shoot (double power) {
-        shooterA.set(-power);
-        shooterB.set(power);
+        //shooterA.set(-power);
+        //shooterB.set(power);
     } 
 
     @Override
     public void periodic() {
-    
-    // The method GetColor() returns a normalized color value from the sensor
-    // To read the raw color, use GetRawColor()
-    Color detectedColor = m_colorSensor.getColor();
+        
+        // The method GetColor() returns a normalized color value from the sensor
+        // To read the raw color, use GetRawColor()
+        int detectedProximity = m_colorSensor.getProximity();
 
-    // Run the color match algorithm on our detected color
-    String colorString;
-    match = m_colorMatcher.matchClosestColor(detectedColor);
+        // Run the color match algorithm on our detected color
+        boolean proximityThresholdExeeded = detectedProximity > Constants.detectThreshold;
+        
 
-    if (match.color == kOrangeTarget) {
-      colorString = "Orange";
-    } else {
-      colorString = "Unknown";
-    }
+        System.out.println(proximityThresholdExeeded);
 
-    System.out.println(colorString);
-
-    //Open Smart Dashboard to see the color detected by the sensor.
-    SmartDashboard.putNumber("Orange", detectedColor.orange);
-    SmartDashboard.putNumber("Confidence", match.confidence);
-    SmartDashboard.putString("Detected Color", colorString);
+        //Open Smart Dashboard to see the color detected by the sensor.
+        SmartDashboard.putNumber("Proximity", detectedProximity);
+        SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
     }
 //fuck you grace 
 }
