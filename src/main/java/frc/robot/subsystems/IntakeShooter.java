@@ -25,7 +25,7 @@ public class IntakeShooter extends SubsystemBase {
     /**
      * The motor that controls the intake.
      */
-    public CANSparkMax intakeMotor = new CANSparkMax(20, MotorType.kBrushless);
+    public CANSparkMax intakeMotor = new CANSparkMax(11, MotorType.kBrushless);
 
     /**
      * Flywheel 1 on the shooter.
@@ -39,7 +39,7 @@ public class IntakeShooter extends SubsystemBase {
     /**
      * Flywheel 2 on the shooter.
      */
-    public CANSparkMax shooterB = new CANSparkMax(8, MotorType.kBrushless);
+    public CANSparkMax shooterB = new CANSparkMax(10, MotorType.kBrushless);
     /**
      * Relative Encoder from flywheel 2's neo.
      */
@@ -83,6 +83,7 @@ public class IntakeShooter extends SubsystemBase {
     public void setIntakeVoltage(double voltage) {
         intakeMotor.setVoltage(voltage);
     }
+
 
     /** 
      * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
