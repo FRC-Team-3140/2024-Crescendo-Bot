@@ -24,11 +24,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.sensors.ExampleGlobalMeasurementSensor;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
