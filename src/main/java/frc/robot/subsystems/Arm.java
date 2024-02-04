@@ -49,7 +49,7 @@ public class Arm extends SubsystemBase {
   private static final boolean kArmRightReversed = true; // Motor direction for right arm
   private static final boolean kArmLeftReversed = false; // Motor direction for left arm
   private static final IdleMode kEnabledMotorMode = IdleMode.kBrake; // Motor mode when enabled
-  private static final IdleMode kDisabledMotorMode = IdleMode.kCoast; // Motor mode when disabled
+  private static final IdleMode kDisabledMotorMode = IdleMode.kBrake; // Motor mode when disabled
 
   // Constants for the PID controller
   private static final double kDefaultP = .25; // Proportional gain

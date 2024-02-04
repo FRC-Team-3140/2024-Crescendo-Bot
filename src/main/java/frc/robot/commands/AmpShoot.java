@@ -16,13 +16,25 @@ public class AmpShoot extends Command implements Constants{
 
     public AmpShoot() {
         intakeShooter = IntakeShooter.getInstance();
-
+        addRequirements(intakeShooter);
     }
 
       // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeShooter.setShooterVoltage(3);
+    intakeShooter.setIntakeVoltage(3);
+    intakeShooter.setShooterVoltage(5);
+  }
+  @Override
+  public boolean isFinished() {
+      // TODO Auto-generated method stub
+      return super.isFinished();
+      
+  }
+  @Override
+  public void end(boolean interrupted) {
+      intakeShooter.setIntakeVoltage(0);
+      intakeShooter.setShooterVoltage(0);
   }
 
 }

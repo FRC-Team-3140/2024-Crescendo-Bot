@@ -94,8 +94,8 @@ public class RobotContainer {
     new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
     new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d())));
     
-    new POVButton(controller2, 0).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
-    new POVButton(controller2, 90).onTrue(new AmpShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
+    // new POVButton(controller2, 0).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
+    new POVButton(controller2, 90).onTrue(new AmpShoot()).onFalse(new DefaultShoot(0));
     // new JoystickButton(controller2, Button.kB.value).onTrue(new DefaultShoot(0)).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
 
 

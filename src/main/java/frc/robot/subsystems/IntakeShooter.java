@@ -10,6 +10,9 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.ColorSensorV3.ColorSensorMeasurementRate;
+import com.revrobotics.ColorSensorV3.ColorSensorResolution;
+import com.revrobotics.ColorSensorV3.GainFactor;
 
 // Color sensor related
 import edu.wpi.first.wpilibj.I2C;
@@ -76,6 +79,7 @@ public class IntakeShooter extends SubsystemBase {
 
     // Sets the motor to neutral on creation of the class.
     public IntakeShooter() {
+        proximitySensor.configureColorSensor(ColorSensorResolution.kColorSensorRes16bit, ColorSensorMeasurementRate.kColorRate200ms, GainFactor.kGain1x);
         matcher.addColorMatch(Color.kBlack);
         matcher.addColorMatch(Color.kWhite);
         matcher.addColorMatch(Color.kBlue);
@@ -97,7 +101,7 @@ public class IntakeShooter extends SubsystemBase {
      */
     public void setShooterVoltage(double voltage) {
         shooterA.setVoltage(voltage);
-        shooterB.setVoltage(voltage);
+        shooterB.setVoltage(-voltage);
     }
     
     /** 

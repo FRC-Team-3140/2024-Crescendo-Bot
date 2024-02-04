@@ -137,7 +137,8 @@ public class Robot extends LoggedRobot implements Constants{
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed = RobotContainer.controller.getLeftX() * maxSpeed;
+    final var ySpeed = RobotContainer.controller.
+    getLeftX() * maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
