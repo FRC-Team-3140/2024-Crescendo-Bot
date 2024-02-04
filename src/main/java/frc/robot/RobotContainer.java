@@ -69,9 +69,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new JoystickButton(controller, Button.kA.value).onTrue(new SetArmToAngle(15));
-    new JoystickButton(controller, Button.kB.value).onTrue(new SetArmToAngle(105));
-    new JoystickButton(controller, Button.kY.value).onTrue(new SetArmToAngle(90));
+    new JoystickButton(controller, Button.kA.value).onTrue(new SetArmToAngle(8));
+    new JoystickButton(controller, Button.kB.value).onTrue(new SetArmToAngle(10));
+    new JoystickButton(controller, Button.kY.value).onTrue(new SetArmToAngle(94));
+    new JoystickButton(controller, Button.kX.value).onTrue(new SetArmToAngle(50));
 
   }
 

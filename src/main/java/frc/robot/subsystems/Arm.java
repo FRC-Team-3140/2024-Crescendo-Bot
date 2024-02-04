@@ -48,18 +48,18 @@ public class Arm extends SubsystemBase {
   private static final int kMotorCurrentLimit = 40; // The current limit for the arm motors
   private static final boolean kArmRightReversed = true; // Motor direction for right arm
   private static final boolean kArmLeftReversed = false; // Motor direction for left arm
-  private static final IdleMode kEnabledMotorMode = IdleMode.kCoast; // Motor mode when enabled
+  private static final IdleMode kEnabledMotorMode = IdleMode.kBrake; // Motor mode when enabled
   private static final IdleMode kDisabledMotorMode = IdleMode.kCoast; // Motor mode when disabled
 
   // Constants for the PID controller
   private static final double kDefaultP = .25; // Proportional gain
   private static final double kDefaultI = 0.0; // Integral gain
-  private static final double kDefaultD = 0.0; // Derivative gain
+  private static final double kDefaultD = 0.003; // Derivative gain
 
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
-  private static final double kMaxSetpoint = 110.0; // Maximum setpoint; Test again with Amp 
-  private static final double kMinSetpoint = 15.0; // Minimum setpoint
+  private static final double kMaxSetpoint = 94.0; // Maximum setpoint; Test again with Amp 
+  private static final double kMinSetpoint = 8.0; // Minimum setpoint
 
   // Constants for the arm control
   private static final double kDefaultForwardParam = .325; // The default forward control parameter
