@@ -15,6 +15,7 @@ Here is the checklist in Markdown format:
 3. **Motor Direction Check**
     - [ ] Run the motors at a positive speed.
     - [ ] Verify that both motors are running in the correct direction (positive speeds should lift the arm).
+    - [] Set Max and min angles
 
 4. **Forward Control Parameter Calibration**
     - [ ] Start with a small value for the forward control parameter.

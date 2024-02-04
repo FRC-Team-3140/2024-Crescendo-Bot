@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,6 +28,7 @@ public class Robot extends TimedRobot implements Constants{
   @Override
   public void teleopPeriodic() {
     driveWithJoystick(true);
+
     
   }
 
@@ -111,8 +113,12 @@ public class Robot extends TimedRobot implements Constants{
   }
 
   /** This function is called periodically during test mode. */
+  DigitalInput photoElectric = new DigitalInput(0);
+
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    System.out.println(photoElectric.get());
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

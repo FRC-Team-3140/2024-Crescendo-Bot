@@ -40,30 +40,30 @@ public class Arm extends SubsystemBase {
 
 
   // Constants for the arm connection info
-  private static final int kArmRightID = 9;
-  private static final int kArmLeftID = 10;
-  private static final int kArmEncoderID = 0;
+  private static final int kArmRightID = 13;
+  private static final int kArmLeftID = 12;
+  private static final int kArmEncoderID = 1;
 
   // Constants for the arm motor configuration
   private static final int kMotorCurrentLimit = 40; // The current limit for the arm motors
-  private static final boolean kArmRightReversed = false; // Motor direction for right arm
+  private static final boolean kArmRightReversed = true; // Motor direction for right arm
   private static final boolean kArmLeftReversed = false; // Motor direction for left arm
   private static final IdleMode kEnabledMotorMode = IdleMode.kCoast; // Motor mode when enabled
   private static final IdleMode kDisabledMotorMode = IdleMode.kCoast; // Motor mode when disabled
 
   // Constants for the PID controller
-  private static final double kDefaultP = 0.0; // Proportional gain
+  private static final double kDefaultP = .25; // Proportional gain
   private static final double kDefaultI = 0.0; // Integral gain
   private static final double kDefaultD = 0.0; // Derivative gain
 
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
-  private static final double kMaxSetpoint = 120.0; // Maximum setpoint
-  private static final double kMinSetpoint = 30.0; // Minimum setpoint
+  private static final double kMaxSetpoint = 110.0; // Maximum setpoint; Test again with Amp 
+  private static final double kMinSetpoint = 15.0; // Minimum setpoint
 
   // Constants for the arm control
-  private static final double kDefaultForwardParam = 0.0; // The default forward control parameter
-  private static final double kArmEncoderOffset = 0.0; // The offset of the arm encoder from the zero position                                                       // degrees
+  private static final double kDefaultForwardParam = .325; // The default forward control parameter
+  private static final double kArmEncoderOffset = -152; // The offset of the arm encoder from the zero position                                                       // degrees
 
   // Create a NetworkTable instance to enable the use of NetworkTables
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -190,8 +190,8 @@ public class Arm extends SubsystemBase {
     // check that the arm is not disabled
     if (is_disabled || !armEncoder.isConnected()) {
       System.err.println("Arm Encoder not connected. Disabled.");
-      armR.set(0);
-      armL.set(0);
+      armR.setVoltage(0);
+      armL.setVoltage(0);
       return;
     }
 
@@ -210,15 +210,15 @@ public class Arm extends SubsystemBase {
     pid.setSetpoint(setpoint);
     double pid_power = pid.calculate(angle);
 
-    double speed = pid_power + forward_power;
+    double voltage = pid_power + forward_power;
 
     // Update the network table with the forward and PID power
     inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);
     inst.getTable(kNTArm).getEntry(kNTPidPower).setDouble(pid_power);
-    inst.getTable(kNTArm).getEntry(kNTMotorSpeed).setDouble(speed);
+    inst.getTable(kNTArm).getEntry(kNTMotorSpeed).setDouble(voltage);
 
-    armR.set(speed);
-    armL.set(speed);
+    armR.setVoltage(voltage);
+    armL.setVoltage(voltage);
   }
 
   /**
@@ -245,7 +245,7 @@ public class Arm extends SubsystemBase {
    */
   public double getAngle() {
     // This is the only place where the arm encoder is read
-    double angle = armEncoder.getAbsolutePosition() + kArmEncoderOffset;
+    double angle = 360 * (armEncoder.getAbsolutePosition()) + kArmEncoderOffset;
     inst.getTable(kNTArm).getEntry(kNTCurrentAngle).setDouble(angle);
     return angle;
   }
