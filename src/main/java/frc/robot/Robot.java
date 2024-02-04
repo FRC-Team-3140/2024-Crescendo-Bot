@@ -10,28 +10,48 @@ import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.libs.XboxCotroller;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.IntakeShooter;
+import frc.robot.RobotContainer;
+
 
 public class Robot extends LoggedRobot implements Constants{
   private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer; 
-  private static XboxCotroller m_controller = RobotContainer.controller;
-  private static SwerveDrive swerve = RobotContainer.swerve;
+  private RobotContainer m_robotContainer;
+  private IntakeShooter intakeShooter = IntakeShooter.getInstance();
+
+  public static XboxController xbox = new XboxController(0);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   @Override
   public void autonomousPeriodic() {
-    driveWithJoystick(false);
-    swerve.updateOdometry();
+   
   }
 
   @Override
   public void teleopPeriodic() {
-    driveWithJoystick(true);
+    //intake speed: 0.5
+    // if(xbox.getRightBumper()){
+    //   intakeShooter.setIntakeVoltage(intakeVoltage);
+    // }else {
+    //   intakeShooter.setIntakeVoltage(0);
+    // }
 
-    
+    if(xbox.getLeftBumper()){
+      intakeShooter.setShooterVoltage(10);
+    }else{
+      intakeShooter.setShooterVoltage(0);
+    }
+
+ // shooter speed: 0.6
+    // if(xbox.getLeftTriggerAxis()>0){
+    //   intake.setShooterVoltage(xbox.getLeftTriggerAxis());
+    //  System.out.println(xbox.getLeftTriggerAxis());
+    // }else {
+    //   intake.setShooterVoltage(0);;
+    // }
   }
 
   // Copyright (c) FIRST and other WPILib contributors.
@@ -76,10 +96,7 @@ public class Robot extends LoggedRobot implements Constants{
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // Ready the arm for movement.
-    Arm.getInstance().enable();
-
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -131,24 +148,4 @@ public class Robot extends LoggedRobot implements Constants{
   @Override
   public void simulationPeriodic() {}
 
-
-
-  private void driveWithJoystick(boolean fieldRelative) {
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-    final var xSpeed = -m_controller.getLeftY() * maxSpeed;
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-    final var ySpeed = m_controller.getLeftX() * maxSpeed;
-
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
-    final var rot = -m_controller.getRightX() * maxChassisTurnSpeed;
-
-    swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
-  }
 }
