@@ -2,44 +2,36 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// Made SpeakerShoot the X keybind on the xbox controller so we can test it
+
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
-public class SpeakerShoot extends Command {
+public class SpeakerShoot extends Command implements Constants {
 
-    private final SpeakerShoot IntakeAndShooter;
-    private final XboxController xboxController;
+    public IntakeShooter intakeShooter; 
+    private InterpolatingDoubleTreeMap voltageInterpolator;
 
-    public SpeakerShoot(SpeakerShoot IntakeAndShooter, XboxController xboxController) {
-        this.IntakeAndShooter = IntakeAndShooter;
-        this.xboxController = xboxController;
+    public SpeakerShoot() {
+        intakeShooter = IntakeShooter.getInstance();
+        voltageInterpolator = new InterpolatingDoubleTreeMap(/* Add your inverseInterpolator, interpolator, and comparator here */);
     }
 
-// Using Y to test this code
+    // Called when the command is initially scheduled.
     @Override
-    public void execute() {
-        // Check if the Y button on the Xbox controller is pressed
-        if (xboxController.getYButtonPressed()) {
-            // Shoot at high speed into the speaker
-            shooterA.setVoltage(-voltage);
-            shooterB.setVoltage(voltage); // Adjust power as needed
-        }
+    public void initialize() {
+        // Use the InterpolatingTreeMap to get the interpolated voltage for the key (e.g., joystick position)
+        // PLEASE IGNORE the joystick part, this will be connected to the camera but its not ready yet
+        double joystickPosition = 0; /* Get your joystick position here */;
+        double interpolatedVoltage = voltageInterpolator.get(joystickPosition);
+        
+        // Set the shooter voltage based on the interpolated value
+        intakeShooter.setShooterVoltage(interpolatedVoltage);
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        // Stop shooting when the command ends
-          shooterA.setVoltage(-voltage);
-          shooterB.setVoltage(voltage); 
-    }
-
-    @Override
-    public boolean isFinished() {
-        // This command finishes immediately, as it is meant for instantaneous shooting.
-        return true;
-    }
+    // Other methods for isFinished(), end(), etc., can be added if needed.
 }

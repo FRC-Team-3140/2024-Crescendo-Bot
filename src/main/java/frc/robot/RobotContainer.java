@@ -1,6 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
@@ -17,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SetArmToAngle;
 import frc.robot.commands.AmpShoot;
+import frc.robot.commands.DefaultShoot;
 import frc.robot.commands.IntakeUntilNoteDetected;
 // // import frc.robot.commands.SpeakerShoot;
 import frc.robot.subsystems.Arm;
@@ -90,6 +88,7 @@ public class RobotContainer {
     new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
     new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d())));    new JoystickButton(xbox, Button.kX.value).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
     new JoystickButton(xbox, Button.kY.value).onTrue(new AmpShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
+    new JoystickButton(xbox, Button.kB.value).onTrue(new DefaultShoot(0)).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
 
 
     new JoystickButton(xbox, Button.kA.value).onTrue(new IntakeUntilNoteDetected());

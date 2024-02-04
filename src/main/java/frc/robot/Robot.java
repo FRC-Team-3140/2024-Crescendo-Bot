@@ -120,9 +120,10 @@ public class Robot extends LoggedRobot implements Constants{
     Arm.getInstance().enable();
 
   }
-
+  // IntakeAndShooter test = IntakeAndShooter.getInstance();
   @Override
   public void testInit() {
+    // test.intake(.6);
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
