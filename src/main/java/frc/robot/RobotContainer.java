@@ -75,7 +75,7 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(xbox, Button.kX.value).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
     new JoystickButton(xbox, Button.kY.value).onTrue(new AmpShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
-    new JoystickButton(xbox, Button.kB.value).onTrue(new DefaultShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
+    new JoystickButton(xbox, Button.kB.value).onTrue(new DefaultShoot(0)).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
 
 
     new JoystickButton(xbox, Button.kA.value).onTrue(new IntakeUntilNoteDetected());

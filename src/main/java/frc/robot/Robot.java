@@ -108,10 +108,10 @@ public class Robot extends TimedRobot implements Constants{
       m_autonomousCommand.cancel();
     }
   }
-  IntakeAndShooter test = IntakeAndShooter.getInstance();
+  // IntakeAndShooter test = IntakeAndShooter.getInstance();
   @Override
   public void testInit() {
-    test.intake(.6);
+    // test.intake(.6);
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
