@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DefaultShoot;
-
 import frc.robot.commands.IntakeUntilNoteDetected;
 import frc.robot.commands.SpeakerShoot;
 import frc.robot.subsystems.IntakeShooter;
