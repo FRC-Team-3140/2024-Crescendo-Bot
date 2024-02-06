@@ -14,11 +14,19 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 public class SpeakerShoot extends Command implements Constants {
 
     public IntakeShooter intakeShooter; 
-    private InterpolatingDoubleTreeMap voltageInterpolator;
+    private InterpolatingDoubleTreeMap angleInterpolator;
 
     public SpeakerShoot() {
         intakeShooter = IntakeShooter.getInstance();
-        voltageInterpolator = new InterpolatingDoubleTreeMap(/* Add your inverseInterpolator, interpolator, and comparator here */);
+        angleInterpolator = new InterpolatingDoubleTreeMap();/* Add your inverseInterpolator, interpolator, and comparator here */
+        angleInterpolator.put(14.0, 42.0); //14 Degrees and 42 inches measured to the inside of the bot perimiter
+        angleInterpolator.put(24.0, 62.0);
+        angleInterpolator.put(32.0, 79.0);
+        angleInterpolator.put(38.0, 114.0);
+        angleInterpolator.put(39.0, 119.0);
+        angleInterpolator.put(40.0, 136.375);
+        
+        
     }
 
     // Called when the command is initially scheduled.
@@ -27,7 +35,7 @@ public class SpeakerShoot extends Command implements Constants {
         // Use the InterpolatingTreeMap to get the interpolated voltage for the key (e.g., joystick position)
         // PLEASE IGNORE the joystick part, this will be connected to the camera but its not ready yet
         double joystickPosition = 0; /* Get your joystick position here */;
-        double interpolatedVoltage = voltageInterpolator.get(joystickPosition);
+        double interpolatedVoltage = angleInterpolator.get(joystickPosition);
         
         // Set the shooter voltage based on the interpolated value
         intakeShooter.setShooterVoltage(interpolatedVoltage);

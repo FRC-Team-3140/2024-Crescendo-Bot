@@ -34,7 +34,7 @@ public class DefaultShoot extends Command implements Constants {
     public void initialize() {
         new SequentialCommandGroup(
         new InstantCommand(() -> {intakeShooter.setShooterVoltage(voltage);}),
-        new WaitCommand(1),
+        new WaitCommand(2), //Spin up longer after 114 inches 
         new InstantCommand(()->{intakeShooter.setIntakeVoltage(voltage2);})
         ).schedule();
     }

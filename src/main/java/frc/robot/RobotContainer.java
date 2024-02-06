@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SetArmToAngle;
 import frc.robot.commands.SpeakerShoot;
 import frc.robot.libs.XboxCotroller;
+// import frc.robot.autos.OneNoteAuto;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DefaultShoot;
 import frc.robot.commands.IntakeUntilNoteDetected;
@@ -51,6 +52,8 @@ public class RobotContainer {
   private final Arm arm = Arm.getInstance();
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder;
+  
+
   public static XboxCotroller controller2 = new XboxCotroller(1);
   public static IntakeShooter intakeShooter;
 
@@ -61,7 +64,7 @@ public class RobotContainer {
     intakeShooter = IntakeShooter.getInstance();
     autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
-
+  
     // camera = Camera.getInstance();
     // autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
     // autoChooser.addOption("Auto2", new PathPlannerAuto("Auto2"));
@@ -104,7 +107,7 @@ public class RobotContainer {
     // new POVButton(controller2, 270).onTrue(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
     new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetected());
 
-    // new POVButton(controller2, 270).onTrue(new DefaultShoot(10,3)).onFalse(new DefaultShoot(0,0));
+    new POVButton(controller2, 270).onTrue(new DefaultShoot(10,3)).onFalse(new DefaultShoot(0,0));
     
   } 
 
@@ -122,6 +125,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autobuilder.getSelected();
+    // return new OneNoteAuto(arm);
   }
 
   

@@ -39,6 +39,7 @@ public class SetArmToAngle extends Command {
     @Override
     public boolean isFinished() {
         // The command is finished when the arm is at the target angle
-        return Math.abs(arm.getAngle() - targetAngle) < kDefaultError; 
+        return true;
+        // return Math.abs(arm.getAngle() - targetAngle) < kDefaultError; 
     }
 }
