@@ -102,6 +102,7 @@ public class Arm extends SubsystemBase {
     armR = new CANSparkMax(kArmRightID, MotorType.kBrushless);
     armL = new CANSparkMax(kArmLeftID, MotorType.kBrushless);
 
+    
     armR.restoreFactoryDefaults();
     armR.setIdleMode(kDisabledMotorMode);
     armR.setInverted(kArmRightReversed);

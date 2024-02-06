@@ -20,8 +20,10 @@ public class IntakeUntilNoteDetected extends Command {
     addRequirements(intakeShooter);
    }
   long startTime;  // Called when the command is initially scheduled.
+  double lastVoltage;
   @Override
   public void initialize() {
+    lastVoltage = pdp.getCurrent(17);
     startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(intakeVoltage);
   }
@@ -29,7 +31,7 @@ public class IntakeUntilNoteDetected extends Command {
 
     //Starts running the intake at a slower speed when there is a current spike; The color sensor takes some time to recognize it. 
     if(pdp.getCurrent(17) > 4.5 && System.currentTimeMillis() - startTime > 1000){
-      intakeShooter.setIntakeVoltage(1.5);
+      intakeShooter.setIntakeVoltage(0);
       
     }
   }

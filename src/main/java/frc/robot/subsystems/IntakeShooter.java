@@ -10,6 +10,7 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.ColorSensorV3.ColorSensorMeasurementRate;
 import com.revrobotics.ColorSensorV3.ColorSensorResolution;
 import com.revrobotics.ColorSensorV3.GainFactor;
@@ -79,7 +80,27 @@ public class IntakeShooter extends SubsystemBase {
 
     // Sets the motor to neutral on creation of the class.
     public IntakeShooter() {
-        proximitySensor.configureColorSensor(ColorSensorResolution.kColorSensorRes16bit, ColorSensorMeasurementRate.kColorRate200ms, GainFactor.kGain1x);
+        shooterA.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        shooterA.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+    //determined 
+        shooterA.restoreFactoryDefaults();
+        shooterA.setIdleMode(IdleMode.kCoast);
+        shooterA.setInverted(false);
+        shooterA.setSmartCurrentLimit(40);
+        shooterA.burnFlash();
+        
+        shooterB.follow(shooterA);
+        shooterB.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100); 
+        shooterB.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        shooterB.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+        shooterB.restoreFactoryDefaults();
+        shooterB.setIdleMode(IdleMode.kCoast);
+        shooterB.setInverted(true);
+        shooterB.setSmartCurrentLimit(40);
+        shooterB.burnFlash();
+
+
+        // proximitySensor.configureColorSensor(ColorSensorResolution.kColorSensorRes16bit, ColorSensorMeasurementRate.kColorRate200ms, GainFactor.kGain1x);
         matcher.addColorMatch(Color.kBlack);
         matcher.addColorMatch(Color.kWhite);
         matcher.addColorMatch(Color.kBlue);

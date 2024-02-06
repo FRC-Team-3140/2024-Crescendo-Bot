@@ -50,7 +50,7 @@ public class RobotContainer {
   private final Arm arm = Arm.getInstance();
   SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  public static XboxController controller2 = new XboxController(1);
+  public static XboxCotroller controller2 = new XboxCotroller(1);
   public static IntakeShooter intakeShooter;
 
   /**
@@ -95,11 +95,14 @@ public class RobotContainer {
     new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d())));
     
     // new POVButton(controller2, 0).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
-    new POVButton(controller2, 90).onTrue(new AmpShoot()).onFalse(new DefaultShoot(0));
+    new POVButton(controller2, 90).onTrue(new AmpShoot()).onFalse(new DefaultShoot(0,0));
     // new JoystickButton(controller2, Button.kB.value).onTrue(new DefaultShoot(0)).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
-
-
+    // new POVButton(controller2, 0).onTrue(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(0);}));
+    // new POVButton(controller2, 270).onTrue(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
     new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetected());
+
+    // new POVButton(controller2, 270).onTrue(new DefaultShoot(10,3)).onFalse(new DefaultShoot(0,0));
+    
   } 
 
   public void resetGyro(){

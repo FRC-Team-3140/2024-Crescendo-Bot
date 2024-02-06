@@ -23,7 +23,7 @@ public class AmpShoot extends Command implements Constants{
   @Override
   public void initialize() {
     intakeShooter.setIntakeVoltage(3);
-    intakeShooter.setShooterVoltage(5);
+    intakeShooter.setShooterVoltage(3);
   }
   @Override
   public boolean isFinished() {
