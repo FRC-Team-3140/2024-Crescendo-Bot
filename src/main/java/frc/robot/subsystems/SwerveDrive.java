@@ -46,7 +46,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   };
 
   private static AHRS gyro = RobotContainer.gyro;
-  private ChassisSpeeds botSpeeds;
+  private ChassisSpeeds botSpeeds = new ChassisSpeeds(0,0,0);
   private boolean pathInverted = false;
 
   private final SwerveDriveKinematics kinematics =
@@ -66,6 +66,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
             modules[3].getSwerveModulePosition()
           },
           new Pose2d(),
+          
           VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
@@ -78,8 +79,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                                  // Constants class
-                        new PIDConstants(0.1, 0.0, 0), // Translation PID constants
-                        new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
+                        new PIDConstants(3.27, 0.0, 0), // Translation PID constants
+                        new PIDConstants(5, 0.0, 0), // Rotation PID constants
                         3, // Max module speed, in m/s
                         botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here

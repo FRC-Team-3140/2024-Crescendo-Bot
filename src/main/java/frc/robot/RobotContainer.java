@@ -2,6 +2,7 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,8 +49,8 @@ public class RobotContainer {
   public static SwerveDrive swerve = new SwerveDrive();
   // // private final Camera camera;
   private final Arm arm = Arm.getInstance();
-  SendableChooser<Command> autoChooser = new SendableChooser<>();
-
+  // SendableChooser<Command> autoChooser = new SendableChooser<>();
+  SendableChooser<Command> autobuilder;
   public static XboxCotroller controller2 = new XboxCotroller(1);
   public static IntakeShooter intakeShooter;
 
@@ -58,6 +59,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     intakeShooter = IntakeShooter.getInstance();
+    autobuilder = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Path planner", autobuilder);
 
     // camera = Camera.getInstance();
     // autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
@@ -116,11 +119,11 @@ public class RobotContainer {
    * 
    */
 
-  /*public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    return autobuilder.getSelected();
   }
 
- */ 
+  
 
 }
