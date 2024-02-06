@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.libs.XboxCotroller;
@@ -13,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot implements Constants{
   // private Command m_autonomousCommand;
   private RobotContainer m_robotContainer; 
+   public static CANSparkMax left = new CANSparkMax(9, MotorType.kBrushless);
+   public static CANSparkMax right = new CANSparkMax(20, MotorType.kBrushless);
+    public XboxController x = new XboxController(0);
   // private static XboxCotroller m_controller = RobotContainer.controller;
   // private static SwerveDrive swerve = RobotContainer.swerve;
 
@@ -26,7 +33,12 @@ public class Robot extends TimedRobot implements Constants{
   @Override
   public void teleopPeriodic() {
     // driveWithJoystick(true);
-    
+    if(Math.abs(x.getRightX())>0.1){
+    right.set(1*(x.getRightY()));
+    }else{right.set(0);}
+    if(Math.abs(x.getLeftY())>0.1){
+    left.set(1*(x.getLeftY()));
+    }else{left.set(0);}
   }
 
   // Copyright (c) FIRST and other WPILib contributors.
