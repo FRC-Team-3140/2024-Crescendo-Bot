@@ -13,9 +13,10 @@ Teleop strategy: During teleop, the player will control the robot to pick up not
 
 Auto strategy...
 
- * Action 1 ...
- * Action 2 ...
- * Action 3 ...
+ * Taxi
+ * Shoot into Speaker (Bot starts off with the back facing the Speaker)
+ * Shoot & Taxi
+ * Two Note Auto (Using Shoot into Speaker auto and then going to pick up a note and shoot)
 
 # Subsystems
 
