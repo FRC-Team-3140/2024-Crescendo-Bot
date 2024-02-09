@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import com.revrobotics.CANSparkBase.IdleMode;
 // import frc.robot.libs.XboxCotroller;
 // import frc.robot.subsystems.SwerveDrive;
 
@@ -18,8 +20,9 @@ public class Robot extends TimedRobot implements Constants{
   // private Command m_autonomousCommand;
   private RobotContainer m_robotContainer; 
    public static CANSparkMax left = new CANSparkMax(9, MotorType.kBrushless);
-   public static CANSparkMax right = new CANSparkMax(20, MotorType.kBrushless);
-    public XboxController x = new XboxController(0);
+   public static CANSparkMax right = new CANSparkMax(5, MotorType.kBrushless);
+   
+   public XboxController x = new XboxController(0);
   // private static XboxCotroller m_controller = RobotContainer.controller;
   // private static SwerveDrive swerve = RobotContainer.swerve;
 
@@ -28,6 +31,14 @@ public class Robot extends TimedRobot implements Constants{
   public void autonomousPeriodic() {
     // driveWithJoystick(false);
     // swerve.updateOdometry();
+  }
+  @Override
+  public void teleopInit() {
+    left.setIdleMode(IdleMode.kBrake);
+    right.setIdleMode(IdleMode.kBrake);
+
+    left.burnFlash();
+    right.burnFlash();
   }
 
   @Override
@@ -89,17 +100,7 @@ public class Robot extends TimedRobot implements Constants{
 
   /** This function is called periodically during autonomous. */
 
-  @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.cancel();
-    // }
-  }
-
+  
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
