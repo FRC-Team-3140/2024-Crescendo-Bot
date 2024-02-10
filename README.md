@@ -74,6 +74,15 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 | Drive Motor Back Right | CANSparkMax | CAN ID: 3 | A **motor** and **encoder** for changing the swerve module speed. |
 | Turn Encoder | Absolute Encoder (Analog Encoder) | Analog Input ID: 1 | An **absolute encoder** for sensing swerve module angle. |
 
+## Subsystem Progress
+
+| Subsystem Name | Description | CRL Rating |
+| -------------- | ------------------------- | ---------- |
+| SwerveDrive    | The drivetrain for the robot   | CRL 3      |
+| IntakeShooter    | Intake is at the front of the robot and shooting is out the back.  Both attached at the end of the arm.   | CRL 3      |
+| Arm    | Moves to the ground to intake notes and then rases up to shoot or drop notes in amp.  Controlled with a setpoint.  | CRL 3 |
+| Climber    | Two hooks that lift the robot of the ground in endgame  | CRL 2  |
+| Camera | Interfaces to two cameras through photon vision | CRL 2 |
 
 # Commands
 
@@ -89,10 +98,6 @@ This table is a strategic tool for FRC robot development. It outlines all robot 
 | LowerArmForIntake | Arm | Both | **Required** | L1 | Position arm near ground to intake notes | CRL 0 |
 | RaiseArmForMovement | Arm | Both | **Required** | L1 | Raise arm to a safe movement position | CRL 0 |
 | PositionArmForAmp | Arm | Both | **Required** | L1 | Position arm to score in Amp | CRL 0 |
-| PrepareClimber | Climber | Endgame | **Required** | L1 | Raise hooks, ready to climb | CRL 0 |
-| LiftRobotWithClimber | Climber | Endgame | **Required** | L1 | Lower hooks, lift bot off ground | CRL 0 |
-| LockClimber | Climber | Endgame | **Required** | L1 | Lock climber in place | CRL 0 |
-| ReleaseClimber | Climber | Endgame | **Required** | L1 | Release climber | CRL 0 |
 | ScoreInSpeaker | IntakeShooter, Arm | Both | **Required** | L2 | Bumper on Speaker, shoot note at Speaker speed | CRL 0 |
 | ScoreInAmp | IntakeShooter, Arm | Both | **Required** | L2 | Bumper on Amp, direct arm to AmpPosition, shoot note at Amp speed | CRL 0 |
 | ShootFromDistance | Camera, Drivetrain, Arm, IntakeShooter | Both | Optional | L3 | Shoot from a distance, auto aim using camera and apriltags. | CRL 0 |
@@ -101,6 +106,10 @@ This table is a strategic tool for FRC robot development. It outlines all robot 
 | PerformMobilityMovement | SwerveDrive | Auto | **Required** | L1 | Move Drivetrain in a specific way to score mobility point | CRL 0 |
 | AutoShootIntoSpeaker | IntakeShooter, Arm, SwerveDrive | Auto | **Required** | L2 | Set up bot toward speaker, set arm position, shoot at speaker, move to score mobility point | CRL 0 |
 | AutoShootIntoAmp | IntakeShooter, Arm, SwerveDrive | Auto | Optional | L2 | Set up bot toward Amp, set arm position, shoot at Amp, move to score mobility point | CRL 0 |
+| PrepareClimber | Climber | Endgame | **Required** | L1 | Raise hooks, ready to climb | CRL 0 |
+| LiftRobotWithClimber | Climber | Endgame | **Required** | L1 | Lower hooks, lift bot off ground | CRL 0 |
+| LockClimber | Climber | Endgame | **Required** | L1 | Lock climber in place | CRL 0 |
+| ReleaseClimber | Climber | Endgame | **Required** | L1 | Release climber | CRL 0 |
 
 ## Competition Readiness Level (CRL)
 
