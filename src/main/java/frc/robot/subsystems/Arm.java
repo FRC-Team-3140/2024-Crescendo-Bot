@@ -180,8 +180,29 @@ public class Arm extends SubsystemBase {
 
     // set the arm motor power
     updatePower(pid.calculate(getAngle()));
-  }
 
+  }
+  public void setArmToAngle(double setPoint){
+    double angle = getAngle();
+    double setpoint = setPoint;
+
+    // The forward controll needed is proportional to the cosine of the angle
+    double forward_power = kDefaultForwardParam
+        * Math.cos(Math.toRadians(angle));
+
+    pid.setSetpoint(setpoint);
+    double pid_power = pid.calculate(angle);
+
+    double voltage = pid_power + forward_power;
+
+    // Update the network table with the forward and PID power
+    inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);
+    inst.getTable(kNTArm).getEntry(kNTPidPower).setDouble(pid_power);
+    inst.getTable(kNTArm).getEntry(kNTMotorSpeed).setDouble(voltage);
+
+    armR.setVoltage(voltage);
+    armL.setVoltage(voltage);
+  }
   /**
    * Sets the power of the arm motors
    * 
@@ -244,6 +265,10 @@ public class Arm extends SubsystemBase {
   /**
    * @return The current angle of the arm
    */
+  public void resetVoltage(){
+    armL.setVoltage(kDefaultForwardParam *  Math.cos(Math.toRadians(getAngle())) );
+    armR.setVoltage(kDefaultForwardParam *  Math.cos(Math.toRadians(getAngle())) );
+  }
   public double getAngle() {
     // This is the only place where the arm encoder is read
     double angle = 360 * (armEncoder.getAbsolutePosition()) + kArmEncoderOffset;

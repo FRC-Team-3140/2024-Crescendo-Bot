@@ -30,6 +30,8 @@ import frc.robot.RobotContainer;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
+  private static SwerveDrive instance = null;
+
   private final Translation2d[] locations = {
     new Translation2d(botLength, botLength),
     new Translation2d(botLength, -botLength),
@@ -79,8 +81,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                                  // Constants class
-                        new PIDConstants(3.27, 0.0, 0), // Translation PID constants
-                        new PIDConstants(5, 0.0, 0), // Rotation PID constants
+                        new PIDConstants(2.5, 0.0, 0), // Translation PID constants
+                        new PIDConstants(2.75, 0.0, 0), // Rotation PID constants
                         3, // Max module speed, in m/s
                         botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -145,6 +147,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
 
   public void setPathInverted(Boolean inverted){
     pathInverted = inverted;
+  }
+
+  public static synchronized SwerveDrive getInstance() {
+    if (instance == null) {
+      instance = new SwerveDrive();
+    }
+    return instance;
   }
   
 

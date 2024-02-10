@@ -3,10 +3,13 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -26,6 +29,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -47,7 +51,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 public class RobotContainer {
   public static XboxCotroller controller = new XboxCotroller(0);
   public static AHRS gyro = new AHRS(Port.kMXP);
-  public static SwerveDrive swerve = new SwerveDrive();
+  public static SwerveDrive swerve = SwerveDrive.getInstance();
   // // private final Camera camera;
   private final Arm arm = Arm.getInstance();
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -62,6 +66,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     intakeShooter = IntakeShooter.getInstance();
+    NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetected());
+    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShoot(), new WaitCommand(1)));
     autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
   
@@ -91,20 +97,20 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngle(8));
-    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngle(10));
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngle(8));
+    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngle(9));
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngle(94));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngle(50));
+    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShoot()).onFalse(new DefaultShoot(0, 0));
 
 
     new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
-    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d())));
+    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d(.39, 7.8, new Rotation2d())))); //top left corner
+    new JoystickButton(controller, Button.kX.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d(1.2, 5.56, new Rotation2d())))); //right in front of speaker
     
     // new POVButton(controller2, 0).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
     new POVButton(controller2, 90).onTrue(new AmpShoot()).onFalse(new DefaultShoot(0,0));
-    // new JoystickButton(controller2, Button.kB.value).onTrue(new DefaultShoot(0)).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
-    // new POVButton(controller2, 0).onTrue(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(0);}));
-    // new POVButton(controller2, 270).onTrue(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
+
     new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetected());
 
     new POVButton(controller2, 270).onTrue(new DefaultShoot(10,3)).onFalse(new DefaultShoot(0,0));
@@ -125,7 +131,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autobuilder.getSelected();
-    // return new OneNoteAuto(arm);
+    // return new SpeakerShoot();
   }
 
   

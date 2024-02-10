@@ -3,14 +3,23 @@
     "Retained Values": {
       "open": false
     },
+    "persistent": {
+      "Arm": {
+        "open": true
+      }
+    },
     "transitory": {
+      "Arm": {
+        "open": true
+      },
       "backLeft": {
         "open": true
       }
     },
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Auto": "String Chooser"
+      "/SmartDashboard/Auto": "String Chooser",
+      "/SmartDashboard/Path planner": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Auto": {

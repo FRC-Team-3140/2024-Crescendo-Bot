@@ -20,6 +20,7 @@ import frc.robot.RobotContainer;
 public class Robot extends LoggedRobot implements Constants{
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  
 
 
 
@@ -32,6 +33,7 @@ public class Robot extends LoggedRobot implements Constants{
   @Override
   public void teleopPeriodic() {
     driveWithJoystick(true);
+    
   }
 
   // Copyright (c) FIRST and other WPILib contributors.
@@ -60,6 +62,7 @@ public class Robot extends LoggedRobot implements Constants{
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    // System.out.println("pe" + photoElectric.get());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -77,7 +80,8 @@ public class Robot extends LoggedRobot implements Constants{
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    Arm.getInstance().enable();
+    Arm.getInstance().setAngle(11);
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -113,11 +117,11 @@ public class Robot extends LoggedRobot implements Constants{
   }
 
   /** This function is called periodically during test mode. */
-  DigitalInput photoElectric = new DigitalInput(0);
+  // DigitalInput photoElectric = new DigitalInput(0);
 
   @Override
   public void testPeriodic() {
-    System.out.println(photoElectric.get());
+    // System.out.println(photoElectric.get());
   }
 
   /** This function is called once when the robot is first started up. */
@@ -132,12 +136,12 @@ public class Robot extends LoggedRobot implements Constants{
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var xSpeed = RobotContainer.controller.getLeftY() * maxSpeed;
+    final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed = RobotContainer.controller.
+    final var ySpeed = -RobotContainer.controller.
     getLeftX() * maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a

@@ -30,13 +30,24 @@ public class DefaultShoot extends Command implements Constants {
     }
 
     // Called when the command is initially scheduled.
+    SequentialCommandGroup test;
     @Override
     public void initialize() {
+        test = 
         new SequentialCommandGroup(
         new InstantCommand(() -> {intakeShooter.setShooterVoltage(voltage);}),
-        new WaitCommand(2), //Spin up longer after 114 inches 
-        new InstantCommand(()->{intakeShooter.setIntakeVoltage(voltage2);})
-        ).schedule();
+        new WaitCommand(2.6), //wait for shooter to spin up
+        new InstantCommand(()->{intakeShooter.setIntakeVoltage(voltage2);}),
+        new WaitCommand(3), //shoot, then turn off
+        new InstantCommand(() -> {intakeShooter.setShooterVoltage(0);}),
+        new InstantCommand(()->{intakeShooter.setIntakeVoltage(0);})
+        );
+        test.schedule();
+    }
+    
+    @Override
+    public boolean isFinished(){
+        return test.isFinished();
     }
     
 }

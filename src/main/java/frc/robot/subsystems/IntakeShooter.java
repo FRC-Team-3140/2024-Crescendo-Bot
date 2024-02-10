@@ -15,6 +15,7 @@ import com.revrobotics.ColorSensorV3.ColorSensorMeasurementRate;
 import com.revrobotics.ColorSensorV3.ColorSensorResolution;
 import com.revrobotics.ColorSensorV3.GainFactor;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 // Color sensor related
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -62,7 +63,7 @@ public class IntakeShooter extends SubsystemBase {
      * This device will be automatically initialized with default parameters.
      */
     private final ColorSensorV3 proximitySensor = new ColorSensorV3(i2cPort);
-
+    private final DigitalInput peSensor = new DigitalInput(0);
     /**
      * True if a piece is in the intake.
      */
@@ -137,10 +138,15 @@ public class IntakeShooter extends SubsystemBase {
         
         // The method getProximity() returns a value 0 - 2047, with the closest being .
         int detectedProximity = proximitySensor.getProximity();
-        proximityThresholdExeeded = matcher.matchClosestColor(proximitySensor.getColor()).color == Color.kOrange;
+        // proximityThresholdExeeded = matcher.matchClosestColor(proximitySensor.getColor()).color == Color.kOrange;
+        proximityThresholdExeeded = !peSensor.get();
+        if(!peSensor.get()){
+        System.out.println("p44e" + !peSensor.get());
+    }
         //Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putNumber("Proximity", detectedProximity);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
+        SmartDashboard.putNumber("Speed", shooterA.getEncoder().getVelocity());
     }
 //fuck you grace - joseph
 }
