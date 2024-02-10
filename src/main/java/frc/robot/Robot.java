@@ -7,6 +7,8 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +22,11 @@ public class Robot extends TimedRobot implements Constants{
   // private Command m_autonomousCommand;
   private RobotContainer m_robotContainer; 
    public static CANSparkMax left = new CANSparkMax(9, MotorType.kBrushless);
-   public static CANSparkMax right = new CANSparkMax(5, MotorType.kBrushless);
+   public static CANSparkMax right = new CANSparkMax(8, MotorType.kBrushless);
+
+   NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  
+    NetworkTable motorInfo = inst.getTable("motorinfo");
    
    public XboxController x = new XboxController(0);
   // private static XboxCotroller m_controller = RobotContainer.controller;
@@ -44,12 +50,45 @@ public class Robot extends TimedRobot implements Constants{
   @Override
   public void teleopPeriodic() {
     // driveWithJoystick(true);
-    if(Math.abs(x.getRightX())>0.1){
-    right.set(1*(x.getRightY()));
-    }else{right.set(0);}
-    if(Math.abs(x.getLeftY())>0.1){
-    left.set(1*(x.getLeftY()));
-    }else{left.set(0);}
+
+    //trmporary code
+    if(x.getAButton() || x.getBButton() || x.getXButton() || x.getYButton()){
+    
+      if(x.getAButton()){
+        left.set(-1);
+      }
+
+      if(x.getBButton()){
+        right.set(-1);
+      }
+
+      if(x.getXButton()){
+        left.set(1);
+      }
+
+      if(x.getYButton()){
+        right.set(1);
+      }
+    }else{
+      left.set(0);
+      right.set(0);
+    }
+    
+
+
+    motorInfo.getEntry("leftvoltage").setDouble(left.getBusVoltage()*left.getAppliedOutput());
+    motorInfo.getEntry("leftcurrent").setDouble(left.getOutputCurrent());
+    double leftvoltage = motorInfo.getEntry("leftvoltage").getDouble(0);
+    double leftcurrent = motorInfo.getEntry("leftcurrent").getDouble(0);
+    motorInfo.getEntry("leftpower").setDouble(leftcurrent*leftvoltage);
+
+    motorInfo.getEntry("rightvoltage").setDouble(right.getBusVoltage()*right.getAppliedOutput());
+    motorInfo.getEntry("rightcurrent").setDouble(right.getOutputCurrent());
+    double rightvoltage = motorInfo.getEntry("rightvoltage").getDouble(0);
+    double rightcurrent = motorInfo.getEntry("rightcurrent").getDouble(0);
+    motorInfo.getEntry("rightpower").setDouble(rightcurrent*rightvoltage);
+    
+    
   }
 
   // Copyright (c) FIRST and other WPILib contributors.
@@ -62,6 +101,15 @@ public class Robot extends TimedRobot implements Constants{
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    
+    motorInfo.getEntry("leftvoltage").setDefaultValue(0);
+    motorInfo.getEntry("leftcurrent").setDefaultValue(0);
+    motorInfo.getEntry("leftpower").setDefaultValue(0);
+
+    motorInfo.getEntry("rightvoltage").setDefaultValue(0);
+    motorInfo.getEntry("rightcurrent").setDefaultValue(0);
+    motorInfo.getEntry("rightpower").setDefaultValue(0);
   }
 
   /**

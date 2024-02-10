@@ -62,7 +62,7 @@ public class Climber extends SubsystemBase{
             rightClimber.set(0);
         } else {
             // We are going up but top limit is not tripped so go at commanded speed
-            rightClimber.set(0); //change to an actual value later
+            rightClimber.set(.1); //change to an actual value later
         }
     }
 
@@ -73,7 +73,7 @@ public class Climber extends SubsystemBase{
             leftClimber.set(0);
         } else {
             // We are going up but top limit is not tripped so go at commanded speed
-            leftClimber.set(0); //change to an actual value later
+            leftClimber.set(.1); //change to an actual value later
         }
     }
 
@@ -84,7 +84,7 @@ public class Climber extends SubsystemBase{
             rightClimber.set(0);
         } else {
             // We are going up but top limit is not tripped so go at commanded speed
-            rightClimber.set(0); //change to an actual value later
+            rightClimber.set(-.1); //change to an actual value later
         }
     }
 
@@ -95,7 +95,7 @@ public class Climber extends SubsystemBase{
             leftClimber.set(0);
         } else {
             // We are going up but top limit is not tripped so go at commanded speed
-            leftClimber.set(0); //change to an actual value later
+            leftClimber.set(-.1); //change to an actual value later
         }
     }
 
