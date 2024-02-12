@@ -91,9 +91,9 @@ This table is a strategic tool for FRC robot development. It outlines all robot 
 | Command Name | Subsystems | Game Mode | Priority | Complexity | Description | Status |
 |---|---|---|---|---|---|---|
 | ControlSwerveDrive (In RobotContainer) | SwerveDrive | Teleop | **Required** | L2 | Joystick control for the swerve drive | CRL 2 |
-| IntakeUntilNoteDetected | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note | CRL 1 |
-| ShootNoteIntoSpeaker | IntakeShooter | Both | **Required** | L1 | Shoot a note into a speaker. At kSpeakerSpeed. | CRL 2 |
-| ShootNoteIntoAmp | IntakeShooter | Both | **Required** | L1 | Shoot a note into an amp. At kAmpSpeed. | CRL 2 |
+| IntakeUntilNoteDetected | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note | CRL 2 |
+| SpeakerShoot | IntakeShooter | Both | **Required** | L1 | Shoot a note into a speaker. At kSpeakerSpeed. | CRL 3 |
+| AmpShoot | IntakeShooter | Both | **Required** | L1 | Shoot a note into an amp. At kAmpSpeed. | CRL 3 |
 | SetArmToAngle | Arm | Both | **Required** | L1 | Set the arm to an angle | CRL 3 |
 | SetArmToDistance | Arm | Both | **Required** | L1 | Use an interpolator to estimate the angle at distace | CRL 2 |
 | ScoreInSpeaker | IntakeShooter, Arm | Both | **Required** | L2 | Bumper on Speaker, shoot note at Speaker speed | CRL 0 |
