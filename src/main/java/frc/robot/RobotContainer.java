@@ -17,13 +17,13 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.SetArmToAngle;
-import frc.robot.commands.SpeakerShoot;
+import frc.robot.commands.SetArmToAngleL1;
+import frc.robot.commands.SpeakerShootDistanceL3;
 import frc.robot.libs.XboxCotroller;
 // import frc.robot.autos.OneNoteAuto;
-import frc.robot.commands.AmpShoot;
-import frc.robot.commands.DefaultShoot;
-import frc.robot.commands.IntakeUntilNoteDetected;
+import frc.robot.commands.ShootAmpL1;
+import frc.robot.commands.ShootSpeakerL1;
+import frc.robot.commands.IntakeUntilNoteDetectedL1;
 // // import frc.robot.commands.SpeakerShoot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.IntakeShooter;
@@ -66,8 +66,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     intakeShooter = IntakeShooter.getInstance();
-    NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetected());
-    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShoot(), new WaitCommand(1)));
+    NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
+    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(1)));
     autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
   
@@ -98,10 +98,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngle(8));
-    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngle(9));
-    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngle(94));
-    new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngle(50));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShoot()).onFalse(new DefaultShoot(0, 0));
+    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(9));
+    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(94));
+    new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(50));
+    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShootSpeakerL1(0, 0));
 
 
     new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
@@ -109,11 +109,11 @@ public class RobotContainer {
     new JoystickButton(controller, Button.kX.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d(1.2, 5.56, new Rotation2d())))); //right in front of speaker
     
     // new POVButton(controller2, 0).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
-    new POVButton(controller2, 90).onTrue(new AmpShoot()).onFalse(new DefaultShoot(0,0));
+    new POVButton(controller2, 90).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
 
-    new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetected());
+    new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetectedL1());
 
-    new POVButton(controller2, 270).onTrue(new DefaultShoot(10,3)).onFalse(new DefaultShoot(0,0));
+    new POVButton(controller2, 270).onTrue(new ShootSpeakerL1(10,3)).onFalse(new ShootSpeakerL1(0,0));
     
   } 
 

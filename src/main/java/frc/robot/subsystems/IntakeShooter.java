@@ -66,6 +66,8 @@ public class IntakeShooter extends SubsystemBase {
     private final DigitalInput peSensor = new DigitalInput(0);
     /**
      * True if a piece is in the intake.
+     * 
+     * TODO: This should be private.  The intake should keep track of this internally.  Implement a public method "isHoldingPiece" for external access.  -DB
      */
     public static boolean holdingPiece = false;
 
@@ -100,7 +102,6 @@ public class IntakeShooter extends SubsystemBase {
         shooterB.setSmartCurrentLimit(40);
         shooterB.burnFlash();
 
-
         // proximitySensor.configureColorSensor(ColorSensorResolution.kColorSensorRes16bit, ColorSensorMeasurementRate.kColorRate200ms, GainFactor.kGain1x);
         matcher.addColorMatch(Color.kBlack);
         matcher.addColorMatch(Color.kWhite);
@@ -119,6 +120,12 @@ public class IntakeShooter extends SubsystemBase {
 
 
     /** 
+     * TODO: Recommend controlling with PID to get more consistant shots by setting a fixed RPM.  
+     * It would be better to have a reliable "speed" setpoint instead of setting a voltage and 
+     * hoping for the best. Also I notice you setting delay to wait for this to come up to speed.  
+     * -DB
+     */ 
+    /** 
      * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
      */
     public void setShooterVoltage(double voltage) {
@@ -126,6 +133,34 @@ public class IntakeShooter extends SubsystemBase {
         shooterB.setVoltage(-voltage);
     }
     
+    public void setShooterSpeed(double speed) {
+        // TODO: Implement this with PID control -  DB
+    }
+
+    /** 
+     * Returns the speed of the shooter's motor.
+     */
+    public double getShooterSpeed() {
+        return shooterA.getEncoder().getVelocity();
+    }
+
+
+
+    public boolean isShooterAtSpeed() {
+        // TODO: Implement this with PID control. One of these needs to be negitive -  DB
+        // shoorterAAtSpeed = Math.abs(shooterA.getEncoder().getVelocity() - shooterSetpoint) < shooterSpeedTolerance;
+        // shoorterBAtSpeed = Math.abs(shooterB.getEncoder().getVelocity() - shooterSetpoint) < shooterSpeedTolerance;
+        //return shoorterAAtSpeed && shoorterBAtSpeed;
+        return false; 
+    }
+
+    /** 
+     * Returns true if the intake has a piece.
+     */
+    public boolean hasNote() {
+        return holdingPiece;
+    }
+
     /** 
      * True when a note reaches the sensor.
      */

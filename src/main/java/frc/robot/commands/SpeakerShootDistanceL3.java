@@ -19,22 +19,29 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class SpeakerShoot extends Command implements Constants {
+
+/**
+ * This class represents a command for shooting at a specific distance using the speaker mechanism.
+ * It extends the Command class and implements the Constants interface.
+ */
+public class SpeakerShootDistanceL3 extends Command implements Constants {
 
     public IntakeShooter intakeShooter; 
     public SwerveDrive swerve;
-    private InterpolatingDoubleTreeMap angleInterpolator;
+    // private InterpolatingDoubleTreeMap angleInterpolator;
     public Arm arm;
 
-    public SpeakerShoot() {
+    public SpeakerShootDistanceL3() {
         intakeShooter = IntakeShooter.getInstance();
-        angleInterpolator = new InterpolatingDoubleTreeMap();/* Add your inverseInterpolator, interpolator, and comparator here */
-        angleInterpolator.put(52.0 * .0254,14.0 ); //14 Degrees and 42 inches measured to the inside of the bot perimiter
-        angleInterpolator.put(72.0 * .0254,24.0 );
-        angleInterpolator.put(89.0 * .0254,32.0 );
-        angleInterpolator.put(122.0 * .025,37.4);
-        angleInterpolator.put(129.0 * .0254,38.5);
-        angleInterpolator.put(148.375 * .0254,39.8);
+
+        // TODO: This is a good interpolator but it needs to be associated with the arm.  I am moving it to the arm subsystem so it is avalible for all commands. -DB
+        // angleInterpolator = new InterpolatingDoubleTreeMap();/* Add your inverseInterpolator, interpolator, and comparator here */
+        // angleInterpolator.put(52.0 * .0254,14.0 ); //14 Degrees and 42 inches measured to the inside of the bot perimiter
+        // angleInterpolator.put(72.0 * .0254,24.0 );
+        // angleInterpolator.put(89.0 * .0254,32.0 );
+        // angleInterpolator.put(122.0 * .025,37.4);
+        // angleInterpolator.put(129.0 * .0254,38.5);
+        // angleInterpolator.put(148.375 * .0254,39.8);
         this.swerve = SwerveDrive.getInstance();
         this.arm = Arm.getInstance();
         
@@ -47,17 +54,17 @@ public class SpeakerShoot extends Command implements Constants {
         // Use the InterpolatingTreeMap to get the interpolated voltage for the key (e.g., joystick position)
         // PLEASE IGNORE the joystick part, this will be connected to the camera but its not ready yet
 
-
+        // TODO: distance and angle should be estimated from the camera subsystem -DB
         double distance = Math.hypot(swerve.getPose().getX(), swerve.getPose().getY()- (216*.0254));
         System.out.println("Distance From Shooter" + distance);
         NetworkTableInstance.getDefault().getTable("distance").getEntry("N").setDouble(distance);
-        double interpolatedAngle = angleInterpolator.get(distance);
-        NetworkTableInstance.getDefault().getTable("distance").getEntry("Angle").setDouble(interpolatedAngle);
+        //double interpolatedAngle = angleInterpolator.get(distance);
+        //NetworkTableInstance.getDefault().getTable("distance").getEntry("Angle").setDouble(interpolatedAngle);
         
         // Set the shooter voltage based on the interpolated value
         test = new SequentialCommandGroup(
-            new SetArmToAngle(interpolatedAngle),
-            new DefaultShoot(10,3)
+            new SetArmToDistanceL1(distance), // TODO: Refactored. Test that this still works. -DB
+            new ShootSpeakerL1(10,3)
         );
         test.schedule();
         

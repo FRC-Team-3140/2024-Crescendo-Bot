@@ -10,24 +10,38 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
 
-public class AmpShoot extends Command implements Constants{
+/**
+ * The AmpShoot class represents a command that runs the intake and shooter at
+ * the right speed to shoot the note into the amp.
+ * It sets the intake and shooter voltages to a specific value when initialized,
+ * and sets them back to zero when the command ends.
+ */
+public class ShootAmpL1 extends Command implements Constants{
 
     public IntakeShooter intakeShooter; 
 
-    public AmpShoot() {
+    public ShootAmpL1() {
         intakeShooter = IntakeShooter.getInstance();
         addRequirements(intakeShooter);
     }
 
-      // Called when the command is initially scheduled.
+  /**
+   * Initializes the AmpShootL1 command.
+   * Sets the intake and shooter voltages.
+   */
   @Override
   public void initialize() {
     intakeShooter.setIntakeVoltage(3);
     intakeShooter.setShooterVoltage(3);
   }
+  /**
+   * Determines whether the command has finished executing.
+   * 
+   * @return true if the command has finished, false otherwise
+   */
   @Override
   public boolean isFinished() {
-      // TODO Auto-generated method stub
+      // TODO This should automatically terminate after a certain amount of time - DB
       return super.isFinished();
       
   }

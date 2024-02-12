@@ -133,6 +133,7 @@ public class Robot extends LoggedRobot implements Constants{
   @Override
   public void simulationPeriodic() {}
 
+  // TODO: This really needs to be extracted into a command and then set as the defaultCommand for the swerve drive. -DB
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.

@@ -10,36 +10,45 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
 
-public class IntakeUntilNoteDetected extends Command {
+public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   IntakeShooter intakeShooter = IntakeShooter.getInstance();
-  final double intakeVoltage = Constants.intakeVoltage; 
+  final double intakeVoltage = Constants.intakeVoltage;
   PowerDistribution pdp = new PowerDistribution(55, ModuleType.kRev);
+
   /** Creates a new IntakeUntilNoteDetected. */
-  public IntakeUntilNoteDetected() {
+  public IntakeUntilNoteDetectedL1() {
     addRequirements(intakeShooter);
-   }
-  long startTime;  // Called when the command is initially scheduled.
+  }
+
+  long startTime; // Called when the command is initially scheduled.
   double lastVoltage;
+
   @Override
   public void initialize() {
     lastVoltage = pdp.getCurrent(17);
     startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(intakeVoltage);
   }
-  public void execute(){
 
-    //Starts running the intake at a slower speed when there is a current spike; The color sensor takes some time to recognize it. 
+  public void execute() {
+
+    // Starts running the intake at a slower speed when there is a current spike;
+    // The color sensor takes some time to recognize it.
     // if(pdp.getCurrent(17) > 5 && System.currentTimeMillis() - startTime > 1000){
-    //   intakeShooter.setIntakeVoltage(0);
-      
+    // intakeShooter.setIntakeVoltage(0);
+
     // }
   }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     // holding piece is static, so it is refrenced staticly.
-    // !interrupted makes it false when it is manually shut off, but true when it ends due to the sensor
+    // !interrupted makes it false when it is manually shut off, but true when it
+    // ends due to the sensor
+
+    // TODO: Intake should handle this internally
     IntakeShooter.holdingPiece = !interrupted;
 
     // this method isn't, so it is called via the local refrence

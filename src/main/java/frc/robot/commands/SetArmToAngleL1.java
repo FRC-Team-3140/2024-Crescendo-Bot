@@ -3,7 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 
-public class SetArmToAngle extends Command {
+public class SetArmToAngleL1 extends Command {
     private final Arm arm;
     private final double targetAngle;
     private final double kDefaultError = .25; // in degrees
@@ -14,7 +14,7 @@ public class SetArmToAngle extends Command {
      * @param targetAngle The target angle for the arm.
      * @param error The error for the arm.
      */
-    public SetArmToAngle(double targetAngle) {
+    public SetArmToAngleL1(double targetAngle) {
         this.arm = Arm.getInstance();
         this.targetAngle = targetAngle;
         addRequirements(arm);

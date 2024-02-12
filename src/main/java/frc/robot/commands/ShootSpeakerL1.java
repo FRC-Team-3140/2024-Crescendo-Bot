@@ -14,13 +14,14 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
 
-public class DefaultShoot extends Command implements Constants {
+/** Set the shooter speed to ~max and then shoot the note at the speaker. */
+public class ShootSpeakerL1 extends Command implements Constants {
 
     private final IntakeShooter intakeShooter;
     private final double voltage;
     private final double voltage2;
 
-    public DefaultShoot(double shooterVoltage, double intakeVoltage) {
+    public ShootSpeakerL1(double shooterVoltage, double intakeVoltage) {
         this.intakeShooter = IntakeShooter.getInstance();
         this.voltage = shooterVoltage;
         this.voltage2 = intakeVoltage;
@@ -33,6 +34,7 @@ public class DefaultShoot extends Command implements Constants {
     SequentialCommandGroup test;
     @Override
     public void initialize() {
+        // TODO: Recommend using encoders and PID to control the shooter speed. Much more consistant shots.  See notes in IntakeShooter. -DB
         test = 
         new SequentialCommandGroup(
         new InstantCommand(() -> {intakeShooter.setShooterVoltage(voltage);}),
