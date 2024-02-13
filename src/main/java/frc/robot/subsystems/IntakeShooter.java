@@ -6,24 +6,15 @@ package frc.robot.subsystems;
 
 // Intake and Shooter related
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorMatch;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
-import com.revrobotics.ColorSensorV3.ColorSensorMeasurementRate;
-import com.revrobotics.ColorSensorV3.ColorSensorResolution;
-import com.revrobotics.ColorSensorV3.GainFactor;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-// Color sensor related
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import com.revrobotics.ColorSensorV3;
 
 public class IntakeShooter extends SubsystemBase {
 
@@ -52,24 +43,11 @@ public class IntakeShooter extends SubsystemBase {
      */
     public RelativeEncoder encoderB = shooterB.getEncoder();
 
-    // Change the I2C port below to match the connection of the color sensor.
-    /**
-     * The I2C port the proximity sensor is connected to.
-     */
-    private final I2C.Port i2cPort = I2C.Port.kOnboard;
-
-    /** 
-     * This object is constructed with an I2C port as a parameter.
-     * This device will be automatically initialized with default parameters.
-     */
-    private final ColorSensorV3 proximitySensor = new ColorSensorV3(i2cPort);
     private final DigitalInput peSensor = new DigitalInput(0);
     /**
      * True if a piece is in the intake.
-     * 
-     * TODO: This should be private.  The intake should keep track of this internally.  Implement a public method "isHoldingPiece" for external access.  -DB
      */
-    public static boolean holdingPiece = false;
+    public boolean holdingPiece = false;
 
     /**
      * Returns the instance.
@@ -102,12 +80,6 @@ public class IntakeShooter extends SubsystemBase {
         shooterB.setSmartCurrentLimit(40);
         shooterB.burnFlash();
 
-        // proximitySensor.configureColorSensor(ColorSensorResolution.kColorSensorRes16bit, ColorSensorMeasurementRate.kColorRate200ms, GainFactor.kGain1x);
-        matcher.addColorMatch(Color.kBlack);
-        matcher.addColorMatch(Color.kWhite);
-        matcher.addColorMatch(Color.kBlue);
-        matcher.addColorMatch(Color.kGreen);
-        matcher.addColorMatch(Color.kOrange);
         intakeMotor.setIdleMode(IdleMode.kBrake);
     }
 
@@ -118,13 +90,11 @@ public class IntakeShooter extends SubsystemBase {
         intakeMotor.setVoltage(voltage);
     }
 
+    public void setHoldingPiece(boolean holdingPiece){
+        this.holdingPiece = holdingPiece;
+    }
 
-    /** 
-     * TODO: Recommend controlling with PID to get more consistant shots by setting a fixed RPM.  
-     * It would be better to have a reliable "speed" setpoint instead of setting a voltage and 
-     * hoping for the best. Also I notice you setting delay to wait for this to come up to speed.  
-     * -DB
-     */ 
+
     /** 
      * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
      */
@@ -132,56 +102,39 @@ public class IntakeShooter extends SubsystemBase {
         shooterA.setVoltage(voltage);
         shooterB.setVoltage(-voltage);
     }
-    
-    public void setShooterSpeed(double speed) {
-        // TODO: Implement this with PID control -  DB
+    public void setShooterSpeed(double speed){
+        //TODO: Implement
     }
 
-    /** 
-     * Returns the speed of the shooter's motor.
-     */
     public double getShooterSpeed() {
         return shooterA.getEncoder().getVelocity();
     }
 
 
-
-    public boolean isShooterAtSpeed() {
-        // TODO: Implement this with PID control. One of these needs to be negitive -  DB
-        // shoorterAAtSpeed = Math.abs(shooterA.getEncoder().getVelocity() - shooterSetpoint) < shooterSpeedTolerance;
-        // shoorterBAtSpeed = Math.abs(shooterB.getEncoder().getVelocity() - shooterSetpoint) < shooterSpeedTolerance;
-        //return shoorterAAtSpeed && shoorterBAtSpeed;
-        return false; 
-    }
-
-    /** 
-     * Returns true if the intake has a piece.
-     */
-    public boolean hasNote() {
+    public boolean hasNote(){
         return holdingPiece;
     }
 
+    public boolean noteDetected(){
+        return proximityThresholdExeeded;
+    }
+    
     /** 
      * True when a note reaches the sensor.
      */
-    public static boolean proximityThresholdExeeded;
-    ColorMatch matcher = new ColorMatch();
+    public boolean proximityThresholdExeeded;
     
-    final int detectThreshold = Constants.detectThreshold;
     @Override
-    public void periodic() {
-        
+    public void periodic() { 
         // The method getProximity() returns a value 0 - 2047, with the closest being .
-        int detectedProximity = proximitySensor.getProximity();
-        // proximityThresholdExeeded = matcher.matchClosestColor(proximitySensor.getColor()).color == Color.kOrange;
         proximityThresholdExeeded = !peSensor.get();
         if(!peSensor.get()){
-        System.out.println("p44e" + !peSensor.get());
-    }
+            System.out.println("p44e" + !peSensor.get());
+        }
         //Open Smart Dashboard to see the color detected by the sensor.
-        SmartDashboard.putNumber("Proximity", detectedProximity);
+        SmartDashboard.putBoolean("Has Note", holdingPiece);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
         SmartDashboard.putNumber("Speed", shooterA.getEncoder().getVelocity());
+
     }
-//fuck you grace - joseph
 }

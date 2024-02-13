@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.73,
-      "y": 6.69
+      "y": 6.691938312786578
     },
     "rotation": 60.0
   },
@@ -21,6 +21,12 @@
           "type": "path",
           "data": {
             "pathName": "PickupAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PickupAndShoot2"
           }
         }
       ]

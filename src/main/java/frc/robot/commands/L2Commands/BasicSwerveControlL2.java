@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.L2Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -36,7 +36,7 @@ public class BasicSwerveControlL2 extends Command {
         final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the joystick input
         final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the joystick input
         final var rot = -RobotContainer.controller.getRightX() * maxChassisTurnSpeed; // Calculate the rotation speed based on the joystick input
-        swerveDrive.drive(xSpeed, ySpeed, rot, false); // Drive the swerve drive
+        swerveDrive.drive(xSpeed, ySpeed, rot, true); // Drive the swerve drive
     }
 
     /**

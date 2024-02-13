@@ -32,7 +32,6 @@ public class Robot extends LoggedRobot implements Constants{
 
   @Override
   public void teleopPeriodic() {
-    driveWithJoystick(true);
     
   }
 
@@ -133,25 +132,5 @@ public class Robot extends LoggedRobot implements Constants{
   @Override
   public void simulationPeriodic() {}
 
-  // TODO: This really needs to be extracted into a command and then set as the defaultCommand for the swerve drive. -DB
-  private void driveWithJoystick(boolean fieldRelative) {
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-    final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed;
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-    final var ySpeed = -RobotContainer.controller.
-    getLeftX() * maxSpeed;
-
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
-    final var rot = -RobotContainer.controller.getRightX() * maxChassisTurnSpeed;
-
-    RobotContainer.swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
-  }
 
 }

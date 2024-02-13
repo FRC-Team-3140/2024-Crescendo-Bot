@@ -5,7 +5,7 @@
 // Made DefaultShoot the B keybind on the Xbox controller so we can test it
 // This command is meant so that we can input the speeds
 
-package frc.robot.commands;
+package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,24 +32,28 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     // Called when the command is initially scheduled.
     SequentialCommandGroup test;
+    long startTime;
     @Override
     public void initialize() {
+        startTime = System.currentTimeMillis();
         // TODO: Recommend using encoders and PID to control the shooter speed. Much more consistant shots.  See notes in IntakeShooter. -DB
-        test = 
-        new SequentialCommandGroup(
-        new InstantCommand(() -> {intakeShooter.setShooterVoltage(voltage);}),
-        new WaitCommand(2.6), //wait for shooter to spin up
-        new InstantCommand(()->{intakeShooter.setIntakeVoltage(voltage2);}),
-        new WaitCommand(3), //shoot, then turn off
-        new InstantCommand(() -> {intakeShooter.setShooterVoltage(0);}),
-        new InstantCommand(()->{intakeShooter.setIntakeVoltage(0);})
-        );
-        test.schedule();
+        intakeShooter.setShooterVoltage(voltage);
+    }
+    @Override
+    public void execute() {
+        if(intakeShooter.getShooterSpeed() >= 4500){
+            intakeShooter.setIntakeVoltage(voltage2);
+        }
+    }
+    @Override
+    public void end(boolean interrupted) {
+        intakeShooter.setIntakeVoltage(0);
+        intakeShooter.setShooterVoltage(0);
     }
     
     @Override
     public boolean isFinished(){
-        return test.isFinished();
+        return System.currentTimeMillis() - startTime > 5000;
     }
     
 }

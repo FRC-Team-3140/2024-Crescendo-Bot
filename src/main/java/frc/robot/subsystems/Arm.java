@@ -216,6 +216,7 @@ public class Arm extends SubsystemBase {
     double voltage = pid_power + forward_power;
 
     // Update the network table with the forward and PID power
+    inst.getTable(kNTArm).getEntry(kNTSetpoint).setDouble(setpoint);
     inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);
     inst.getTable(kNTArm).getEntry(kNTPidPower).setDouble(pid_power);
     inst.getTable(kNTArm).getEntry(kNTMotorSpeed).setDouble(voltage);

@@ -4,9 +4,10 @@
 
 // Made AmpShoot the Y keybind on the xbox controller so we can test it
 
-package frc.robot.commands;
+package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
 
@@ -29,8 +30,10 @@ public class ShootAmpL1 extends Command implements Constants{
    * Initializes the AmpShootL1 command.
    * Sets the intake and shooter voltages.
    */
+  long startTime;
   @Override
   public void initialize() {
+    startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(3);
     intakeShooter.setShooterVoltage(3);
   }
@@ -42,7 +45,7 @@ public class ShootAmpL1 extends Command implements Constants{
   @Override
   public boolean isFinished() {
       // TODO This should automatically terminate after a certain amount of time - DB
-      return super.isFinished();
+      return System.currentTimeMillis() - startTime > 2000;
       
   }
   @Override

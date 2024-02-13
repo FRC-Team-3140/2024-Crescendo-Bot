@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -26,6 +26,7 @@ public class IntakeUntilNoteDetectedL1 extends Command {
 
   @Override
   public void initialize() {
+    intakeShooter.setHoldingPiece(false);
     lastVoltage = pdp.getCurrent(17);
     startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(intakeVoltage);
@@ -44,21 +45,15 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // holding piece is static, so it is refrenced staticly.
-    // !interrupted makes it false when it is manually shut off, but true when it
-    // ends due to the sensor
-
-    // TODO: Intake should handle this internally
-    IntakeShooter.holdingPiece = !interrupted;
-
-    // this method isn't, so it is called via the local refrence
+    intakeShooter.setHoldingPiece(true);
+    
     intakeShooter.setIntakeVoltage(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return IntakeShooter.proximityThresholdExeeded;
+    return intakeShooter.noteDetected();
     // return false;
   }
 
