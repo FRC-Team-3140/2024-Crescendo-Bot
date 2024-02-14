@@ -19,6 +19,7 @@ import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.XboxCotroller;
+import frc.robot.sensors.Camera;
 // // import frc.robot.commands.SpeakerShoot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.IntakeShooter;
@@ -44,6 +45,7 @@ public class RobotContainer implements Constants{
   public static XboxCotroller controller = new XboxCotroller(0);
   public static AHRS gyro = new AHRS(Port.kMXP);
   public static SwerveDrive swerve = SwerveDrive.getInstance();
+  public static Camera camera = Camera.getInstance();
   // // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder;
@@ -60,6 +62,10 @@ public class RobotContainer implements Constants{
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
     NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(1)));
+    
+    // Additional Commands (Not automatically improted by Pathplanner) - TK
+    autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
+    
     autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
   
