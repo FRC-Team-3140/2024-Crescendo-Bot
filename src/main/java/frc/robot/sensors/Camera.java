@@ -17,15 +17,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.Commands.pathfindToApriltag;
-import frc.robot.Commands.turnToFaceApriltag;
+import frc.robot.commands.pathfindToApriltag;
+import frc.robot.commands.turnToFaceApriltag;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Camera extends SubsystemBase {
 
-//   private static Camera instance = null;
+  private static Camera instance = null;
 
-//   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
   private PhotonCamera april = null;
   private PhotonCamera notes = null;
