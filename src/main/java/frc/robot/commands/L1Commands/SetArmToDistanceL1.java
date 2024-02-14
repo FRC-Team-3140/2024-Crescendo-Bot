@@ -7,7 +7,7 @@ import frc.robot.subsystems.Arm;
 public class SetArmToDistanceL1 extends Command {
     private final Arm arm = Arm.getInstance();
     private final double distance;
-    private double setpoint;
+    // private double setpoint;
     private double angleTolerance = 1.0;
 
     /**

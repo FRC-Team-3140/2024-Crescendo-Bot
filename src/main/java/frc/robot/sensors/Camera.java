@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.pathfindToApriltag;
 import frc.robot.commands.turnToFaceApriltag;
@@ -45,7 +46,8 @@ public class Camera extends SubsystemBase {
   // Must not start at 0 so check doesn't run early
   private int count = 1;
 
-  // Time to delay periodic method Networktable connection check. IN Mili-Seconds!!
+  // Time to delay periodic method Networktable connection check. IN
+  // Mili-Seconds!!
   private double delayTime = 5000.0;
 
   // Time to delay connection attempts is in SECONDS! - TK
@@ -59,10 +61,24 @@ public class Camera extends SubsystemBase {
   private double newY;
 
   private double percentTravelDist = 0.8; // Must be < 1
+  private double driveSpeed = Constants.maxSpeed;
 
+  private aprilTagLayout aprilTagLayout;
   private int speakerAprilTag;
   private int ampAprilTag;
   private int sourceAprilTag;
+
+  public class aprilTagLayout {
+    public final int speakerAprilTag;
+    public final int ampAprilTag;
+    public final int sourceAprilTag;
+
+    public aprilTagLayout(int speaker, int amp, int source) {
+      this.speakerAprilTag = speaker;
+      this.ampAprilTag = amp;
+      this.sourceAprilTag = source;
+    }
+  }
 
   public class aprilTagLocation {
     public final boolean isDetected;
@@ -82,7 +98,7 @@ public class Camera extends SubsystemBase {
     public final boolean isDetected;
     public final double distance;
     public final double angle;
-  
+
     public NoteLocation(boolean isDetected, double dist, double angle, int id) {
       this.isDetected = isDetected;
       this.distance = dist;
@@ -148,14 +164,18 @@ public class Camera extends SubsystemBase {
   }
 
   private void configureTeam() {
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
       speakerAprilTag = 4; // Apriltag on left
       ampAprilTag = 5;
       sourceAprilTag = 10; // Apriltag on left
+
+      aprilTagLayout = new aprilTagLayout(speakerAprilTag, ampAprilTag, sourceAprilTag);
     } else {
       speakerAprilTag = 8; // Apriltag on left
       ampAprilTag = 6;
       sourceAprilTag = 2; // Apriltag on left
+
+      aprilTagLayout = new aprilTagLayout(speakerAprilTag, ampAprilTag, sourceAprilTag);
     }
   }
 
@@ -206,7 +226,7 @@ public class Camera extends SubsystemBase {
     // Was using Timer.delay() function here, but this caused issues with the other
     // subsystems...
     // Dividing by ideal 20 Ms roboRio loop time. - TK
-    if ((count % (delayTime/20)) == 0 && !attemptReconnection.isAlive() && testConnection() == false) {
+    if ((count % (delayTime / 20)) == 0 && !attemptReconnection.isAlive() && testConnection() == false) {
       try {
         attemptReconnection.start();
       } catch (IllegalThreadStateException e) {
@@ -216,13 +236,7 @@ public class Camera extends SubsystemBase {
 
     count++;
 
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("X:
-    // ").setDouble(getApriltagDistX(speakerAprilTag));
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Y:
-    // ").setDouble(getApriltagDistY(speakerAprilTag));
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees:
-    // ").setDouble(getDegToApriltag(speakerAprilTag));
-
+    // TODO: Figure out why getAprilTagX(id) accasionally returns 0. - TK
     aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
     inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
     inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
@@ -415,6 +429,10 @@ public class Camera extends SubsystemBase {
     return new aprilTagLocation(false, 0, 0, -1);
   }
 
+  public aprilTagLayout getAprilTagLayout() {
+    return aprilTagLayout;
+  }
+
   public double getNoteDistance() {
     // If this function returns a 0, that means there is not any detected targets
 
@@ -430,47 +448,57 @@ public class Camera extends SubsystemBase {
 
   public SequentialCommandGroup pathfindToAprilTag() {
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-      new turnToFaceApriltag(speakerAprilTag, swerveDrive, Camera.getInstance()),
-      new InstantCommand(() -> {
-        currentSwervePose2d = swerveDrive.getPose();
-        currentX = currentSwervePose2d.getX();
-        currentY = currentSwervePose2d.getY();
-        newX = getApriltagDistX(speakerAprilTag);
-        newY = percentTravelDist * getApriltagDistY(speakerAprilTag);
-      }),
-      new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)), Camera.getInstance(),
-          swerveDrive),
-      new turnToFaceApriltag(speakerAprilTag, swerveDrive, Camera.getInstance())
-    );
-    
+        new turnToFaceApriltag(driveSpeed, speakerAprilTag, swerveDrive, Camera.getInstance()),
+        new InstantCommand(() -> {
+          currentSwervePose2d = swerveDrive.getPose();
+          currentX = currentSwervePose2d.getX();
+          currentY = currentSwervePose2d.getY();
+          newX = getApriltagDistX(speakerAprilTag);
+          newY = percentTravelDist * getApriltagDistY(speakerAprilTag);
+        }),
+        new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
+            Camera.getInstance(),
+            swerveDrive),
+        new turnToFaceApriltag(driveSpeed, speakerAprilTag, swerveDrive, Camera.getInstance()));
+
     // Fallback code. NOT tested!!!!! - TK
     // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-    //   // new InstantCommand(() -> swerveDrive.resetPose(new Pose2d(4.5, 6.5, new Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()))))),
-    //   new InstantCommand(() -> System.out.println("X: " + swerveDrive.getPose().getX() + " Y: " + swerveDrive.getPose().getY())),
-    //   // new Pathfinding(new Pose2d((swerveDrive.getPose().getX()/* + 0.25*/), (swerveDrive.getPose().getY()/* + 0.25*/), new Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees() + 45))), Camera.getInstance(), swerveDrive),
-    //   new InstantCommand(() -> System.out.println("DistX to Target: "+getApriltagDistX(2))),
-    //   // new InstantCommand(() -> RobotContainer.m_robotDrive.drive(0, Math.signum(getApriltagDistX(2)), getDegToApriltag(2), false)),
-    //   new InstantCommand(() -> RobotContainer.swerve.drive(0,1.0*Math.signum(getApriltagDistX(2)), 0, false)),
-    //   new InstantCommand(() -> System.out.println("DONE"))
+    // // new InstantCommand(() -> swerveDrive.resetPose(new Pose2d(4.5, 6.5, new
+    // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()))))),
+    // new InstantCommand(() -> System.out.println("X: " +
+    // swerveDrive.getPose().getX() + " Y: " + swerveDrive.getPose().getY())),
+    // // new Pathfinding(new Pose2d((swerveDrive.getPose().getX()/* + 0.25*/),
+    // (swerveDrive.getPose().getY()/* + 0.25*/), new
+    // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees() +
+    // 45))), Camera.getInstance(), swerveDrive),
+    // new InstantCommand(() -> System.out.println("DistX to Target:
+    // "+getApriltagDistX(2))),
+    // // new InstantCommand(() -> RobotContainer.m_robotDrive.drive(0,
+    // Math.signum(getApriltagDistX(2)), getDegToApriltag(2), false)),
+    // new InstantCommand(() ->
+    // RobotContainer.swerve.drive(0,1.0*Math.signum(getApriltagDistX(2)), 0,
+    // false)),
+    // new InstantCommand(() -> System.out.println("DONE"))
     // );
 
     return goToAprilTag;
   }
 
-// public SequentialCommandGroup pathfindToAprilTag(int id) {
-// return new SequentialCommandGroup(
-// turnToFaceApriltag(id),
-// new InstantCommand(() -> {
-// currentSwervePose2d = swerveDrive.getPose();
-// currentX = currentSwervePose2d.getX();
-// currentY = currentSwervePose2d.getY();
-// newX = getApriltagDistX(id);
-// newY = getApriltagDistY(id);
+  public SequentialCommandGroup pathfindToAprilTag(int id) {
+    SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
+        new turnToFaceApriltag(driveSpeed, id, swerveDrive, Camera.getInstance()),
+        new InstantCommand(() -> {
+          currentSwervePose2d = swerveDrive.getPose();
+          currentX = currentSwervePose2d.getX();
+          currentY = currentSwervePose2d.getY();
+          newX = getApriltagDistX(id);
+          newY = percentTravelDist * getApriltagDistY(id);
+        }),
+        new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
+            Camera.getInstance(),
+            swerveDrive),
+        new turnToFaceApriltag(driveSpeed, id, swerveDrive, Camera.getInstance()));
 
-// new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new
-// Rotation2d(0)), Camera.getInstance(),
-// swerveDrive).schedule();
-// }),
-// turnToFaceApriltag(id));
-// }
+    return goToAprilTag;
+  }
 }
