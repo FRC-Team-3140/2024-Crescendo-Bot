@@ -1,21 +1,43 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
+import frc.robot.commands.L1Commands.SetArmToAngleL1;
+import frc.robot.commands.L1Commands.ShootAmpL1;
+import frc.robot.commands.L1Commands.ShootSpeakerL1;
+import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.XboxCotroller;
-import frc.robot.sensors.Camera;
+// // import frc.robot.commands.SpeakerShoot;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,26 +48,37 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Constants{
   public static XboxCotroller controller = new XboxCotroller(0);
   public static AHRS gyro = new AHRS(Port.kMXP);
-  public static SwerveDrive swerve = new SwerveDrive();
-  private final Camera camera;
-  SendableChooser<Command> autoChooser = new SendableChooser<>();
+  public static SwerveDrive swerve = SwerveDrive.getInstance();
+  // // private final Camera camera;
+  // SendableChooser<Command> autoChooser = new SendableChooser<>();
+  SendableChooser<Command> autobuilder;
+  
 
+  public static XboxCotroller controller2 = new XboxCotroller(1);
+  public static IntakeShooter intakeShooter;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    camera = Camera.getInstance();
-    autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
-    autoChooser.addOption("Auto2", new PathPlannerAuto("Auto2"));
-    autoChooser.addOption("Auto3", new PathPlannerAuto("Auto3"));
+    swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
+    intakeShooter = IntakeShooter.getInstance();
+    NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
+    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(1)));
+    autobuilder = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Path planner", autobuilder);
+  
+    // camera = Camera.getInstance();
+    // autoChooser.addOption("Auto1", new PathPlannerAuto("Auto1"));
+    // autoChooser.addOption("Auto2", new PathPlannerAuto("Auto2"));
+    // autoChooser.addOption("Auto3", new PathPlannerAuto("Auto3"));
 
-    SmartDashboard.putData("Auto", autoChooser);
-
+    // SmartDashboard.putData("Auto", autoChooser);
     // Configure the trigger bindings
+
     configureBindings();
   }
 
@@ -64,10 +97,27 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngle(8));
+    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
+    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
+    new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
+    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShootSpeakerL1(0, 0));
 
-  }
 
-  public void resetGyro() {
+    new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
+    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d(.39, 7.8, new Rotation2d())))); //top left corner
+    new JoystickButton(controller, Button.kX.value).onTrue(new InstantCommand(()-> swerve.resetPose(new Pose2d(1.2, 5.56, new Rotation2d())))); //right in front of speaker
+    
+    // new POVButton(controller2, 0).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
+    new POVButton(controller2, 90).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
+    
+    new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetectedL1());
+    new POVButton(controller2, 0).onTrue(new InstantCommand(()-> {intakeShooter.setHoldingPiece(true);}));
+    new POVButton(controller2, 270).onTrue(new ShootSpeakerL1(10,3)).onFalse(new ShootSpeakerL1(0,0));
+    
+  } 
+
+  public void resetGyro(){
     gyro.reset();
   }
 
@@ -75,11 +125,15 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   *         //
+   * 
    */
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    return autobuilder.getSelected();
+    // return new SpeakerShoot();
   }
+
+  
+
 }

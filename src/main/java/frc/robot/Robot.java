@@ -4,28 +4,34 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DigitalInput;
+
+import org.littletonrobotics.junction.LoggedRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.libs.XboxCotroller;
-import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.IntakeShooter;
+import frc.robot.RobotContainer;
 
-public class Robot extends TimedRobot implements Constants{
+
+public class Robot extends LoggedRobot implements Constants{
   private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer; 
-  private static XboxCotroller m_controller = RobotContainer.controller;
-  private static SwerveDrive swerve = RobotContainer.swerve;
+  private RobotContainer m_robotContainer;
+  
+
+
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   @Override
   public void autonomousPeriodic() {
-    driveWithJoystick(false);
-    swerve.updateOdometry();
+   
   }
 
   @Override
   public void teleopPeriodic() {
-    driveWithJoystick(true);
     
   }
 
@@ -55,11 +61,16 @@ public class Robot extends TimedRobot implements Constants{
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    // System.out.println("pe" + photoElectric.get());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+
+    // Put the arm in a safe position
+    Arm.getInstance().disable();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -68,7 +79,8 @@ public class Robot extends TimedRobot implements Constants{
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    Arm.getInstance().enable();
+    Arm.getInstance().setAngle(11);
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -86,44 +98,39 @@ public class Robot extends TimedRobot implements Constants{
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-  }
 
+    // Ready the arm for movement.
+    Arm.getInstance().enable();
+
+  }
+  // IntakeAndShooter test = IntakeAndShooter.getInstance();
   @Override
   public void testInit() {
+    // test.intake(.6);
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    // Ready the arm for movement.
+    Arm.getInstance().enable();
+
   }
 
   /** This function is called periodically during test mode. */
+  // DigitalInput photoElectric = new DigitalInput(0);
+
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    // System.out.println(photoElectric.get());
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
 
 
-
-  private void driveWithJoystick(boolean fieldRelative) {
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-    final var xSpeed = -m_controller.getLeftY() * maxSpeed;
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-    final var ySpeed = m_controller.getLeftX() * maxSpeed;
-
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
-    final var rot = -m_controller.getRightX() * maxChassisTurnSpeed;
-
-    swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
-  }
 }

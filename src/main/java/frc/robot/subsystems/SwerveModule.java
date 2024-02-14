@@ -43,7 +43,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public double turnVelocityTolerance;
 
 
-    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706, 2.4433 , 0.10133);
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706, 2.4433 , 0.09833);
     
     // private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxDriveSpeed, maxAcceleration);
     // private State initialState = new TrapezoidProfile.State(0, 0);
@@ -91,6 +91,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public void periodic() {
         if(!encoderSets){
             driveEncoder.setVelocityConversionFactor(encoderRotationToMeters);
+            driveEncoder.setPositionConversionFactor(42*encoderRotationToMeters);
         }
         
     }
@@ -135,5 +136,9 @@ public class SwerveModule extends SubsystemBase implements Constants {
     }
     public String getModuleID(){
         return this.moduleID;
+    }
+
+    public SwerveModuleState getState(){
+        return new SwerveModuleState(driveEncoder.getVelocity(), Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()));
     }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -19,13 +21,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
+  private static SwerveDrive instance = null;
+
   private final Translation2d[] locations = {
     new Translation2d(botLength, botLength),
     new Translation2d(botLength, -botLength),
@@ -42,7 +48,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   };
 
   private static AHRS gyro = RobotContainer.gyro;
-  private ChassisSpeeds botSpeeds;
+  private ChassisSpeeds botSpeeds = new ChassisSpeeds(0,0,0);
   private boolean pathInverted = false;
 
   private final SwerveDriveKinematics kinematics =
@@ -62,6 +68,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
             modules[3].getSwerveModulePosition()
           },
           new Pose2d(),
+          
           VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
@@ -72,6 +79,44 @@ public class SwerveDrive extends SubsystemBase implements Constants {
 
     // Autobuilder for Pathplanner Goes last in constructor! TK
     AutoBuilder.configureHolonomic(
+                this::getPose, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
+                                                 // Constants class
+                        new PIDConstants(2.5, 0.0, 0), // Translation PID constants
+                        new PIDConstants(2.75, 0.0, 0), // Rotation PID constants
+                        3, // Max module speed, in m/s
+                        botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                this::shouldFlipPath,
+                this // Reference to this subsystem to set requirements
+        );
+    Logger.recordOutput("Actual States", states);
+    Logger.recordOutput("Set States", swerveModuleStates);
+    Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
+      
+  }
+
+  // WPILib
+  StructArrayPublisher<SwerveModuleState> actualStates = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("Actual States", SwerveModuleState.struct).publish();
+  StructArrayPublisher<SwerveModuleState> setStates = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("Set States", SwerveModuleState.struct).publish();
+  StructPublisher<Pose2d> odometryStruct = NetworkTableInstance.getDefault()
+    .getStructTopic("Odometry", Pose2d.struct).publish();
+      SwerveModuleState[] states = new SwerveModuleState[4];
+  public void periodic() {
+      for(int i = 0; i < 4; i++){
+        states[i] = modules[i].getState();
+      }
+      updateOdometry();
+      actualStates.set(swerveModuleStates);
+      setStates.set(states);
+      odometryStruct.set(poseEstimator.getEstimatedPosition());
+  }
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -107,10 +152,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether  the provided x and y speeds are relative to the field.
    */
-
+  SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     botSpeeds = ChassisSpeeds.discretize(new ChassisSpeeds(xSpeed,ySpeed,rot), .02);
-    SwerveModuleState[] swerveModuleStates =
+    swerveModuleStates =
         kinematics.toSwerveModuleStates(
           ChassisSpeeds.discretize(
             fieldRelative
@@ -133,6 +178,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
 
   public void setPathInverted(Boolean inverted){
     pathInverted = inverted;
+  }
+
+  public static synchronized SwerveDrive getInstance() {
+    if (instance == null) {
+      instance = new SwerveDrive();
+    }
+    return instance;
   }
   
 
