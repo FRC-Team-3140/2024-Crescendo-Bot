@@ -23,7 +23,6 @@ import frc.robot.commands.turnToFaceApriltag;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Camera extends SubsystemBase {
-  // GitHub is stupid. Sometimes.
 
   private static Camera instance = null;
 
