@@ -7,7 +7,6 @@
 package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
 
@@ -45,7 +44,7 @@ public class ShootAmpL1 extends Command implements Constants{
   @Override
   public boolean isFinished() {
       // TODO This should automatically terminate after a certain amount of time - DB
-      return System.currentTimeMillis() - startTime > 2000;
+      return System.currentTimeMillis() - startTime > 2000 || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7; //I dont think the channel or the current it is greater than is correct. Please check that
       
   }
   @Override

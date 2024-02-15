@@ -63,8 +63,8 @@ public class Arm extends SubsystemBase {
 
   // Favorite setpoints
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
-  public static final double kSetpoiintIntakeDown = 8.0; // The setpoint for intaking
-  public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and protection
+  public static final double kSetpoiintIntakeDown = 9.0; // The setpoint for intaking
+  public static final double kSetpointIntakeReady = 28.0; //  The eady for intake but off the ground for movement and protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
   public static final double kSetpointMove = 60.0; // The ready for intake but off the ground for movement and protection
 

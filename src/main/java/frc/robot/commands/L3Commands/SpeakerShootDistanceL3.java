@@ -30,6 +30,7 @@ public class SpeakerShootDistanceL3 extends Command implements Constants {
 
     public IntakeShooter intakeShooter; 
     public SwerveDrive swerve;
+    public boolean finished;
     // private InterpolatingDoubleTreeMap angleInterpolator;
     public Arm arm;
 
@@ -46,6 +47,7 @@ public class SpeakerShootDistanceL3 extends Command implements Constants {
         // angleInterpolator.put(148.375 * .0254,39.8);
         this.swerve = SwerveDrive.getInstance();
         this.arm = Arm.getInstance();
+        finished = false;
         
         
     }
@@ -68,11 +70,12 @@ public class SpeakerShootDistanceL3 extends Command implements Constants {
             new ShootSpeakerL1(10,3)
         );
         test.schedule();
+        // finished = true;
         
     }
     @Override
     public boolean isFinished() {
-        return test.isFinished() || !test.isScheduled();
+        return !test.isScheduled();
     }
 
     // Other methods for isFinished(), end(), etc., can be added if needed.

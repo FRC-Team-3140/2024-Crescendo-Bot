@@ -53,7 +53,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
     
     @Override
     public boolean isFinished(){
-        return System.currentTimeMillis() - startTime > 5000;
+        return System.currentTimeMillis() - startTime > 5000 || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel or the current it is greater than is correct. Please check that
     }
     
 }

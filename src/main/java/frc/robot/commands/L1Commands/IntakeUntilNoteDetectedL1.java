@@ -14,7 +14,7 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   IntakeShooter intakeShooter = IntakeShooter.getInstance();
   final double intakeVoltage = Constants.intakeVoltage;
-  PowerDistribution pdp = new PowerDistribution(55, ModuleType.kRev);
+  static PowerDistribution pdp = new PowerDistribution(55, ModuleType.kRev);
 
   /** Creates a new IntakeUntilNoteDetected. */
   public IntakeUntilNoteDetectedL1() {
