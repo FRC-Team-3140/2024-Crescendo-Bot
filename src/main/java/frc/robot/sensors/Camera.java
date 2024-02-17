@@ -5,11 +5,18 @@
 package frc.robot.sensors;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,6 +37,16 @@ public class Camera extends SubsystemBase {
 
   private PhotonCamera april = null;
   private PhotonCamera notes = null;
+  
+  // TODO: Find the actual postition of the cameras on the bot. - TK
+  // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
+  private Transform3d robotToApril = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
+
+  // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
+  private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
+
+  private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+  private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, robotToApril);
 
   private boolean connected = false;
   private int connectionAttempts = 2;
@@ -129,7 +146,7 @@ public class Camera extends SubsystemBase {
       notesGetInstance();
     }
 
-    swerveDrive = swerve;
+    swerveDrive = RobotContainer.swerve;
 
     configureTeam();
   }
@@ -357,7 +374,7 @@ public class Camera extends SubsystemBase {
       /*
        * Takes Photonvision Z angle theta value (3D processing mode on camera) and
        * gets sign,
-       * if sign is negative (apriltag is on left of frame), it will turn left the #
+       * if sign is negative (aprilTag is on left of frame), it will turn left the #
        * of degs.
        * that arcTan or inverse tan returns from the X & Y coorinates. Else it turns
        * right
@@ -395,7 +412,7 @@ public class Camera extends SubsystemBase {
           /*
            * Takes Photonvision Z angle theta value (3D processing mode on camera) and
            * gets sign,
-           * if sign is negative (apriltag is on left of frame), it will turn left the #
+           * if sign is negative (aprilTag is on left of frame), it will turn left the #
            * of degs.
            * that arcTan or inverse tan returns from the X & Y coorinates. Else it turns
            * right
@@ -430,6 +447,7 @@ public class Camera extends SubsystemBase {
   }
 
   public aprilTagLayout getAprilTagLayout() {
+    // TODO: Check to see if this variable matches the one I just added for the photonvision pose estimator - TK
     return aprilTagLayout;
   }
 
@@ -446,11 +464,24 @@ public class Camera extends SubsystemBase {
     return 0.0;
   }
 
+  public double getTimestamp() {
+    return (1.0 * heartbeat);
+  }
+
+  public Pose2d getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+        aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        if (connected && april.getLatestResult().hasTargets()){
+          return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
+        } else {
+          return null;
+        }
+    }
+
   public SequentialCommandGroup pathfindToAprilTag() {
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(driveSpeed, speakerAprilTag, swerveDrive, Camera.getInstance()),
+        new turnToFaceApriltag(driveSpeed, speakerAprilTag, RobotContainer.swerve, Camera.getInstance()),
         new InstantCommand(() -> {
-          currentSwervePose2d = swerveDrive.getPose();
+          currentSwervePose2d = RobotContainer.swerve.getPose();
           currentX = currentSwervePose2d.getX();
           currentY = currentSwervePose2d.getY();
           newX = getApriltagDistX(speakerAprilTag);
@@ -458,8 +489,8 @@ public class Camera extends SubsystemBase {
         }),
         new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
             Camera.getInstance(),
-            swerveDrive),
-        new turnToFaceApriltag(driveSpeed, speakerAprilTag, swerveDrive, Camera.getInstance()));
+            RobotContainer.swerve),
+        new turnToFaceApriltag(driveSpeed, speakerAprilTag, RobotContainer.swerve, Camera.getInstance()));
 
     // Fallback code. NOT tested!!!!! - TK
     // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(

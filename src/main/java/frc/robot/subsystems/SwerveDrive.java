@@ -27,6 +27,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.sensors.Camera;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
@@ -40,9 +41,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   };
 
   SwerveModule[] modules = {
-      new SwerveModule("frontLeft", 3, 8, 7, 0.701239),
-      new SwerveModule("frontRight", 2, 6, 5, 0.707867),
-      new SwerveModule("backLeft", 0, 2, 1, 0.219279),
+      new SwerveModule("frontLeft", 0, 8, 7, 0.701239),
+      new SwerveModule("frontRight", 3, 6, 5, 0.707867),
+      new SwerveModule("backLeft", 2, 2, 1, 0.219279),
       new SwerveModule("backRight", 1, 4, 3, 0.447409),
 
   };
@@ -73,6 +74,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
       VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
+  private Camera camera = Camera.getInstance();
+
+  // TODO: See if the following boolean is neccessary
   public boolean allowPathMirroring = false;
 
   public SwerveDrive() {
@@ -122,6 +126,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     updateOdometry();
     actualStates.set(swerveModuleStates);
     setStates.set(states);
+
+    poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(getPose()), camera.getTimestamp());
     odometryStruct.set(poseEstimator.getEstimatedPosition());
   }
 
@@ -163,7 +169,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     pathInverted = inverted;
   }
 
-  public static synchronized SwerveDrive getInstance() {
+  public static SwerveDrive getInstance() {
     if (instance == null) {
       instance = new SwerveDrive();
     }

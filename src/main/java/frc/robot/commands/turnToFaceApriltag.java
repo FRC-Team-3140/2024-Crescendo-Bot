@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -20,7 +21,7 @@ public class turnToFaceApriltag extends Command {
   /** Creates a new turnToFaceApriltag. */
   public turnToFaceApriltag(double driveSpeed, SwerveDrive swerveDrive, Camera cam) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerveDrive, camera);
+    addRequirements(swerveDrive, cam);
 
     swerve = swerveDrive;
     camera = cam;
@@ -31,8 +32,8 @@ public class turnToFaceApriltag extends Command {
   /** Creates a new turnToFaceApriltag. */
   public turnToFaceApriltag(double driveSpeed, int id, SwerveDrive swerveDrive, Camera cam) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerveDrive, camera);
-
+    addRequirements(cam);
+    addRequirements(RobotContainer.swerve);
     swerve = swerveDrive;
     camera = cam;
     ID = id;

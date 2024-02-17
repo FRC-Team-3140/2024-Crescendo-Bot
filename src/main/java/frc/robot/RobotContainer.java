@@ -48,7 +48,7 @@ public class RobotContainer implements Constants{
   public static Camera camera = Camera.getInstance();
   // // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
-  SendableChooser<Command> autobuilder;
+  SendableChooser<Command> autobuilder = new SendableChooser<>();
   
 
   public static XboxCotroller controller2 = new XboxCotroller(1);
@@ -66,7 +66,7 @@ public class RobotContainer implements Constants{
     // Additional Commands (Not automatically improted by Pathplanner) - TK
     autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
     
-    autobuilder = AutoBuilder.buildAutoChooser();
+    // autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
   
     // camera = Camera.getInstance();

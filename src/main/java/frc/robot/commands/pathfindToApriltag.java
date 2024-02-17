@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -23,7 +24,7 @@ public class pathfindToApriltag extends Command implements Constants {
   /** Creates a new pathfindToApriltag. */
   public pathfindToApriltag(Pose2d updatedRobotPose, Camera camera, SwerveDrive swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(camera, swerve);
+    addRequirements(camera, RobotContainer.swerve);
 
     updatedPose = updatedRobotPose;
     swerveDrive = swerve;
