@@ -7,18 +7,13 @@
 package frc.robot.commands.L3Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 

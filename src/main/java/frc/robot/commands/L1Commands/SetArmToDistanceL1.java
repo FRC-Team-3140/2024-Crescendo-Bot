@@ -1,6 +1,5 @@
 package frc.robot.commands.L1Commands;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
@@ -8,7 +7,7 @@ import frc.robot.subsystems.Arm;
 public class SetArmToDistanceL1 extends Command {
     private final Arm arm = Arm.getInstance();
     private final double distance;
-    private double setpoint;
+    // private double setpoint;
     private double angleTolerance = 1.0;
 
     /**

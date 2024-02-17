@@ -14,7 +14,6 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class IntakeShooter extends SubsystemBase {
 
@@ -129,7 +128,7 @@ public class IntakeShooter extends SubsystemBase {
         // The method getProximity() returns a value 0 - 2047, with the closest being .
         proximityThresholdExeeded = !peSensor.get();
         if(!peSensor.get()){
-            System.out.println("p44e" + !peSensor.get());
+            // System.out.println("p44e" + !peSensor.get());
         }
         //Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putBoolean("Has Note", holdingPiece);

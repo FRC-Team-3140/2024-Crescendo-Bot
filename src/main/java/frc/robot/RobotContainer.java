@@ -4,18 +4,13 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
@@ -24,6 +19,7 @@ import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.XboxCotroller;
+import frc.robot.sensors.Camera;
 // // import frc.robot.commands.SpeakerShoot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.IntakeShooter;
@@ -34,9 +30,6 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 
 
 /**
@@ -52,9 +45,10 @@ public class RobotContainer implements Constants{
   public static XboxCotroller controller = new XboxCotroller(0);
   public static AHRS gyro = new AHRS(Port.kMXP);
   public static SwerveDrive swerve = SwerveDrive.getInstance();
+  public static Camera camera = Camera.getInstance();
   // // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
-  SendableChooser<Command> autobuilder;
+  SendableChooser<Command> autobuilder = new SendableChooser<>();
   
 
   public static XboxCotroller controller2 = new XboxCotroller(1);
@@ -68,7 +62,11 @@ public class RobotContainer implements Constants{
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
     NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(1)));
-    autobuilder = AutoBuilder.buildAutoChooser();
+    
+    // Additional Commands (Not automatically improted by Pathplanner) - TK
+    autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
+    
+    // autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
   
     // camera = Camera.getInstance();

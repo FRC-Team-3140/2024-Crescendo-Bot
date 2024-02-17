@@ -13,9 +13,10 @@ Teleop strategy: During teleop, the player will control the robot to pick up not
 
 Auto strategy...
 
- * Action 1 ...
- * Action 2 ...
- * Action 3 ...
+ * Taxi
+ * Shoot into Speaker (Bot starts off with the back facing the Speaker)
+ * Shoot & Taxi
+ * Two Note Auto (Using Shoot into Speaker auto and then going to pick up a note and shoot)
 
 # Subsystems
 
@@ -73,6 +74,15 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 | Drive Motor Back Right | CANSparkMax | CAN ID: 3 | A **motor** and **encoder** for changing the swerve module speed. |
 | Turn Encoder | Absolute Encoder (Analog Encoder) | Analog Input ID: 1 | An **absolute encoder** for sensing swerve module angle. |
 
+## Subsystem Progress
+
+| Subsystem Name | Description | CRL Rating |
+| -------------- | ------------------------- | ---------- |
+| SwerveDrive    | The drivetrain for the robot   | CRL 3      |
+| IntakeShooter    | Intake is at the front of the robot and shooting is out the back.  Both attached at the end of the arm.   | CRL 3      |
+| Arm    | Moves to the ground to intake notes and then rases up to shoot or drop notes in amp.  Controlled with a setpoint.  | CRL 3 |
+| Climber    | Two hooks that lift the robot of the ground in endgame  | CRL 2  |
+| Camera | Interfaces to two cameras through photon vision | CRL 2 |
 
 # Commands
 
@@ -81,25 +91,23 @@ This table is a strategic tool for FRC robot development. It outlines all robot 
 | Command Name | Subsystems | Game Mode | Priority | Complexity | Description | Status |
 |---|---|---|---|---|---|---|
 | ControlSwerveDrive (In RobotContainer) | SwerveDrive | Teleop | **Required** | L2 | Joystick control for the swerve drive | CRL 2 |
-| IntakeUntilNoteDetected | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note | CRL 1 |
-| ShootNoteIntoSpeaker | IntakeShooter | Both | **Required** | L1 | Shoot a note into a speaker. At kSpeakerSpeed. | CRL 2 |
-| ShootNoteIntoAmp | IntakeShooter | Both | **Required** | L1 | Shoot a note into an amp. At kAmpSpeed. | CRL 2 |
-| SetArmToAngle | Arm | Both | **Required** | L1 | Set the arm to an angle | CRL 0 |
-| LowerArmForIntake | Arm | Both | **Required** | L1 | Position arm near ground to intake notes | CRL 0 |
-| RaiseArmForMovement | Arm | Both | **Required** | L1 | Raise arm to a safe movement position | CRL 0 |
-| PositionArmForAmp | Arm | Both | **Required** | L1 | Position arm to score in Amp | CRL 0 |
-| PrepareClimber | Climber | Endgame | **Required** | L1 | Raise hooks, ready to climb | CRL 0 |
-| LiftRobotWithClimber | Climber | Endgame | **Required** | L1 | Lower hooks, lift bot off ground | CRL 0 |
-| LockClimber | Climber | Endgame | **Required** | L1 | Lock climber in place | CRL 0 |
-| ReleaseClimber | Climber | Endgame | **Required** | L1 | Release climber | CRL 0 |
+| IntakeUntilNoteDetected | IntakeShooter | Both | **Required** | L1 | Run the intake until sensor identifies a note | CRL 2 |
+| SpeakerShoot | IntakeShooter | Both | **Required** | L1 | Shoot a note into a speaker. At kSpeakerSpeed. | CRL 3 |
+| AmpShoot | IntakeShooter | Both | **Required** | L1 | Shoot a note into an amp. At kAmpSpeed. | CRL 3 |
+| SetArmToAngle | Arm | Both | **Required** | L1 | Set the arm to an angle | CRL 3 |
+| SetArmToDistance | Arm | Both | **Required** | L1 | Use an interpolator to estimate the angle at distace | CRL 2 |
 | ScoreInSpeaker | IntakeShooter, Arm | Both | **Required** | L2 | Bumper on Speaker, shoot note at Speaker speed | CRL 0 |
 | ScoreInAmp | IntakeShooter, Arm | Both | **Required** | L2 | Bumper on Amp, direct arm to AmpPosition, shoot note at Amp speed | CRL 0 |
-| ShootFromDistance | Camera, Drivetrain, Arm, IntakeShooter | Both | Optional | L3 | Shoot from a distance, auto aim using camera and apriltags. | CRL 0 |
+| SpeakerShootDistance | Camera, Drivetrain, Arm, IntakeShooter | Both | Optional | L3 | Shoot from a distance, auto aim using camera and apriltags. | CRL 2 |
 | PickupNoteWithBackwardMovement | Drivetrain, Arm, IntakeShooter | Teleop | Optional | L2 | Move intake to ground, run intake, move backward until sensor triggers | CRL 0 |
 | PassNoteToTeammate | Arm, IntakeShooter | Teleop | Optional | L2 | Shoot note horizontally toward teammate. At kSpeakerSpeed. | CRL 0 |
 | PerformMobilityMovement | SwerveDrive | Auto | **Required** | L1 | Move Drivetrain in a specific way to score mobility point | CRL 0 |
 | AutoShootIntoSpeaker | IntakeShooter, Arm, SwerveDrive | Auto | **Required** | L2 | Set up bot toward speaker, set arm position, shoot at speaker, move to score mobility point | CRL 0 |
 | AutoShootIntoAmp | IntakeShooter, Arm, SwerveDrive | Auto | Optional | L2 | Set up bot toward Amp, set arm position, shoot at Amp, move to score mobility point | CRL 0 |
+| PrepareClimber | Climber | Endgame | **Required** | L1 | Raise hooks, ready to climb | CRL 0 |
+| LiftRobotWithClimber | Climber | Endgame | **Required** | L1 | Lower hooks, lift bot off ground | CRL 0 |
+| LockClimber | Climber | Endgame | **Required** | L1 | Lock climber in place | CRL 0 |
+| ReleaseClimber | Climber | Endgame | **Required** | L1 | Release climber | CRL 0 |
 
 ## Competition Readiness Level (CRL)
 
