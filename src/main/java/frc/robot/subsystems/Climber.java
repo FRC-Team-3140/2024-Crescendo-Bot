@@ -26,7 +26,7 @@ public class Climber extends SubsystemBase{
 
     //Relay ports
     private int leftSolenoidChannelID = 0;
-    private int rightSolenoidChannelID = 1;
+    private int rightSolenoidChannelID = 4;
     
     //climber
     public Climber(){
@@ -34,8 +34,8 @@ public class Climber extends SubsystemBase{
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
 ;
         //electromagnetic push-pull solenoids running on the PCM. 
-        leftSolenoid = new Solenoid(1, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID); 
-        rightSolenoid = new Solenoid(1, PneumaticsModuleType.CTREPCM, rightSolenoidChannelID);
+        leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID); 
+        rightSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, rightSolenoidChannelID);
         //.set(true) will pull the solenoids in. .set(false) will release the solenoids to lock the climbers.
 
         //set motor settings
@@ -56,28 +56,28 @@ public class Climber extends SubsystemBase{
     //raises the left climber
     public void raiseLeft(){
         leftSolenoid.set(true);
-        leftClimber.set(.1); //change to an actual value later
+        leftClimber.set(1); //change to an actual value later
         
     }
 
     //raises the right climber
     public void raiseRight(){
         rightSolenoid.set(true);
-        rightClimber.set(.1); //change to an actual value later
+        rightClimber.set(1); //change to an actual value later
         
     }
 
     //lowers the left climber
     public void lowerLeft(){
         leftSolenoid.set(true);
-        leftClimber.set(-.1); //change to an actual value later
+        leftClimber.set(-1); //change to an actual value later
         
     }
 
     //lowers the right climber
     public void lowerRight(){
         rightSolenoid.set(true);
-        rightClimber.set(-.1); //change to an actual value later
+        rightClimber.set(-1); //change to an actual value later
         
     }
 

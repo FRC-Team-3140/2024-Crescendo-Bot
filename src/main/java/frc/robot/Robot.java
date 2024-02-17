@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Climber;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 // import frc.robot.libs.XboxCotroller;
@@ -21,10 +22,12 @@ import com.revrobotics.CANSparkBase.IdleMode;
 public class Robot extends TimedRobot implements Constants{
   // private Command m_autonomousCommand;
   private RobotContainer m_robotContainer; 
-   public static CANSparkMax left = new CANSparkMax(9, MotorType.kBrushless);
-   public static CANSparkMax right = new CANSparkMax(8, MotorType.kBrushless);
-
+  //  public static CANSparkMax left = new CANSparkMax(9, MotorType.kBrushless);
+  //  public static CANSparkMax right = new CANSparkMax(8, MotorType.kBrushless);
+public Climber climber = new Climber();
+// public Climber right = new Climber();
    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
   
     NetworkTable motorInfo = inst.getTable("motorinfo");
    
@@ -40,11 +43,7 @@ public class Robot extends TimedRobot implements Constants{
   }
   @Override
   public void teleopInit() {
-    left.setIdleMode(IdleMode.kBrake);
-    right.setIdleMode(IdleMode.kBrake);
-
-    left.burnFlash();
-    right.burnFlash();
+    
   }
 
   @Override
@@ -55,38 +54,38 @@ public class Robot extends TimedRobot implements Constants{
     if(x.getAButton() || x.getBButton() || x.getXButton() || x.getYButton()){
     
       if(x.getAButton()){
-        left.set(-1);
+        climber.lowerLeft();
       }
 
       if(x.getBButton()){
-        right.set(-1);
+        climber.lowerRight();
       }
 
       if(x.getXButton()){
-        left.set(1);
+        climber.raiseLeft();
       }
 
       if(x.getYButton()){
-        right.set(1);
+        climber.raiseRight();
       }
     }else{
-      left.set(0);
-      right.set(0);
+      climber.stopLeft();
+      climber.stopRight();
     }
     
 
 
-    motorInfo.getEntry("leftvoltage").setDouble(left.getBusVoltage()*left.getAppliedOutput());
-    motorInfo.getEntry("leftcurrent").setDouble(left.getOutputCurrent());
-    double leftvoltage = motorInfo.getEntry("leftvoltage").getDouble(0);
-    double leftcurrent = motorInfo.getEntry("leftcurrent").getDouble(0);
-    motorInfo.getEntry("leftpower").setDouble(leftcurrent*leftvoltage);
+    // motorInfo.getEntry("leftvoltage").setDouble(left.getBusVoltage()*left.getAppliedOutput());
+    // motorInfo.getEntry("leftcurrent").setDouble(left.getOutputCurrent());
+    // double leftvoltage = motorInfo.getEntry("leftvoltage").getDouble(0);
+    // double leftcurrent = motorInfo.getEntry("leftcurrent").getDouble(0);
+    // motorInfo.getEntry("leftpower").setDouble(leftcurrent*leftvoltage);
 
-    motorInfo.getEntry("rightvoltage").setDouble(right.getBusVoltage()*right.getAppliedOutput());
-    motorInfo.getEntry("rightcurrent").setDouble(right.getOutputCurrent());
-    double rightvoltage = motorInfo.getEntry("rightvoltage").getDouble(0);
-    double rightcurrent = motorInfo.getEntry("rightcurrent").getDouble(0);
-    motorInfo.getEntry("rightpower").setDouble(rightcurrent*rightvoltage);
+    // motorInfo.getEntry("rightvoltage").setDouble(right.getBusVoltage()*right.getAppliedOutput());
+    // motorInfo.getEntry("rightcurrent").setDouble(right.getOutputCurrent());
+    // double rightvoltage = motorInfo.getEntry("rightvoltage").getDouble(0);
+    // double rightcurrent = motorInfo.getEntry("rightcurrent").getDouble(0);
+    // motorInfo.getEntry("rightpower").setDouble(rightcurrent*rightvoltage);
     
     
   }
