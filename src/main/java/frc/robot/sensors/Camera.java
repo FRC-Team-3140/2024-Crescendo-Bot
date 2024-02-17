@@ -8,6 +8,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -35,18 +36,18 @@ public class Camera extends SubsystemBase {
 
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  private PhotonCamera april = null;
+  private PhotonCamera april = new PhotonCamera("april");
   private PhotonCamera notes = null;
   
   // TODO: Find the actual postition of the cameras on the bot. - TK
   // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.5, 0.0, 0.5), new Rotation3d(0,0,Math.PI)); 
 
   // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
   private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, robotToApril);
+  private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToApril);
 
   private boolean connected = false;
   private int connectionAttempts = 2;
@@ -467,14 +468,20 @@ public class Camera extends SubsystemBase {
   public double getTimestamp() {
     return (1.0 * heartbeat);
   }
+  double lastResult = 0;
+  public boolean isConnected(){
+    boolean kjasdfl =  april.getLatestResult().hasTargets() && connected && april.getLatestResult().getTimestampSeconds() != lastResult;
+    lastResult = april.getLatestResult().getTimestampSeconds();
+    return kjasdfl;
+  }
 
-  public Pose2d getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-        if (connected && april.getLatestResult().hasTargets()){
+  public Pose2d getEstimatedGlobalPose() {
+        // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        // if (connected && april.getLatestResult().hasTargets() && !april.getLatestResult().equals(lastResult)){
           return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
-        } else {
-          return null;
-        }
+        // } else {
+          // return null;
+        // }
     }
 
   public SequentialCommandGroup pathfindToAprilTag() {

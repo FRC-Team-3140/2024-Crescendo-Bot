@@ -24,6 +24,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -60,6 +61,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * The numbers used
    * below are robot specific, and should be tuned.
    */
+  
   private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
       kinematics,
       gyro.getRotation2d(),
@@ -127,7 +129,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     actualStates.set(swerveModuleStates);
     setStates.set(states);
 
-    poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(getPose()), camera.getTimestamp());
+
+    // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(), camera.getTimestamp());
     odometryStruct.set(poseEstimator.getEstimatedPosition());
   }
 
@@ -190,10 +193,16 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // Also apply vision measurements. We use 0.3 seconds in the past as an example
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
-    // poseEstimator.addVisionMeasurement(
-    // ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
-    // poseEstimator.getEstimatedPosition()),
-    // Timer.getFPGATimestamp() - 0.3);
+    if(Camera.getInstance().isConnected()){
+      // System.out.println(Camera.getInstance().isConnected());
+      poseEstimator.addVisionMeasurement(
+      Camera.getInstance().getEstimatedGlobalPose(),
+      Timer.getFPGATimestamp() - .2);
+      System.out.println("Balls");
+    }else{
+      // System.out.println(Camera.getInstance().isConnected());
+      System.out.println("No targets deteceted");
+    }
   }
 
   public SwerveModulePosition[] getModulePositions() {
