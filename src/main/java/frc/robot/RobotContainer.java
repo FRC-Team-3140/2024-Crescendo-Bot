@@ -1,6 +1,8 @@
 
 package frc.robot;
 
+import java.time.Instant;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
+import frc.robot.commands.L1Commands.RaiseLeft;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
@@ -22,6 +25,7 @@ import frc.robot.libs.XboxCotroller;
 import frc.robot.sensors.Camera;
 // // import frc.robot.commands.SpeakerShoot;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -52,6 +56,7 @@ public class RobotContainer implements Constants{
   // // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder = new SendableChooser<>();
+  public static Climber climber = Climber.getInstance();
   
 
   public static XboxCotroller controller2 = new XboxCotroller(1);
@@ -100,12 +105,15 @@ NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").setDouble(
    * joysticks}.
    */
   private void configureBindings() {
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngle(8));
+    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
-    double test = NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2);
-    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(test));
+    new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(Arm.kSetpointShoot));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3());//.onFalse(new ShootSpeakerL1(0, 0));
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3());//.onFalse(new ShootSpeakerL1(0, 0));
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new InstantCommand(climber::raiseLeft)).onFalse(new InstantCommand(climber::stopLeft));
+    // new JoystickButton(controller2, Button.kB.value).onTrue(new InstantCommand(climber::raiseRight)).onFalse(new InstantCommand(climber::stopRight));
+    // new JoystickButton(controller2, Button.kX.value).onTrue(new InstantCommand(climber::lowerRight)).onFalse(new InstantCommand(climber::stopRight));
+    // new JoystickButton(controller2, Button.kY.value).onTrue(new InstantCommand(climber::lowerLeft)).onFalse(new InstantCommand(climber::stopLeft));       
 
 
     new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
@@ -114,7 +122,7 @@ NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").setDouble(
     
     // new POVButton(controller2, 0).onTrue(new SpeakerShoot()).onFalse(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}));
     new POVButton(controller2, 90).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
-    
+    // new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new InstantCommand(()-> {}));
     new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetectedL1());
     new POVButton(controller2, 0).onTrue
     (new InstantCommand(()-> {intakeShooter.setHoldingPiece(true);}));
