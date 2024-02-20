@@ -470,6 +470,9 @@ public class Camera extends SubsystemBase {
   }
   double lastResult = 0;
   public boolean isConnected(){
+    if(!connected){
+      return false;
+    }
     boolean kjasdfl =  april.getLatestResult().hasTargets() && connected && april.getLatestResult().getTimestampSeconds() != lastResult;
     lastResult = april.getLatestResult().getTimestampSeconds();
     return kjasdfl;

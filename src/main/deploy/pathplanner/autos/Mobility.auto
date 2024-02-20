@@ -12,9 +12,34 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "ShootAndPickup"
+            "name": "SpeakerShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetArmToIntake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ShootAndPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeUntilNoteDetected"
+                }
+              }
+            ]
           }
         }
       ]

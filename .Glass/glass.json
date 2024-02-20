@@ -3,6 +3,9 @@
     "Retained Values": {
       "open": false
     },
+    "Transitory Values": {
+      "open": false
+    },
     "persistent": {
       "Arm": {
         "open": true
@@ -29,13 +32,15 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Path planner": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables Info": {
-    "Clients": {
-      "open": true
-    },
     "Dashboard@1": {
       "open": true
     },

@@ -1,7 +1,11 @@
 package frc.robot.commands.L1Commands;
 
+import javax.net.ssl.SSLContext;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeShooter;
+
+//Works Well
 
 public class ShooterSpeedL1 extends Command {
     private final IntakeShooter intakeShooter;
@@ -35,6 +39,7 @@ public class ShooterSpeedL1 extends Command {
      *
      * @return false because this command should never finish if it's the default command for the shooter
      */
+    
     @Override
     public boolean isFinished() {
         return Math.abs(intakeShooter.getShooterSpeed() - speed) < kShooterSpeedTolarence;

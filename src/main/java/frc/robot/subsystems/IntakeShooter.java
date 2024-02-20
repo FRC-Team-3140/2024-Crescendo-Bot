@@ -80,6 +80,8 @@ public class IntakeShooter extends SubsystemBase {
         shooterB.burnFlash();
 
         intakeMotor.setIdleMode(IdleMode.kBrake);
+        intakeMotor.setInverted(true);
+        intakeMotor.burnFlash();
     }
 
     /** 

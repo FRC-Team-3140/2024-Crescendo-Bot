@@ -26,6 +26,9 @@ import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.Distance;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -61,12 +64,14 @@ public class RobotContainer implements Constants{
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
-    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(1)));
+    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(5)));
+    NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
+
     
     // Additional Commands (Not automatically improted by Pathplanner) - TK
-    autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
+    // autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
     
-    // autobuilder = AutoBuilder.buildAutoChooser();
+    autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
   
     // camera = Camera.getInstance();
@@ -76,7 +81,7 @@ public class RobotContainer implements Constants{
 
     // SmartDashboard.putData("Auto", autoChooser);
     // Configure the trigger bindings
-
+NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").setDouble(2);
     configureBindings();
   }
 
@@ -97,9 +102,10 @@ public class RobotContainer implements Constants{
   private void configureBindings() {
     // new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngle(8));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
-    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
+    double test = NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2);
+    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(test));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShootSpeakerL1(0, 0));
+    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3());//.onFalse(new ShootSpeakerL1(0, 0));
 
 
     new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand((this::resetGyro)));
@@ -110,8 +116,9 @@ public class RobotContainer implements Constants{
     new POVButton(controller2, 90).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
     
     new POVButton(controller2, 180).onTrue(new IntakeUntilNoteDetectedL1());
-    new POVButton(controller2, 0).onTrue(new InstantCommand(()-> {intakeShooter.setHoldingPiece(true);}));
-    new POVButton(controller2, 270).onTrue(new ShootSpeakerL1(10,3)).onFalse(new ShootSpeakerL1(0,0));
+    new POVButton(controller2, 0).onTrue
+    (new InstantCommand(()-> {intakeShooter.setHoldingPiece(true);}));
+    new POVButton(controller2, 270).onTrue(new ShootSpeakerL1(10.5,3)).onFalse(new ShootSpeakerL1(0,0));
     
   } 
 

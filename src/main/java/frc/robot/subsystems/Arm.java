@@ -156,7 +156,7 @@ public class Arm extends SubsystemBase {
     angleInterpolator.put(52.0 * .0254, 14.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
     angleInterpolator.put(72.0 * .0254, 24.0);
     angleInterpolator.put(89.0 * .0254, 32.0);
-    angleInterpolator.put(122.0 * .025, 37.4);
+    angleInterpolator.put(122.0 * .0254, 37.4);
     angleInterpolator.put(129.0 * .0254, 38.5);
     angleInterpolator.put(148.375 * .0254, 39.8);
 
