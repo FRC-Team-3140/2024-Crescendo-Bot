@@ -41,6 +41,15 @@ public class Robot extends LoggedRobot implements Constants{
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    
+    motorInfo.getEntry("leftvoltage").setDefaultValue(0);
+    motorInfo.getEntry("leftcurrent").setDefaultValue(0);
+    motorInfo.getEntry("leftpower").setDefaultValue(0);
+
+    motorInfo.getEntry("rightvoltage").setDefaultValue(0);
+    motorInfo.getEntry("rightcurrent").setDefaultValue(0);
+    motorInfo.getEntry("rightpower").setDefaultValue(0);
   }
 
   /**
@@ -79,9 +88,9 @@ public class Robot extends LoggedRobot implements Constants{
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
   }
 
   /** This function is called periodically during autonomous. */
