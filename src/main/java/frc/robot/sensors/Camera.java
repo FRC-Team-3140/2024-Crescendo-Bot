@@ -36,8 +36,9 @@ public class Camera extends SubsystemBase {
 
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  private PhotonCamera april = new PhotonCamera("april");
-  private PhotonCamera notes = null;
+  // Gets initial instantiation of Cameras - TK
+  private PhotonCamera april = Camera.aprilGetInstance();
+  private PhotonCamera notes = Camera.notesGetInstance();
   
   // TODO: Find the actual postition of the cameras on the bot. - TK
   // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
@@ -55,6 +56,8 @@ public class Camera extends SubsystemBase {
   // The heartbeat is a value in the Photonvision Networktable that continually
   // changes.
   private double heartbeat = 0;
+
+  // previousResult must start at a value that's not normally returned - TK
   private double previousResult = -1;
 
   // This thread allows this connection check to run in the background and not
@@ -71,6 +74,7 @@ public class Camera extends SubsystemBase {
   // Time to delay connection attempts is in SECONDS! - TK
   private double attemptDelay;
 
+  // Global variables for updating Pathplanner poses - TK
   private SwerveDrive swerveDrive;
   private Pose2d currentSwervePose2d;
   private double currentX;
@@ -78,9 +82,12 @@ public class Camera extends SubsystemBase {
   private double newX;
   private double newY;
 
+  // percentage of forward distance you want to drive before stopping (to prevent
+  // crashing). - TK
   private double percentTravelDist = 0.8; // Must be < 1
   private double driveSpeed = Constants.maxSpeed;
 
+  // Global fiducial ids for important landmark apriltags - TK
   private aprilTagLayout aprilTagLayout;
   private int speakerAprilTag;
   private int ampAprilTag;
@@ -147,8 +154,12 @@ public class Camera extends SubsystemBase {
       notesGetInstance();
     }
 
+    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause problems - TK
     swerveDrive = RobotContainer.swerve;
 
+    // Will also create a field layout object and set global variables for landmark apriltags
+    // as mentioned earlier. This is not to be confused with the Photonvision apriltag layout
+    // class! - TK
     configureTeam();
   }
 
@@ -229,10 +240,10 @@ public class Camera extends SubsystemBase {
       aprilGetInstance();
       notesGetInstance();
     }
-    // System.out.println(heartbeat);
   }
 
   public boolean getStatus() {
+    // Just returns the boolean that shows connction status - TK
     return connected;
   }
 
