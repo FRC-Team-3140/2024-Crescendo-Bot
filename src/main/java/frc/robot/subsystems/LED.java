@@ -9,8 +9,8 @@ public class LED {
     int ledBufferLength;
     int rainbowFirstPixelHue = 0;
     public LED(){
-        led = new AddressableLED(0); //change port
-        ledBuffer = new AddressableLEDBuffer(5);
+        led = new AddressableLED(0); 
+        ledBuffer = new AddressableLEDBuffer(19); //38
         led.setLength(ledBuffer.getLength());
         ledBufferLength = ledBuffer.getLength();
         led.setData(ledBuffer);
@@ -30,6 +30,7 @@ public class LED {
       rainbowFirstPixelHue += 3;
       // Check bounds
       rainbowFirstPixelHue %= 180;
+      led.setData(ledBuffer);
     }
 
     public void green(){
