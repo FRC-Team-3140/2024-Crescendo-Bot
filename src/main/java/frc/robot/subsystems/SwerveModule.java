@@ -43,7 +43,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public double turnVelocityTolerance;
 
 
-    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706, 2.4433 , 0.09833);
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706, 2.4433 , 0.08833);
     
     // private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxDriveSpeed, maxAcceleration);
     // private State initialState = new TrapezoidProfile.State(0, 0);
@@ -63,12 +63,14 @@ public class SwerveModule extends SubsystemBase implements Constants {
         driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
         driveMotor.setIdleMode(IdleMode.kBrake);
         driveMotor.setInverted(false);
+        driveMotor.setSmartCurrentLimit(60);
         driveMotor.burnFlash();
 
 
         turnMotor = new CANSparkMax(turnMotorID, MotorType.kBrushless);
         turnMotor.setIdleMode(IdleMode.kBrake);
         turnMotor.setInverted(false);
+        turnMotor.setSmartCurrentLimit(60);
         turnMotor.burnFlash();
 
         turnEncoder = new AbsoluteEncoder(analogID);

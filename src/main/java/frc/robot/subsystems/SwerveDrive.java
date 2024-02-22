@@ -13,6 +13,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -33,6 +34,7 @@ import frc.robot.sensors.Camera;
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
   private static SwerveDrive instance = null;
+  
 
   private final Translation2d[] locations = {
       new Translation2d(botLength, botLength),
@@ -40,11 +42,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new Translation2d(-botLength, botLength),
       new Translation2d(-botLength, -botLength)
   };
+      PIDController turnPID = new PIDController(2.25, 0.0, .0675);
+
 
   SwerveModule[] modules = {
-      new SwerveModule("frontLeft", 0, 8, 7, 0.701239),
-      new SwerveModule("frontRight", 3, 6, 5, 0.707867),
-      new SwerveModule("backLeft", 2, 2, 1, 0.219279),
+      new SwerveModule("frontLeft", 3 , 8, 7, 0.701239),
+      new SwerveModule("frontRight", 2, 6, 5, 0.707867),
+      new SwerveModule("backLeft", 0, 2, 1, 0.219279),
       new SwerveModule("backRight", 1, 4, 3, 0.447409),
 
   };
@@ -93,7 +97,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
             new PIDConstants(2.5, 0.0, 0), // Translation PID constants
-            new PIDConstants(2.75, 0.0, 0), // Rotation PID constants
+            new PIDConstants(2.25, 0.0, .0675), // Rotation PID constants
             maxSpeed, // Max module speed, in m/s
             botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -198,10 +202,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       poseEstimator.addVisionMeasurement(
       Camera.getInstance().getEstimatedGlobalPose(),
       Timer.getFPGATimestamp() - .2);
-      System.out.println("Balls");
+      // System.out.println("Balls");
     }else{
       // System.out.println(Camera.getInstance().isConnected());
-      System.out.println("No targets deteceted");
+      // System.out.println("No targets deteceted");
     }
   }
 
@@ -225,4 +229,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     return poseEstimator.getEstimatedPosition();
   }
 
+  public double turnToAprilTag(int ID){
+    double angle = getPose().getRotation().getDegrees();
+    double setpoint = camera.getDegToApriltag(ID);
+    turnPID.setSetpoint(setpoint);
+    return turnPID.calculate(angle);
+  }
 }

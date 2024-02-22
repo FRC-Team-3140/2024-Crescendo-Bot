@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.L1Commands;
+// Working Good
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -14,7 +15,7 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   IntakeShooter intakeShooter = IntakeShooter.getInstance();
   final double intakeVoltage = Constants.intakeVoltage;
-  PowerDistribution pdp = new PowerDistribution(55, ModuleType.kRev);
+  static PowerDistribution pdp = new PowerDistribution(55, ModuleType.kRev);
 
   /** Creates a new IntakeUntilNoteDetected. */
   public IntakeUntilNoteDetectedL1() {

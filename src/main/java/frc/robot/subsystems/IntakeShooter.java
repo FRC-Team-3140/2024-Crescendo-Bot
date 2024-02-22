@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,20 +28,20 @@ public class IntakeShooter extends SubsystemBase {
     /**
      * Flywheel 1 on the shooter.
      */
-    public CANSparkMax shooterA = new CANSparkMax(9, MotorType.kBrushless);
+    public CANSparkMax shooterTop = new CANSparkMax(9, MotorType.kBrushless);
     /**
      * Relative Encoder from flywheel 1's neo.
      */
-    public RelativeEncoder encoderA = shooterA.getEncoder();
+    public RelativeEncoder encoderA = shooterTop.getEncoder();
 
     /**
      * Flywheel 2 on the shooter.
      */
-    public CANSparkMax shooterB = new CANSparkMax(10, MotorType.kBrushless);
+    public CANSparkMax shooterBottom = new CANSparkMax(10, MotorType.kBrushless);
     /**
      * Relative Encoder from flywheel 2's neo.
      */
-    public RelativeEncoder encoderB = shooterB.getEncoder();
+    public RelativeEncoder encoderB = shooterBottom.getEncoder();
 
     private final DigitalInput peSensor = new DigitalInput(0);
     /**
@@ -60,26 +61,28 @@ public class IntakeShooter extends SubsystemBase {
 
     // Sets the motor to neutral on creation of the class.
     public IntakeShooter() {
-        shooterA.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-        shooterA.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+        shooterTop.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        shooterTop.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
     //determined 
-        shooterA.restoreFactoryDefaults();
-        shooterA.setIdleMode(IdleMode.kCoast);
-        shooterA.setInverted(false);
-        shooterA.setSmartCurrentLimit(40);
-        shooterA.burnFlash();
+        shooterTop.restoreFactoryDefaults();
+        shooterTop.setIdleMode(IdleMode.kCoast);
+        shooterTop.setInverted(false);
+        shooterTop.setSmartCurrentLimit(40);
+        shooterTop.burnFlash();
         
-        shooterB.follow(shooterA);
-        shooterB.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100); 
-        shooterB.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-        shooterB.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-        shooterB.restoreFactoryDefaults();
-        shooterB.setIdleMode(IdleMode.kCoast);
-        shooterB.setInverted(true);
-        shooterB.setSmartCurrentLimit(40);
-        shooterB.burnFlash();
+        shooterBottom.follow(shooterTop);
+        shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100); 
+        shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+        shooterBottom.restoreFactoryDefaults();
+        shooterBottom.setIdleMode(IdleMode.kCoast);
+        shooterBottom.setInverted(true);
+        shooterBottom.setSmartCurrentLimit(40);
+        shooterBottom.burnFlash();
 
         intakeMotor.setIdleMode(IdleMode.kBrake);
+        intakeMotor.setInverted(true);
+        intakeMotor.burnFlash();
     }
 
     /** 
@@ -98,15 +101,21 @@ public class IntakeShooter extends SubsystemBase {
      * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
      */
     public void setShooterVoltage(double voltage) {
-        shooterA.setVoltage(voltage);
-        shooterB.setVoltage(-voltage);
+        shooterTop.setVoltage(voltage);
+        shooterBottom.setVoltage(-voltage);
     }
+    PIDController topController = new PIDController(.0018, 0, .00006);
+    PIDController bottomController = new PIDController(.0018, 0, .00006);
     public void setShooterSpeed(double speed){
-        //TODO: Implement
+        topController.setSetpoint(speed);
+        bottomController.setSetpoint(-speed);
+        shooterTop.setVoltage(topController.calculate(shooterTop.getEncoder().getVelocity()));
+        shooterBottom.setVoltage(bottomController.calculate(shooterBottom.getEncoder().getVelocity()));
+
     }
 
     public double getShooterSpeed() {
-        return shooterA.getEncoder().getVelocity();
+        return Math.min(-shooterBottom.getEncoder().getVelocity(), shooterTop.getEncoder().getVelocity());
     }
 
 
@@ -133,7 +142,7 @@ public class IntakeShooter extends SubsystemBase {
         //Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putBoolean("Has Note", holdingPiece);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
-        SmartDashboard.putNumber("Speed", shooterA.getEncoder().getVelocity());
-
+        SmartDashboard.putNumber("SpeedTop", shooterTop.getEncoder().getVelocity());
+        SmartDashboard.putNumber("SpeedBottom", -shooterBottom.getEncoder().getVelocity());
     }
 }

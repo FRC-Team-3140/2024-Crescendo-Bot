@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
+//Works Well
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
 public class ShootSpeakerL1 extends Command implements Constants {
@@ -39,7 +40,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
     }
     @Override
     public void execute() {
-        if(intakeShooter.getShooterSpeed() >= 4500){
+        if(intakeShooter.getShooterSpeed() >= 4600){
             intakeShooter.setIntakeVoltage(voltage2);
         }
     }
@@ -47,11 +48,13 @@ public class ShootSpeakerL1 extends Command implements Constants {
     public void end(boolean interrupted) {
         intakeShooter.setIntakeVoltage(0);
         intakeShooter.setShooterVoltage(0);
+ 
     }
     
     @Override
     public boolean isFinished(){
-        return System.currentTimeMillis() - startTime > 5000;
+        return false;
+        // return System.currentTimeMillis() - startTime > 3000 ;//|| IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel or the current it is greater than is correct. Please check that
     }
     
 }

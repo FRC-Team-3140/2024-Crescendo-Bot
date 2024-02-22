@@ -8,20 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3562431157294643,
-        "y": 6.691938312786578
+        "x": 1.6269515003484982,
+        "y": 7.032371221140546
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9011432430447806,
-        "y": 6.99346460304295
+        "x": 1.6755847729704936,
+        "y": 7.0226445666161466
       },
       "prevControl": {
-        "x": 2.6156945176243864,
-        "y": 6.99346460304295
+        "x": 1.4324184098605162,
+        "y": 6.983737948518551
+      },
+      "nextControl": {
+        "x": 1.9254862476598782,
+        "y": 7.062628802566447
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.6677035344592013,
+        "y": 7.090731148286942
+      },
+      "prevControl": {
+        "x": 2.2677035344592014,
+        "y": 7.090731148286942
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +45,19 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Slow down at end",
+      "minWaypointRelativePos": 1.45,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 20.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
