@@ -40,7 +40,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
     }
     @Override
     public void execute() {
-        if(intakeShooter.getShooterSpeed() >= 4700){
+        if(intakeShooter.getShooterSpeed() >= 4600){
             intakeShooter.setIntakeVoltage(voltage2);
         }
     }
@@ -53,7 +53,8 @@ public class ShootSpeakerL1 extends Command implements Constants {
     
     @Override
     public boolean isFinished(){
-        return System.currentTimeMillis() - startTime > 3000 ;//|| IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel or the current it is greater than is correct. Please check that
+        return false;
+        // return System.currentTimeMillis() - startTime > 3000 ;//|| IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel or the current it is greater than is correct. Please check that
     }
     
 }

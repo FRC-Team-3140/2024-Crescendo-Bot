@@ -10,7 +10,7 @@ import frc.robot.subsystems.IntakeShooter;
 public class ShooterSpeedL1 extends Command {
     private final IntakeShooter intakeShooter;
     private final double speed;
-    private final double kShooterSpeedTolarence = .05; // in degrees
+    private final double kShooterSpeedTolarence = 20; 
 
     /**
      * Creates a new ShooterSpeedL1 command.

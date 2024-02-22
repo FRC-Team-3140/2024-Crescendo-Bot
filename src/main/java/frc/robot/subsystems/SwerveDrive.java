@@ -13,6 +13,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -33,6 +34,7 @@ import frc.robot.sensors.Camera;
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
   private static SwerveDrive instance = null;
+  
 
   private final Translation2d[] locations = {
       new Translation2d(botLength, botLength),
@@ -40,6 +42,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new Translation2d(-botLength, botLength),
       new Translation2d(-botLength, -botLength)
   };
+      PIDController turnPID = new PIDController(2.25, 0.0, .0675);
+
 
   SwerveModule[] modules = {
       new SwerveModule("frontLeft", 3 , 8, 7, 0.701239),
@@ -225,4 +229,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     return poseEstimator.getEstimatedPosition();
   }
 
+  public double turnToAprilTag(int ID){
+    double angle = getPose().getRotation().getDegrees();
+    double setpoint = camera.getDegToApriltag(ID);
+    turnPID.setSetpoint(setpoint);
+    return turnPID.calculate(angle);
+  }
 }

@@ -63,12 +63,14 @@ public class SwerveModule extends SubsystemBase implements Constants {
         driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
         driveMotor.setIdleMode(IdleMode.kBrake);
         driveMotor.setInverted(false);
+        driveMotor.setSmartCurrentLimit(60);
         driveMotor.burnFlash();
 
 
         turnMotor = new CANSparkMax(turnMotorID, MotorType.kBrushless);
         turnMotor.setIdleMode(IdleMode.kBrake);
         turnMotor.setInverted(false);
+        turnMotor.setSmartCurrentLimit(60);
         turnMotor.burnFlash();
 
         turnEncoder = new AbsoluteEncoder(analogID);

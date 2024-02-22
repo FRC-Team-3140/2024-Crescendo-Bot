@@ -1,13 +1,15 @@
 {
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "Transitory Values": {
       "open": false
     },
     "persistent": {
       "Arm": {
+        "open": true
+      }
+    },
+    "retained": {
+      "SmartDashboard": {
         "open": true
       }
     },
@@ -41,10 +43,15 @@
     }
   },
   "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
     "Dashboard@1": {
       "open": true
     },
-    "visible": true
+    "Server": {
+      "open": true
+    }
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
