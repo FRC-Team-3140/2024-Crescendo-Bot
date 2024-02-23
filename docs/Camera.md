@@ -1,6 +1,3 @@
-
-Here is the checklist in Markdown format:
-
 ## Arm Setup and Test Procedure
 
 1. **Electrical Connection Check**

@@ -15,30 +15,25 @@ public class turnToFaceApriltag extends Command {
   private boolean complete = false;
   private int ID = -1;
 
-  private double speed;
   private double degrees = 0;
 
   /** Creates a new turnToFaceApriltag. */
-  public turnToFaceApriltag(double driveSpeed, SwerveDrive swerveDrive, Camera cam) {
+  public turnToFaceApriltag(SwerveDrive swerveDrive, Camera cam) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive, cam);
 
     swerve = swerveDrive;
     camera = cam;
-
-    speed = driveSpeed;
   }
 
   /** Creates a new turnToFaceApriltag. */
-  public turnToFaceApriltag(double driveSpeed, int id, SwerveDrive swerveDrive, Camera cam) {
+  public turnToFaceApriltag(int id, SwerveDrive swerveDrive, Camera cam) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(cam);
     addRequirements(RobotContainer.swerve);
     swerve = swerveDrive;
     camera = cam;
     ID = id;
-
-    speed = driveSpeed;
   }
 
   // Called when the command is initially scheduled.
@@ -58,13 +53,7 @@ public class turnToFaceApriltag extends Command {
 
     degrees = swerve.getPose().getRotation().getDegrees() + degrees;
  
-    if (swerve.getPose().getRotation().getDegrees() > degrees) {
-      swerve.drive(0, 0, -speed, false);
-    } else if (swerve.getPose().getRotation().getDegrees() < degrees) {
-      swerve.drive(0, 0, speed, false);
-    } else {
-      complete = true;
-    }
+    // TODO: Create a line something like this : SwerveDrive.setTurnPIDPoint(degrees); - TK
   }
 
   // Called once the command ends or is interrupted.

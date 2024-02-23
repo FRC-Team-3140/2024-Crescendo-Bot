@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.pathfindToApriltag;
 import frc.robot.commands.turnToFaceApriltag;
@@ -88,7 +87,6 @@ public class Camera extends SubsystemBase {
   // percentage of forward distance you want to drive before stopping (to prevent
   // crashing). - TK
   private double percentTravelDist = 0.8; // Must be < 1
-  private double driveSpeed = Constants.maxSpeed;
 
   // Global fiducial ids for important landmark apriltags - TK
   private aprilTagLayout aprilTagLayout;
@@ -511,7 +509,7 @@ public class Camera extends SubsystemBase {
 
   public SequentialCommandGroup pathfindToAprilTag() {
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(driveSpeed, speakerAprilTag, RobotContainer.swerve, Camera.getInstance()),
+        new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()),
         new InstantCommand(() -> {
           currentSwervePose2d = RobotContainer.swerve.getPose();
           currentX = currentSwervePose2d.getX();
@@ -522,7 +520,7 @@ public class Camera extends SubsystemBase {
         new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
             Camera.getInstance(),
             RobotContainer.swerve),
-        new turnToFaceApriltag(driveSpeed, speakerAprilTag, RobotContainer.swerve, Camera.getInstance()));
+        new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()));
 
     // Fallback code. NOT tested!!!!! - TK
     // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
@@ -549,7 +547,7 @@ public class Camera extends SubsystemBase {
 
   public SequentialCommandGroup pathfindToAprilTag(int id) {
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(driveSpeed, id, swerveDrive, Camera.getInstance()),
+        new turnToFaceApriltag(id, swerveDrive, Camera.getInstance()),
         new InstantCommand(() -> {
           currentSwervePose2d = swerveDrive.getPose();
           currentX = currentSwervePose2d.getX();
@@ -560,7 +558,7 @@ public class Camera extends SubsystemBase {
         new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
             Camera.getInstance(),
             swerveDrive),
-        new turnToFaceApriltag(driveSpeed, id, swerveDrive, Camera.getInstance()));
+        new turnToFaceApriltag(swerveDrive, Camera.getInstance()));
 
     return goToAprilTag;
   }
