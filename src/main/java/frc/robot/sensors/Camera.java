@@ -46,7 +46,7 @@ public class Camera extends SubsystemBase {
 
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
-  private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+  // TODO: get measurements for note cam - TK : private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
