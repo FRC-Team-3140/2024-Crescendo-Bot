@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.Timer;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
