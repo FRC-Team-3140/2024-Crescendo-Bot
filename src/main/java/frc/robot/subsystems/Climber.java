@@ -70,33 +70,27 @@ public class Climber extends SubsystemBase {
         leftClimber.set(.2);
     }
     public void raiseLeft(){
-        leftClimber.set(-.2);
-        leftSolenoid.set(true);
         leftClimber.set(.2); //change to an actual value later
         
     }
-
-    // raises the right climber
-    public void raiseRight() {
-        rightClimber.set(-.2);
-        rightSolenoid.set(true);
-        
+    
+    //raises the right climber
+    public void raiseRight(){
+               
         rightClimber.set(.2); //change to an actual value later
         
     }
 
-    // lowers the left climber
-    public void lowerLeft() {
-        leftSolenoid.set(true);
-        leftClimber.set(-.2); // change to an actual value later
-
+    //lowers the left climber
+    public void lowerLeft(){
+        leftClimber.set(-.2); //change to an actual value later
+        
     }
 
-    // lowers the right climber
-    public void lowerRight() {
-        rightSolenoid.set(true);
-        rightClimber.set(-.2); // change to an actual value later
-
+    //lowers the right climber
+    public void lowerRight(){
+        rightClimber.set(-.2); //change to an actual value later
+        
     }
 
     // stops the left climber

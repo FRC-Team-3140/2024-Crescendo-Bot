@@ -41,7 +41,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new Translation2d(-botLength, botLength),
       new Translation2d(-botLength, -botLength)
   };
-  PIDController turnPID = new PIDController(2.25, 0.0, .0675);
+      PIDController turnPID = new PIDController(1, 0.0, 0);
 
   SwerveModule[] modules = {
       new SwerveModule("frontLeft", 3, 8, 7, 0.701239),
