@@ -25,15 +25,10 @@ public class Robot extends LoggedRobot implements Constants {
 
   }
 
-  // Copyright (c) FIRST and other WPILib contributors.
-  // Open Source Software; you can modify and/or share it under the terms of
-  // the WPILib BSD license file in the root directory of this project.
-
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
+    // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   }
 
@@ -50,12 +45,10 @@ public class Robot extends LoggedRobot implements Constants {
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
-    // newly-scheduled
-    // commands, running already-scheduled commands, removing finished or
-    // interrupted commands,
-    // and running subsystem periodic() methods. This must be called from the
-    // robot's periodic
-    // block in order for anything in the Command-based framework to work.
+    // newly-scheduled commands, running already-scheduled commands, removing
+    // finished or interrupted commands, and running subsystem periodic() methods.
+    // This must be called from the robot's periodic block in order for anything in
+    // the Command-based framework to work.
     CommandScheduler.getInstance().run();
     // System.out.println("pe" + photoElectric.get());
   }

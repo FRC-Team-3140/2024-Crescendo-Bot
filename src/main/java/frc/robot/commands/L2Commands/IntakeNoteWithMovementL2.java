@@ -37,8 +37,10 @@ public class IntakeNoteWithMovementL2 extends Command {
     @Override
     public void execute() {
         // Step 2: When both are ready, move the robot backward.
-        boolean armIsReady = Math.abs(arm.getAngle() - Arm.kSetpoiintIntakeDown) < 1.0; // Assuming 0.1 is the desired
-                                                                                        // tolerance
+
+        // Assuming 0.1 is the desired tolerance
+        boolean armIsReady = Math.abs(arm.getAngle() - Arm.kSetpoiintIntakeDown) < 1.0;
+
         if (armIsReady) {
             swerveDrive.drive(0.5, 0.0, 0.0, false); // Assuming 0.5 is the desired speed to move backward
         }
