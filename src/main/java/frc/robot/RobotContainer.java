@@ -48,7 +48,7 @@ public class RobotContainer implements Constants {
   public static SwerveDrive swerve = SwerveDrive.getInstance();
   public static Camera camera = Camera.getInstance();
   public static Arm arm = Arm.getInstance();
-  // // private final Camera camera;
+  // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder = new SendableChooser<>();
   public static Climber climber = Climber.getInstance();
