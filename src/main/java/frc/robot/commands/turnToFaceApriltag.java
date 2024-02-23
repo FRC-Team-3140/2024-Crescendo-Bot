@@ -57,7 +57,7 @@ public class turnToFaceApriltag extends Command {
     System.out.println("!!!!!!!!!!!!!!!!!!!!\nTURNING\n!!!!!!!!!!!!!!!!!!!!");
     
     degrees = swerve.getPose().getRotation().getDegrees() + degrees;
-
+ 
     if (swerve.getPose().getRotation().getDegrees() > degrees) {
       swerve.drive(0, 0, -speed, false);
     } else if (swerve.getPose().getRotation().getDegrees() < degrees) {

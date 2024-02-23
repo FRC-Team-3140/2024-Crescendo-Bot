@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Timer;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -71,8 +73,8 @@ public class Climber extends SubsystemBase{
         leftClimber.set(.2);
     }
     public void raiseLeft(){
+        leftClimber.set(-.2);
         leftSolenoid.set(true);
-        
         leftClimber.set(.2); //change to an actual value later
         
     }
@@ -80,10 +82,8 @@ public class Climber extends SubsystemBase{
     //raises the right climber
     public void raiseRight(){
         rightClimber.set(-.2);
-        for(int i = 0; i < 20; i++){
-
-        }
         rightSolenoid.set(true);
+        
         rightClimber.set(.2); //change to an actual value later
         
     }
@@ -126,6 +126,10 @@ public class Climber extends SubsystemBase{
         lowerLeft();
         lowerRight();
     }
+    public void retractRightSolenoid() {
+       rightSolenoid.set(true);
+    }
+
 
 }
 
