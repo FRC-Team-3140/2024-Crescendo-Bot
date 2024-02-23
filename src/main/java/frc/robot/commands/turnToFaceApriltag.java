@@ -17,6 +17,8 @@ public class turnToFaceApriltag extends Command {
 
   private double degrees = 0;
 
+  private turnToTurnPIDSetPoint command;
+
   /** Creates a new turnToFaceApriltag. */
   public turnToFaceApriltag(SwerveDrive swerveDrive, Camera cam) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -44,6 +46,11 @@ public class turnToFaceApriltag extends Command {
     } else {
       degrees = camera.getDegToApriltag();
     }
+
+    degrees = swerve.getPose().getRotation().getDegrees() + degrees;
+
+    command = new turnToTurnPIDSetPoint(swerve, degrees);
+    command.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,9 +58,9 @@ public class turnToFaceApriltag extends Command {
   public void execute() {
     System.out.println("!!!!!!!!!!!!!!!!!!!!\nTURNING\n!!!!!!!!!!!!!!!!!!!!");
 
-    degrees = swerve.getPose().getRotation().getDegrees() + degrees;
- 
-    // TODO: Create a line something like this : SwerveDrive.setTurnPIDPoint(degrees); - TK
+    if (command.isFinished()) {
+      complete = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
