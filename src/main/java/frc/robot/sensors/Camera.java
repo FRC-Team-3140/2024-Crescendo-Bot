@@ -8,7 +8,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -37,18 +36,21 @@ public class Camera extends SubsystemBase {
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
   // Gets initial instantiation of Cameras - TK
-  private PhotonCamera april = Camera.aprilGetInstance();
-  private PhotonCamera notes = Camera.notesGetInstance();
-  
-  // TODO: Find the actual postition of the cameras on the bot. - TK
-  // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.5, 0.0, 0.5), new Rotation3d(0,0,Math.PI)); 
+  private PhotonCamera april = aprilGetInstance();
+  private PhotonCamera notes = notesGetInstance();
 
-  // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
-  private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
+  // TODO: Find the actual postition of the cameras on the bot. - TK
+  // Cam mounted facing forward, half a meter forward of center, half a meter up
+  // from center. - TK
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.5, 0.0, 0.5), new Rotation3d(0, 0, Math.PI));
+
+  // Cam mounted facing forward, half a meter forward of center, half a meter up
+  // from center. - TK
+  private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToApril);
+  private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+      PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToApril);
 
   private boolean connected = false;
   private int connectionAttempts = 2;
@@ -154,11 +156,14 @@ public class Camera extends SubsystemBase {
       notesGetInstance();
     }
 
-    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause problems - TK
+    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
+    // problems - TK
     swerveDrive = RobotContainer.swerve;
 
-    // Will also create a field layout object and set global variables for landmark apriltags
-    // as mentioned earlier. This is not to be confused with the Photonvision apriltag layout
+    // Will also create a field layout object and set global variables for landmark
+    // apriltags
+    // as mentioned earlier. This is not to be confused with the Photonvision
+    // apriltag layout
     // class! - TK
     configureTeam();
   }
@@ -459,7 +464,8 @@ public class Camera extends SubsystemBase {
   }
 
   public aprilTagLayout getAprilTagLayout() {
-    // TODO: Check to see if this variable matches the one I just added for the photonvision pose estimator - TK
+    // TODO: Check to see if this variable matches the one I just added for the
+    // photonvision pose estimator - TK
     return aprilTagLayout;
   }
 
@@ -479,24 +485,28 @@ public class Camera extends SubsystemBase {
   public double getTimestamp() {
     return (1.0 * heartbeat);
   }
+
   double lastResult = 0;
-  public boolean isConnected(){
-    if(!connected){
+
+  public boolean isConnected() {
+    if (!connected) {
       return false;
     }
-    boolean kjasdfl =  april.getLatestResult().hasTargets() && connected && april.getLatestResult().getTimestampSeconds() != lastResult;
+    boolean kjasdfl = april.getLatestResult().hasTargets() && connected
+        && april.getLatestResult().getTimestampSeconds() != lastResult;
     lastResult = april.getLatestResult().getTimestampSeconds();
     return kjasdfl;
   }
 
   public Pose2d getEstimatedGlobalPose() {
-        // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-        // if (connected && april.getLatestResult().hasTargets() && !april.getLatestResult().equals(lastResult)){
-          return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
-        // } else {
-          // return null;
-        // }
-    }
+    // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+    // if (connected && april.getLatestResult().hasTargets() &&
+    // !april.getLatestResult().equals(lastResult)){
+    return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
+    // } else {
+    // return null;
+    // }
+  }
 
   public SequentialCommandGroup pathfindToAprilTag() {
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(

@@ -12,7 +12,7 @@ import frc.robot.subsystems.SwerveDrive;
 public class turnToFaceApriltag extends Command {
   private SwerveDrive swerve;
   private Camera camera;
-  private boolean complete = false; 
+  private boolean complete = false;
   private int ID = -1;
 
   private double speed;
@@ -55,7 +55,7 @@ public class turnToFaceApriltag extends Command {
   @Override
   public void execute() {
     System.out.println("!!!!!!!!!!!!!!!!!!!!\nTURNING\n!!!!!!!!!!!!!!!!!!!!");
-    
+
     degrees = swerve.getPose().getRotation().getDegrees() + degrees;
 
     if (swerve.getPose().getRotation().getDegrees() > degrees) {
@@ -63,21 +63,22 @@ public class turnToFaceApriltag extends Command {
     } else if (swerve.getPose().getRotation().getDegrees() < degrees) {
       swerve.drive(0, 0, speed, false);
     } else {
-      complete = true; 
+      complete = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if (complete) {
-      return true; 
-    } else { 
-      return false; 
+      return true;
+    } else {
+      return false;
     }
   }
 }

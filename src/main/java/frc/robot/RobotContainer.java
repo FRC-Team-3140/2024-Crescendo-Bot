@@ -1,7 +1,6 @@
 
 package frc.robot;
 
-import java.time.Instant;
 import java.util.function.BooleanSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -35,7 +34,6 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -45,7 +43,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer implements Constants{
+public class RobotContainer implements Constants {
   public static XboxCotroller controller = new XboxCotroller(0);
   public static AHRS gyro = new AHRS(Port.kMXP);
   public static SwerveDrive swerve = SwerveDrive.getInstance();
@@ -54,7 +52,6 @@ public class RobotContainer implements Constants{
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder = new SendableChooser<>();
   public static Climber climber = Climber.getInstance();
-  
 
   public static XboxCotroller controller2 = new XboxCotroller(1);
   public static IntakeShooter intakeShooter;
@@ -66,17 +63,17 @@ public class RobotContainer implements Constants{
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
-    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(5)));
+    NamedCommands.registerCommand("SpeakerShoot",
+        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(5)));
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
 
-    
     // Additional Commands (Not automatically improted by Pathplanner) - TK
     // autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
-    
+
     autobuilder = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path planner", autobuilder);
-  
-  NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").setDouble(2);
+
+    NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").setDouble(2);
     configureBindings();
   }
 
@@ -98,31 +95,35 @@ public class RobotContainer implements Constants{
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .01;
     BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .01;
 
-    new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new InstantCommand(climber::raiseLeft)).onFalse(new InstantCommand(climber::stopLeft));
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new InstantCommand(climber::raiseRight)).onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight)).onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft)).onFalse(new InstantCommand(climber::stopLeft));       
-    
-    //Resetting Gyro
-    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
-    new JoystickButton(controller, Button.kA.value).onTrue(new DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
+    new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new InstantCommand(climber::raiseLeft))
+        .onFalse(new InstantCommand(climber::stopLeft));
+    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new InstantCommand(climber::raiseRight))
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight))
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft))
+        .onFalse(new InstantCommand(climber::stopLeft));
 
-    //Arm Controls
+    // Resetting Gyro
+    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
+    new JoystickButton(controller, Button.kA.value).onTrue(new DriveFacingApril(swerve));
+
+    // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-  //Intake/Shooter Controls     
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
+    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3())
+        .onFalse(new ShooterSpeedL1(0));
+    // Intake/Shooter Controls
+    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
+        .onFalse(new ShootSpeakerL1(0, 0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new IntakeUntilNoteDetectedL1());
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10.5,3)).onFalse(new ShootSpeakerL1(0,0));
-    
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10.5, 3)).onFalse(new ShootSpeakerL1(0, 0));
 
+  }
 
-  } 
-
-  public void resetGyro(){
+  public void resetGyro() {
     gyro.reset();
   }
 
@@ -136,9 +137,7 @@ public class RobotContainer implements Constants{
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autobuilder.getSelected();
-    
-  }
 
-  
+  }
 
 }

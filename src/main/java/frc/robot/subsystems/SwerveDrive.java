@@ -34,7 +34,6 @@ import frc.robot.sensors.Camera;
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
   private static SwerveDrive instance = null;
-  
 
   private final Translation2d[] locations = {
       new Translation2d(botLength, botLength),
@@ -42,11 +41,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new Translation2d(-botLength, botLength),
       new Translation2d(-botLength, -botLength)
   };
-      PIDController turnPID = new PIDController(2.25, 0.0, .0675);
-
+  PIDController turnPID = new PIDController(2.25, 0.0, .0675);
 
   SwerveModule[] modules = {
-      new SwerveModule("frontLeft", 3 , 8, 7, 0.701239),
+      new SwerveModule("frontLeft", 3, 8, 7, 0.701239),
       new SwerveModule("frontRight", 2, 6, 5, 0.707867),
       new SwerveModule("backLeft", 0, 2, 1, 0.219279),
       new SwerveModule("backRight", 1, 4, 3, 0.447409),
@@ -65,7 +63,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * The numbers used
    * below are robot specific, and should be tuned.
    */
-  
+
   private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
       kinematics,
       gyro.getRotation2d(),
@@ -111,10 +109,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   }
 
   // var alliance = DriverStation.getAlliance();
-  //         if (alliance.isPresent() && allowPathMirroring) {
-  //           return alliance.get() == DriverStation.Alliance.Red;
-  //         }
-  //         return false;
+  // if (alliance.isPresent() && allowPathMirroring) {
+  // return alliance.get() == DriverStation.Alliance.Red;
+  // }
+  // return false;
 
   // WPILib
   StructArrayPublisher<SwerveModuleState> actualStates = NetworkTableInstance.getDefault()
@@ -133,8 +131,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     actualStates.set(swerveModuleStates);
     setStates.set(states);
 
-
-    // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(), camera.getTimestamp());
+    // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(),
+    // camera.getTimestamp());
     odometryStruct.set(poseEstimator.getEstimatedPosition());
   }
 
@@ -197,13 +195,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // Also apply vision measurements. We use 0.3 seconds in the past as an example
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
-    if(Camera.getInstance().isConnected()){
+    if (Camera.getInstance().isConnected()) {
       // System.out.println(Camera.getInstance().isConnected());
       poseEstimator.addVisionMeasurement(
-      Camera.getInstance().getEstimatedGlobalPose(),
-      Timer.getFPGATimestamp() - .2);
+          Camera.getInstance().getEstimatedGlobalPose(),
+          Timer.getFPGATimestamp() - .2);
       // System.out.println("Balls");
-    }else{
+    } else {
       // System.out.println(Camera.getInstance().isConnected());
       // System.out.println("No targets deteceted");
     }
@@ -229,7 +227,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     return poseEstimator.getEstimatedPosition();
   }
 
-  public double turnToAprilTag(int ID){
+  public double turnToAprilTag(int ID) {
     double angle = getPose().getRotation().getDegrees();
     double setpoint = camera.getDegToApriltag(ID);
     turnPID.setSetpoint(setpoint);

@@ -7,6 +7,7 @@ import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.IntakeShooter;
+
 //Work 
 // TODO: This needs testing - DB
 /**
@@ -20,28 +21,26 @@ public class ScoreInSpeakerL2 extends SequentialCommandGroup {
     /**
      * Creates a new ScoreInSpeakerL2 command.
      *
-     * @param arm The Arm subsystem
+     * @param arm           The Arm subsystem
      * @param intakeShooter The IntakeShooter subsystem
      */
     public ScoreInSpeakerL2(Arm arm, IntakeShooter intakeShooter) {
         addCommands(
 
-            // Step 1: In parallel, set the arm to an angle and rev the shooter speed so it is ready to fire.
-            new ParallelCommandGroup(
-                // Set the arm to the desired angle
-                new SetArmToAngleL1( kArmAngle),
-                // Set the shooter to the desired speed
-                new ShooterSpeedL1( kShooterSpeed)
-            ),
+                // Step 1: In parallel, set the arm to an angle and rev the shooter speed so it
+                // is ready to fire.
+                new ParallelCommandGroup(
+                        // Set the arm to the desired angle
+                        new SetArmToAngleL1(kArmAngle),
+                        // Set the shooter to the desired speed
+                        new ShooterSpeedL1(kShooterSpeed)),
 
-            // Step 2: When both are ready, shoot at the speaker.
-            new ShootSpeakerL1( 10, 3),
+                // Step 2: When both are ready, shoot at the speaker.
+                new ShootSpeakerL1(10, 3),
 
-            // Step 3: When done, stop the shooter and reset the arm to move position.
-            new ParallelCommandGroup(
-                // Reset the arm to the move position
-                new SetArmToAngleL1( Arm.kSetpointMove )
-            )
-        );
+                // Step 3: When done, stop the shooter and reset the arm to move position.
+                new ParallelCommandGroup(
+                        // Reset the arm to the move position
+                        new SetArmToAngleL1(Arm.kSetpointMove)));
     }
 }

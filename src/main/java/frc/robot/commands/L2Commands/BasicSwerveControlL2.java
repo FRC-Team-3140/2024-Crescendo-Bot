@@ -17,8 +17,8 @@ public class BasicSwerveControlL2 extends Command {
     /**
      * Creates a new BasicSwerveControlL2 command.
      *
-     * @param swerveDrive The swerve drive subsystem
-     * @param maxSpeed The maximum speed for the swerve drive
+     * @param swerveDrive         The swerve drive subsystem
+     * @param maxSpeed            The maximum speed for the swerve drive
      * @param maxChassisTurnSpeed The maximum turn speed for the chassis
      */
     public BasicSwerveControlL2(SwerveDrive swerveDrive, double maxSpeed, double maxChassisTurnSpeed) {
@@ -26,7 +26,7 @@ public class BasicSwerveControlL2 extends Command {
         this.maxSpeed = maxSpeed;
         this.maxChassisTurnSpeed = maxChassisTurnSpeed;
         addRequirements(swerveDrive); // This command requires the swerve drive subsystem
-        
+
     }
 
     /**
@@ -35,9 +35,12 @@ public class BasicSwerveControlL2 extends Command {
      */
     @Override
     public void execute() {
-        final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the joystick input
-        final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the joystick input
-        final var rot = -RobotContainer.controller.getRightX() * maxChassisTurnSpeed; // Calculate the rotation speed based on the joystick input
+        final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the
+                                                                             // joystick input
+        final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the
+                                                                             // joystick input
+        final var rot = -RobotContainer.controller.getRightX() * maxChassisTurnSpeed; // Calculate the rotation speed
+                                                                                      // based on the joystick input
         swerveDrive.drive(xSpeed, ySpeed, rot, true); // Drive the swerve drive
     }
 
@@ -45,7 +48,8 @@ public class BasicSwerveControlL2 extends Command {
      * Determines whether the command is finished.
      * If this command is the default command for the drive, it should never finish.
      *
-     * @return false because this command should never finish if it's the default command for the drive
+     * @return false because this command should never finish if it's the default
+     *         command for the drive
      */
     @Override
     public boolean isFinished() {

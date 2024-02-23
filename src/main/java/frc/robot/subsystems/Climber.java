@@ -4,43 +4,41 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class Climber extends SubsystemBase{
-    //Motors
+public class Climber extends SubsystemBase {
+    // Motors
     private CANSparkMax leftClimber;
     private CANSparkMax rightClimber;
     public static Climber climber;
 
-    //Solenoids - runs on PCM ports 0 and 1
+    // Solenoids - runs on PCM ports 0 and 1
     Solenoid leftSolenoid;
     Solenoid rightSolenoid;
-    
 
-    //CAN IDs
+    // CAN IDs
     private int leftCANID = 14;
     private int rightCANID = 15;
-    // private int pcmCANID = 
+    // private int pcmCANID =
 
-    //Relay ports
+    // Relay ports
     private int leftSolenoidChannelID = 0;
     private int rightSolenoidChannelID = 4;
-    
-    //climber
-    public Climber(){
+
+    // climber
+    public Climber() {
         leftClimber = new CANSparkMax(leftCANID, MotorType.kBrushless);
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
-;
-        //electromagnetic push-pull solenoids running on the PCM. 
-        leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID); 
+        ;
+        // electromagnetic push-pull solenoids running on the PCM.
+        leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID);
         rightSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, rightSolenoidChannelID);
-        //.set(true) will pull the solenoids in. .set(false) will release the solenoids to lock the climbers.
+        // .set(true) will pull the solenoids in. .set(false) will release the solenoids
+        // to lock the climbers.
 
-        //set motor settings
+        // set motor settings
         leftClimber.setIdleMode(IdleMode.kBrake);
         rightClimber.setIdleMode(IdleMode.kBrake);
 
@@ -51,82 +49,82 @@ public class Climber extends SubsystemBase{
         rightClimber.burnFlash();
 
     }
-    public static Climber getInstance(){
-        if (climber == null){
+
+    public static Climber getInstance() {
+        if (climber == null) {
             climber = new Climber();
             return climber;
-        }else 
+        } else
             return climber;
     }
 
     /*
      * Raising and lowering climbers
      */
-    //raises the left climber
-    public void retractLeftSolenoid(){
+    // raises the left climber
+    public void retractLeftSolenoid() {
         leftSolenoid.set(true);
     }
 
-    public void raiseLeftMotor(){
+    public void raiseLeftMotor() {
         leftClimber.set(.2);
     }
-    public void raiseLeft(){
+
+    public void raiseLeft() {
         leftSolenoid.set(true);
-        
-        leftClimber.set(.2); //change to an actual value later
-        
+
+        leftClimber.set(.2); // change to an actual value later
+
     }
-    
-    //raises the right climber
-    public void raiseRight(){
+
+    // raises the right climber
+    public void raiseRight() {
         rightClimber.set(-.2);
-        for(int i = 0; i < 20; i++){
+        for (int i = 0; i < 20; i++) {
 
         }
         rightSolenoid.set(true);
-        rightClimber.set(.2); //change to an actual value later
-        
+        rightClimber.set(.2); // change to an actual value later
+
     }
 
-    //lowers the left climber
-    public void lowerLeft(){
+    // lowers the left climber
+    public void lowerLeft() {
         leftSolenoid.set(true);
-        leftClimber.set(-.2); //change to an actual value later
-        
+        leftClimber.set(-.2); // change to an actual value later
+
     }
 
-    //lowers the right climber
-    public void lowerRight(){
+    // lowers the right climber
+    public void lowerRight() {
         rightSolenoid.set(true);
-        rightClimber.set(-.2); //change to an actual value later
-        
+        rightClimber.set(-.2); // change to an actual value later
+
     }
 
-    //stops the left climber
-    public void stopLeft(){
+    // stops the left climber
+    public void stopLeft() {
         leftClimber.set(0);
         leftSolenoid.set(false);
     }
 
-    //stops the right climber
-    public void stopRight(){
+    // stops the right climber
+    public void stopRight() {
         rightClimber.set(0);
         rightSolenoid.set(false);
     }
 
-    //These will probably never be used
-    //raises both left and right climbers
-    public void raiseBoth(){
+    // These will probably never be used
+    // raises both left and right climbers
+    public void raiseBoth() {
         raiseLeft();
         raiseRight();
     }
 
-    //lowers both left and right climbers
-    public void lowerBoth(){
+    // lowers both left and right climbers
+    public void lowerBoth() {
         lowerLeft();
         lowerRight();
     }
 
 }
-
-
