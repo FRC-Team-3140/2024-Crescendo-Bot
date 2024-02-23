@@ -10,7 +10,11 @@ public class XboxCotroller extends XboxController{
     @Override
     public double getLeftX(){
         if(Math.abs(super.getLeftX()) > deadband){
-            return Math.pow(super.getLeftX(),3);
+            if(super.getLeftX() > 0)
+                return Math.pow(super.getLeftX(),2);
+            else 
+                return -Math.pow(super.getLeftX(),2);
+
         }else{
             return 0;
         }
@@ -19,7 +23,10 @@ public class XboxCotroller extends XboxController{
     @Override
     public double getRightX(){
         if(Math.abs(super.getRightX()) > deadband){
-            return Math.pow(super.getRightX(),3);
+            if(super.getRightX() > 0)
+                return Math.pow(super.getRightX(),2);
+            else
+                return -Math.pow(super.getRightX(),2);
         }else{
             return 0;
         }
@@ -28,7 +35,11 @@ public class XboxCotroller extends XboxController{
     @Override
     public double getLeftY(){
         if(Math.abs(super.getLeftY()) > deadband){
-            return Math.pow(super.getLeftY(),3);
+            if (super.getLeftY() > 0)
+                return Math.pow(super.getLeftY(),2);
+            else   
+                return -Math.pow(super.getLeftY(),2);
+
         }else{
             return 0;
         }
@@ -37,7 +48,10 @@ public class XboxCotroller extends XboxController{
     @Override
     public double getRightY(){
         if(Math.abs(super.getRightY()) > deadband){
-            return Math.pow(super.getRightY(),3);
+            if (super.getRightY() > 0)
+                return Math.pow(super.getRightY(),2);
+            else
+                return -Math.pow(super.getRightY(),2);
         }else{
             return 0;
         }

@@ -108,7 +108,7 @@ public class RobotContainer implements Constants{
     
     //Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
-    // new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
+    new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
     new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand(()-> {climber.retractLeftSolenoid();}));
     new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> {climber.retractRightSolenoid();}));
 
@@ -116,8 +116,8 @@ public class RobotContainer implements Constants{
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new InstantCommand(()-> {arm.setDefaultCommand(new SetArmToDistanceL1());})).onFalse(new InstantCommand(()->{arm.removeDefaultCommand();}));  
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
+    new JoystickButton(controller2, Button.kA.value).whileTrue(new InstantCommand(()-> {arm.setDefaultCommand(new SetArmToDistanceL1());})).whileFalse(new InstantCommand(()->{arm.removeDefaultCommand();}));  
     //Intake/Shooter Controls     
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new IntakeUntilNoteDetectedL1());

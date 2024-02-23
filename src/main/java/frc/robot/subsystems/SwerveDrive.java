@@ -42,23 +42,22 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new Translation2d(-botLength, botLength),
       new Translation2d(-botLength, -botLength)
   };
-      PIDController turnPID = new PIDController(1, 0.0, 0);
-
-
+  
+  
   SwerveModule[] modules = {
       new SwerveModule("frontLeft", 3 , 8, 7, 0.701239),
       new SwerveModule("frontRight", 2, 6, 5, 0.707867),
       new SwerveModule("backLeft", 0, 2, 1, 0.219279),
       new SwerveModule("backRight", 1, 4, 3, 0.447409),
 
-  };
-
+    };
+    
   private static AHRS gyro = RobotContainer.gyro;
   private ChassisSpeeds botSpeeds = new ChassisSpeeds(0, 0, 0);
   private boolean pathInverted = false;
 
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-      locations[0], locations[1], locations[2], locations[3]);
+    locations[0], locations[1], locations[2], locations[3]);
 
   /*
    * Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings.
@@ -70,7 +69,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       kinematics,
       gyro.getRotation2d(),
       new SwerveModulePosition[] {
-          modules[0].getSwerveModulePosition(),
+        modules[0].getSwerveModulePosition(),
           modules[1].getSwerveModulePosition(),
           modules[2].getSwerveModulePosition(),
           modules[3].getSwerveModulePosition()
@@ -123,7 +122,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       .getStructArrayTopic("Set States", SwerveModuleState.struct).publish();
   StructPublisher<Pose2d> odometryStruct = NetworkTableInstance.getDefault()
       .getStructTopic("Odometry", Pose2d.struct).publish();
-  SwerveModuleState[] states = new SwerveModuleState[4];
+      SwerveModuleState[] states = new SwerveModuleState[4];
 
   public void periodic() {
     for (int i = 0; i < 4; i++) {
@@ -167,7 +166,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public void resetPose(Pose2d pose) {
     poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
   }
-
+  
   public void driveRobotRelative(ChassisSpeeds speeds) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
   }
@@ -216,7 +215,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     }
     return positions;
   }
-
+  
   public boolean shouldFlipPath() {
     return pathInverted;
   }
@@ -228,11 +227,19 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
-
+  
+  PIDController turnPID = new PIDController(.5, 0.0, 0);
   public double turnToAprilTag(int ID){
-    double angle = getPose().getRotation().getDegrees();
-    double setpoint = camera.getDegToApriltag(ID);
+    // turnPID.enableContinuousInput(0, 360);
+    double botAngle = getPose().getRotation().getDegrees();
+    double offsetAngle = camera.getDegToApriltag(ID);
+    double setpoint =0;
+    if (botAngle - offsetAngle <= 0)
+      setpoint = botAngle + offsetAngle;
+    else 
+      setpoint = botAngle - offsetAngle;
+
     turnPID.setSetpoint(setpoint);
-    return turnPID.calculate(angle);
+    return turnPID.calculate(botAngle);
   }
 }

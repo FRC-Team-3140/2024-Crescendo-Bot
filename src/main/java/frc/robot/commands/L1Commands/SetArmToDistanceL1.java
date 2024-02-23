@@ -25,17 +25,17 @@ public class SetArmToDistanceL1 extends Command {
 
     @Override
     public void initialize() {
-        distance = Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
-        SmartDashboard.putNumber("Distance", distance);
         // distance = Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
         // SmartDashboard.putNumber("Distance", distance);
         // // Code to initialize the command
         // arm.setArmToShootDistance(distance);
     }
-
+    
     @Override
     public void execute() {
         // Code to initialize the command
+        distance = Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
+        SmartDashboard.putNumber("Distance", distance);
         arm.setArmToShootDistance(distance);
     }
 
