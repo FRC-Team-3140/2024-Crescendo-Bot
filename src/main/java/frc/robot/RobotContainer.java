@@ -120,6 +120,7 @@ public class RobotContainer implements Constants{
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new IntakeUntilNoteDetectedL1());
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
+    
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10.5,3)).onFalse(new ShootSpeakerL1(0,0));
     
 

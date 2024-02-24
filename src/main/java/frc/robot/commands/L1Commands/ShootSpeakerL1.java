@@ -40,7 +40,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
     }
     @Override
     public void execute() {
-        if(intakeShooter.getShooterSpeed() >= 4600){
+        if(intakeShooter.getShooterSpeed() >= 5000){
             intakeShooter.setIntakeVoltage(voltage2);
         }
     }

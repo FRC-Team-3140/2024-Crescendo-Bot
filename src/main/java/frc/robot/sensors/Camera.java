@@ -41,7 +41,7 @@ public class Camera extends SubsystemBase {
   
   // TODO: Find the actual postition of the cameras on the bot. - TK
   // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.5, 0.0, 0.5), new Rotation3d(0,0,Math.PI)); 
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.368, 0.0, 0.2), new Rotation3d(0,0,Math.PI)); 
 
   // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
   private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
