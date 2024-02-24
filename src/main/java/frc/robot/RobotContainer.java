@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -115,13 +116,16 @@ public class RobotContainer implements Constants{
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
     // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-    new JoystickButton(controller2, Button.kA.value).whileTrue(new InstantCommand(()-> {arm.setDefaultCommand(new SetArmToDistanceL1());})).whileFalse(new InstantCommand(()->{arm.removeDefaultCommand();}));  
+    new JoystickButton(controller2, Button.kA.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));  
     //Intake/Shooter Controls     
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new IntakeUntilNoteDetectedL1());
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
-    
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10.5,3)).onFalse(new ShootSpeakerL1(0,0));
+    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.1);
+    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
+      
+    10.5,4)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10.5,0)).onFalse(new ShootSpeakerL1(0,0));
     
 
 

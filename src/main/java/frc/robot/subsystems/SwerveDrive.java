@@ -227,6 +227,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
+  public double getDistanceFromSpeaker(){
+    return Math.hypot(SwerveDrive.getInstance().getPose().getX()-.37, SwerveDrive.getInstance().getPose().getY()- (216*.0254));
+  }
   
   PIDController turnPID = new PIDController(.5, 0.0, 0);
   public double turnToAprilTag(int ID){

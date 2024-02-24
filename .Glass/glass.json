@@ -1,8 +1,5 @@
 {
   "NetworkTables": {
-    "Transitory Values": {
-      "open": false
-    },
     "persistent": {
       "Arm": {
         "open": true
@@ -10,6 +7,9 @@
     },
     "retained": {
       "SmartDashboard": {
+        "Path planner": {
+          "open": true
+        },
         "open": true
       }
     },
@@ -51,7 +51,8 @@
     },
     "Server": {
       "open": true
-    }
+    },
+    "visible": true
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",

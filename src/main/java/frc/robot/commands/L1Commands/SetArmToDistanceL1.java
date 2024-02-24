@@ -34,7 +34,7 @@ public class SetArmToDistanceL1 extends Command {
     @Override
     public void execute() {
         // Code to initialize the command
-        distance = Math.hypot(SwerveDrive.getInstance().getPose().getX()-.36, SwerveDrive.getInstance().getPose().getY()- (216*.0254));
+        distance = SwerveDrive.getInstance().getDistanceFromSpeaker();
         SmartDashboard.putNumber("Distance", distance);
         arm.setArmToShootDistance(distance);
     }

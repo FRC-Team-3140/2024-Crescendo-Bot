@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
 //Works Well
+import frc.robot.subsystems.SwerveDrive;
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
 public class ShootSpeakerL1 extends Command implements Constants {
@@ -38,9 +39,13 @@ public class ShootSpeakerL1 extends Command implements Constants {
         // TODO: Recommend using encoders and PID to control the shooter speed. Much more consistant shots.  See notes in IntakeShooter. -DB
         intakeShooter.setShooterVoltage(voltage);
     }
+    double timeSinceSpinUp = Double.MAX_VALUE;
     @Override
     public void execute() {
         if(intakeShooter.getShooterSpeed() >= 5000){
+            timeSinceSpinUp = System.currentTimeMillis();
+        }
+        if(System.currentTimeMillis() - timeSinceSpinUp > 200 && intakeShooter.getShooterSpeed() >= 5000){
             intakeShooter.setIntakeVoltage(voltage2);
         }
     }
