@@ -104,9 +104,6 @@ public class RobotContainer implements Constants {
     //Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
     new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve));
-    // TODO: The following lines were the result of a merge conflict. Make sure they aren't important! - TK
-    // new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand(()-> {climber.retractLeftSolenoid();}));
-    // new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> {climber.retractRightSolenoid();}));
 
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
