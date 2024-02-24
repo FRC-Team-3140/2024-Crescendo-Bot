@@ -8,7 +8,9 @@ import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.turnToTurnPIDSetPoint;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
@@ -96,27 +98,24 @@ public class Robot extends LoggedRobot implements Constants {
     Arm.getInstance().enable();
   }
 
-  // IntakeAndShooter test = IntakeAndShooter.getInstance();
-  // double test =
-  // NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2);
   @Override
   public void testInit() {
     // test.intake(.6);
+    
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
     // Ready the arm for movement.
     Arm.getInstance().enable();
-    // new SetArmToAngleL1(
-    // NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();;
+
+    SwerveDrive swerve = SwerveDrive.getInstance();
+    
+    new turnToTurnPIDSetPoint(swerve, swerve.getPose().getRotation().getDegrees() + 90).schedule();
   }
 
   /** This function is called periodically during test mode. */
-  // DigitalInput photoElectric = new DigitalInput(0);
-
   @Override
   public void testPeriodic() {
-    // System.out.println(photoElectric.get());
   }
 
   /** This function is called once when the robot is first started up. */
@@ -128,5 +127,4 @@ public class Robot extends LoggedRobot implements Constants {
   @Override
   public void simulationPeriodic() {
   }
-
 }
