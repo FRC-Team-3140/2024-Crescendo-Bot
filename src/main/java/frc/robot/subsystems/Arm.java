@@ -63,8 +63,8 @@ public class Arm extends SubsystemBase {
 
   // Favorite setpoints
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
-  public static final double kSetpoiintIntakeDown = 9.0; // The setpoint for intaking
-  public static final double kSetpointIntakeReady = 28.0; //  The eady for intake but off the ground for movement and protection
+  public static final double kSetpoiintIntakeDown = 8.0; // The setpoint for intaking
+  public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
   public static final double kSetpointMove = 60.0; // The ready for intake but off the ground for movement and protection
 
@@ -153,12 +153,21 @@ public class Arm extends SubsystemBase {
     encoderConnected();
 
     angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
-    angleInterpolator.put(52.0 * .0254, 14.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
-    angleInterpolator.put(72.0 * .0254, 24.0);
-    angleInterpolator.put(89.0 * .0254, 32.0);
-    angleInterpolator.put(122.0 * .0254, 37.4);
-    angleInterpolator.put(129.0 * .0254, 38.5);
-    angleInterpolator.put(148.375 * .0254, 39.8);
+    angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
+    angleInterpolator.put(1.9685, 26.0);
+    angleInterpolator.put(2.4003, 34.0);
+    angleInterpolator.put(3.0048, 37.8);
+    angleInterpolator.put(3.2385, 38.4);
+    angleInterpolator.put(3.4163, 40.4);
+    angleInterpolator.put(3.5146, 40.7);
+    angleInterpolator.put(3.9116, 41.6);
+    // angleInterpolator.put()
+
+    
+    // angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
+    // angleInterpolator.put(1.35, 13.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
+    // angleInterpolator.put(2.42, 21.0);
+    // angleInterpolator.put(3.14, 27.0);
 
     // Set the arm to disabled by default.
     disable();

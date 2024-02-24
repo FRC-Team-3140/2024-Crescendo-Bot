@@ -110,6 +110,8 @@ public class RobotContainer implements Constants{
     
     //Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
+    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative = false;})).onFalse(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative=true;}));
+
     // new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
 
     //Arm Controls 
@@ -125,8 +127,8 @@ public class RobotContainer implements Constants{
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.1);
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
       
-    10.5,4)).onFalse(new ShootSpeakerL1(0, 0));
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10.5,0)).onFalse(new ShootSpeakerL1(0,0));
+    10,4)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10,0)).onFalse(new ShootSpeakerL1(0,0));
     
 
 
