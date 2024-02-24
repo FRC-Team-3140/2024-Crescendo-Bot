@@ -13,8 +13,8 @@ public class BasicSwerveControlL2 extends Command {
     private final SwerveDrive swerveDrive; // The swerve drive subsystem
     private final double maxSpeed; // The maximum speed for the swerve drive
     private final double maxChassisTurnSpeed; // The maximum turn speed for the chassis
-    private double speed;
-    private double turnSpeed;
+    // private double speed;
+    // private double turnSpeed;
     /**
      * Creates a new BasicSwerveControlL2 command.
      *
@@ -36,13 +36,13 @@ public class BasicSwerveControlL2 extends Command {
      */
     @Override
     public void execute() {
-        if(RobotContainer.controller.getXButton()){
-            speed = maxSpeed /2;
-            turnSpeed = maxChassisTurnSpeed/2;
-        }
-        final var xSpeed = -RobotContainer.controller.getLeftY() * speed; // Calculate the x speed based on the joystick input
-        final var ySpeed = -RobotContainer.controller.getLeftX() * speed; // Calculate the y speed based on the joystick input
-        final var rot = -RobotContainer.controller.getRightX() * turnSpeed; // Calculate the rotation speed based on the joystick input
+        // if(RobotContainer.controller.getXButton()){
+        //     speed = maxSpeed /2;
+        //     turnSpeed = maxChassisTurnSpeed/2;
+        // }
+        final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the joystick input
+        final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the joystick input
+        final var rot = -RobotContainer.controller.getRightX() * maxChassisTurnSpeed; // Calculate the rotation speed based on the joystick input
         swerveDrive.drive(xSpeed, ySpeed, rot, true); // Drive the swerve drive
     }
 

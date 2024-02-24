@@ -96,16 +96,17 @@ public class RobotContainer implements Constants {
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .01;
     BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .01;
 
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(climber::raiseLeft)).onFalse(new InstantCommand(climber::stopLeft));
-    new JoystickButton(controller, Button.kRightBumper.value).onTrue(new InstantCommand(climber::raiseRight)).onFalse(new InstantCommand(climber::stopRight));
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight()).onFalse(new InstantCommand(climber::stopLeft));
+    new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight()).onFalse(new InstantCommand(climber::stopRight));
     new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight)).onFalse(new InstantCommand(climber::stopRight));
     new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft)).onFalse(new InstantCommand(climber::stopLeft));       
     
     //Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
     new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve));
-    new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand(()-> {climber.retractLeftSolenoid();}));
-    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> {climber.retractRightSolenoid();}));
+    // TODO: The following lines were the result of a merge conflict. Make sure they aren't important! - TK
+    // new JoystickButton(controller, Button.kA.value).onTrue(new InstantCommand(()-> {climber.retractLeftSolenoid();}));
+    // new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()-> {climber.retractRightSolenoid();}));
 
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
