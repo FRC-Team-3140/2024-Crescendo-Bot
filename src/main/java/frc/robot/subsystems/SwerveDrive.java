@@ -229,7 +229,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     return Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
   }
   
-  PIDController turnPID = new PIDController(.5, 0.0, 0);
+  public PIDController turnPID = new PIDController(.5, 0.0, 0);
   public double turnToAprilTag(int ID){
     // turnPID.enableContinuousInput(0, 360);
     double botAngle = getPose().getRotation().getDegrees();
