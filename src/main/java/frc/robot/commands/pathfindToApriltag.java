@@ -58,8 +58,6 @@ public class pathfindToApriltag extends Command implements Constants {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO: Remove all unnecessary imports. - TK
-
     System.out.println("Following Path...");
 
     if (pathToFollow.isFinished()) {
