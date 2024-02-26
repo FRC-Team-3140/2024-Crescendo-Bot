@@ -8,48 +8,54 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6269515003484982,
-        "y": 7.032371221140546
+        "x": 1.1421378553712815,
+        "y": 6.850648293371179
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.6755847729704936,
-        "y": 7.0226445666161466
+        "x": 1.8788695852449977,
+        "y": 6.984599516984582
       },
       "prevControl": {
-        "x": 1.4324184098605162,
-        "y": 6.983737948518551
+        "x": 1.2760890789846844,
+        "y": 6.93675979426551
       },
       "nextControl": {
-        "x": 1.9254862476598782,
-        "y": 7.062628802566447
+        "x": 2.2536516648052816,
+        "y": 7.0143441264734925
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6677035344592013,
-        "y": 7.090731148286942
+        "x": 2.845231984170262,
+        "y": 6.984599516984582
       },
       "prevControl": {
-        "x": 2.2677035344592014,
-        "y": 7.090731148286942
+        "x": 2.882576926925416,
+        "y": 6.9798155447126735
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "Slow down at end",
-      "minWaypointRelativePos": 1.45,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 0.5,
@@ -67,8 +73,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": true
+    "rotation": 1.5911402711944234,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "Real Paths",

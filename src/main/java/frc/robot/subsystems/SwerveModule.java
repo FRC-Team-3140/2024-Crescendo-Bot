@@ -6,10 +6,13 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,22 +33,24 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public CANSparkMax turnMotor;
     public CANSparkMax driveMotor;
     public PIDController turnPID;
-    public PIDController drivePID;
+    public ProfiledPIDController drivePID;
     public AnalogEncoder turnEncoder;
     public RelativeEncoder driveEncoder;
     
     public double botMass = 24.4;
     
-    public double P = .008;
+    public double P = .01;
 
     public double driveSetpointTolerance = .5;
     public double turnSetpointTolerance;
     public double turnVelocityTolerance;
 
 
-    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706, 2.4433 , 0.08833);
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706*.712, 2.4433* .712 , 0.10133* .712); 
+    //realised the feedforward was off by a factor of .712, corrected it
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
     
-    // private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxDriveSpeed, maxAcceleration);
+    
     // private State initialState = new TrapezoidProfile.State(0, 0);
     // private TrapezoidProfile trapezoidProfile;
 
@@ -82,7 +87,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
         turnPID.enableContinuousInput(0,360);
         turnPID.setTolerance(turnSetpointTolerance, turnVelocityTolerance);
         //determined from a SYSID scan
-        drivePID = new PIDController(0.09, 0, .02);
+        drivePID = new ProfiledPIDController(.11, 0, .015, constraints);
         drivePID.setTolerance(driveSetpointTolerance);
 
     }
@@ -111,8 +116,8 @@ public class SwerveModule extends SubsystemBase implements Constants {
     }
 
     public void setDriveSpeed(double velocity){
-        drivePID.setSetpoint(velocity);
-        driveMotor.setVoltage(driveFeedforward.calculate(velocity));
+        drivePID.setGoal(new State(velocity, 0));
+        driveMotor.setVoltage(driveFeedforward.calculate(velocity) + drivePID.calculate(driveEncoder.getVelocity()));
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Set Speed").setDouble(velocity);
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Actual Speed").setDouble(driveEncoder.getVelocity()); 
         // drivePID.calculate(driveEncoder.getVelocity())); ///drivePID added too much instability

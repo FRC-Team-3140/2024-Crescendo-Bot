@@ -56,7 +56,7 @@ public class RobotContainer implements Constants{
   public static Arm arm = Arm.getInstance();
   // // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
-  SendableChooser<Command> autobuilder = new SendableChooser<>();
+  SendableChooser<Command> autobuilder;
   public static Climber climber = Climber.getInstance();
   
 
@@ -71,7 +71,7 @@ public class RobotContainer implements Constants{
     // arm.setDefaultCommand(new SetArmToDistanceL1());
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
-    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(5)));
+    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
 
     

@@ -87,7 +87,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public SwerveDrive() {
     gyro.reset();
 
-    // Autobuilder for Pathplanner Goes last in constructor! TK
+    // Autobuilder for Pathplanner Goes last in constructor! TK 
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -95,8 +95,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
-            new PIDConstants(2.5, 0.0, 0), // Translation PID constants
-            new PIDConstants(2.25, 0.0, .0675), // Rotation PID constants
+            new PIDConstants(9, 0.0, 0), // Translation PID constants
+            new PIDConstants(1, 0.0, .05), // Rotation PID constants
             maxSpeed, // Max module speed, in m/s
             botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -200,7 +200,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       // System.out.println(Camera.getInstance().isConnected());
       poseEstimator.addVisionMeasurement(
       Camera.getInstance().getEstimatedGlobalPose(),
-      Timer.getFPGATimestamp() - .2);
+      Timer.getFPGATimestamp() - Camera.getInstance().getLatency());
       // System.out.println("Balls");
     }else{
       // System.out.println(Camera.getInstance().isConnected());
