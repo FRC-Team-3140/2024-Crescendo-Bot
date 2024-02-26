@@ -27,9 +27,9 @@ public class IntakeUntilNoteDetectedL1 extends Command {
 
   @Override
   public void initialize() {
-    intakeShooter.setHoldingPiece(false);
-    lastVoltage = pdp.getCurrent(17);
-    startTime = System.currentTimeMillis();
+    // intakeShooter.setHoldingPiece(false);
+    // lastVoltage = pdp.getCurrent(17);
+    // startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(intakeVoltage);
   }
 

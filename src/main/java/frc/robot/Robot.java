@@ -6,9 +6,14 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.turnToTurnPIDSetPoint;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -77,9 +82,9 @@ public class Robot extends LoggedRobot implements Constants {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
     // schedule the autonomous command (example)
-    // if (m_autonomousCommand != null) {
-    // m_autonomousCommand.schedule();
-    // }
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -97,7 +102,8 @@ public class Robot extends LoggedRobot implements Constants {
     // Ready the arm for movement.
     Arm.getInstance().enable();
   }
-
+  // IntakeAndShooter test = IntakeAndShooter.getInstance();
+  double test = NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2);
   @Override
   public void testInit() {
     // test.intake(.6);
@@ -107,15 +113,19 @@ public class Robot extends LoggedRobot implements Constants {
 
     // Ready the arm for movement.
     Arm.getInstance().enable();
-
-    SwerveDrive swerve = SwerveDrive.getInstance();
-    
-    new turnToTurnPIDSetPoint(swerve, swerve.getPose().getRotation().getDegrees() + 90).schedule();
+    new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();;
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    // new SequentialCommandGroup(
+    //   new ParallelCommandGroup(new RepeatCommand(()-> SwerveDrive.))) 
+    
+    
+    
+    
+    // ).schedule();
   }
 
   /** This function is called once when the robot is first started up. */

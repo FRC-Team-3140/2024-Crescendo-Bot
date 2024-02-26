@@ -9,6 +9,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -50,7 +52,7 @@ public class RobotContainer implements Constants {
   public static Arm arm = Arm.getInstance();
   // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
-  SendableChooser<Command> autobuilder = new SendableChooser<>();
+  SendableChooser<Command> autobuilder;
   public static Climber climber = Climber.getInstance();
 
   public static XboxCotroller controller2 = new XboxCotroller(1);
@@ -64,8 +66,7 @@ public class RobotContainer implements Constants {
     // arm.setDefaultCommand(new SetArmToDistanceL1());
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
-    NamedCommands.registerCommand("SpeakerShoot",
-        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(5)));
+    NamedCommands.registerCommand("SpeakerShoot", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
 
     // Additional Commands (Not automatically improted by Pathplanner) - TK
@@ -103,19 +104,27 @@ public class RobotContainer implements Constants {
     
     //Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
-    new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve));
+    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative = false;})).onFalse(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative=true;}));
+
+    // new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
 
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
     // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-    new JoystickButton(controller2, Button.kA.value).whileTrue(new InstantCommand(()-> {arm.setDefaultCommand(new SetArmToDistanceL1());})).whileFalse(new InstantCommand(()->{arm.removeDefaultCommand();}));  
+    new JoystickButton(controller2, Button.kA.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));  
     //Intake/Shooter Controls     
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
-    new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new IntakeUntilNoteDetectedL1());
+    new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10.5, 3)).onFalse(new ShootSpeakerL1(0, 0));
+    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.1);
+    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
+      
+    10,4)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10,0)).onFalse(new ShootSpeakerL1(0,0));
+    
+
 
   }
 

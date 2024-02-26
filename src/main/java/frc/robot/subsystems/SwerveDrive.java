@@ -85,7 +85,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public SwerveDrive() {
     gyro.reset();
 
-    // Autobuilder for Pathplanner Goes last in constructor! TK
+    // Autobuilder for Pathplanner Goes last in constructor! TK 
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -93,8 +93,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
-            new PIDConstants(2.5, 0.0, 0), // Translation PID constants
-            new PIDConstants(2.25, 0.0, .0675), // Rotation PID constants
+            new PIDConstants(9, 0.0, 0), // Translation PID constants
+            new PIDConstants(1, 0.0, .05), // Rotation PID constants
             maxSpeed, // Max module speed, in m/s
             botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -197,8 +197,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     if (Camera.getInstance().isConnected()) {
       // System.out.println(Camera.getInstance().isConnected());
       poseEstimator.addVisionMeasurement(
-          Camera.getInstance().getEstimatedGlobalPose(),
-          Timer.getFPGATimestamp() - .2);
+      Camera.getInstance().getEstimatedGlobalPose(),
+      Timer.getFPGATimestamp() - Camera.getInstance().getLatency());
       // System.out.println("Balls");
     } else {
       // System.out.println(Camera.getInstance().isConnected());
@@ -225,10 +225,12 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
-
-  public PIDController turnPID = new PIDController(.5, 0.0, 0);
-
-  public double turnToAprilTag(int ID) {
+  public double getDistanceFromSpeaker(){
+    return Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
+  }
+  
+  PIDController turnPID = new PIDController(.5, 0.0, 0);
+  public double turnToAprilTag(int ID){
     // turnPID.enableContinuousInput(0, 360);
     double botAngle = getPose().getRotation().getDegrees();
     double offsetAngle = camera.getDegToApriltag(ID);

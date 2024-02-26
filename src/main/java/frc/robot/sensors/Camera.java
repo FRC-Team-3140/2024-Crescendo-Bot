@@ -484,7 +484,10 @@ public class Camera extends SubsystemBase {
   public double getTimestamp() {
     return (1.0 * heartbeat);
   }
-
+  public double getLatency(){
+    return april.getLatestResult().getLatencyMillis();
+  }
+  
   double lastResult = 0;
 
   public boolean isConnected() {

@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.73,
+      "x": 0.7,
       "y": 6.69
     },
     "rotation": 60.0
@@ -12,15 +12,46 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "ShootAndPickup"
+            "name": "SpeakerShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetArmToIntake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ShootAndPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeUntilNoteDetected"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "PickupAndShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot"
           }
         }
       ]
