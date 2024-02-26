@@ -6,11 +6,16 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.pathfindToApriltag;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
+import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
@@ -108,7 +113,10 @@ public class Robot extends LoggedRobot implements Constants {
 
     // Ready the arm for movement.
     Arm.getInstance().enable();
-    new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();;
+    new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
+  
+    // new turnToFaceApriltag(6, SwerveDrive.getInstance(), Camera.getInstance()).schedule();
+    new pathfindToApriltag(new Pose2d(Camera.getInstance().getApriltagDistX(), Camera.getInstance().getApriltagDistY(), new Rotation2d(SwerveDrive.getInstance().getPose().getRotation().getDegrees())), Camera.getInstance(), SwerveDrive.getInstance()).schedule();
   }
 
   /** This function is called periodically during test mode. */

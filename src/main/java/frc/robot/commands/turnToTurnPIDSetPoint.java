@@ -12,6 +12,8 @@ public class turnToTurnPIDSetPoint extends Command {
   private double setPoint;
   private double currentBotAngle;
 
+  private final double deadband = 5;
+
   /** Creates a new turnToTurnPIDSetPoint. */
   public turnToTurnPIDSetPoint(SwerveDrive swerveDrive, double setPoint) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,7 +35,7 @@ public class turnToTurnPIDSetPoint extends Command {
   public void execute() {
     currentBotAngle = swerve.getPose().getRotation().getDegrees();
 
-    swerve.drive(0, 0, swerve.turnPID.calculate(currentBotAngle), swerve.allowPathMirroring);
+    swerve.drive(0, 0, swerve.turnPID.calculate(-currentBotAngle), false);
   }
 
   // Called once the command ends or is interrupted.
@@ -44,7 +46,7 @@ public class turnToTurnPIDSetPoint extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (currentBotAngle == setPoint) {
+    if (Math.abs(currentBotAngle - setPoint) < deadband) {
       return true;
     } else {
       return false;
