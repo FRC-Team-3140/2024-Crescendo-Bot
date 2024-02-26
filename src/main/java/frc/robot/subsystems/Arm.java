@@ -66,7 +66,8 @@ public class Arm extends SubsystemBase {
   public static final double kSetpoiintIntakeDown = 8.0; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
-  public static final double kSetpointMove = 60.0; // The ready for intake but off the ground for movement and protection
+  public static final double kSetpointMove = 60.0; // The ready for intake but off the ground for movement and
+                                                   // protection
 
   // Constants for the arm control
   private static final double kDefaultForwardParam = .325; // The default forward control parameter

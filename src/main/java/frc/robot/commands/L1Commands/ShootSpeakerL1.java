@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeShooter;
-//Works Well
-import frc.robot.subsystems.SwerveDrive;
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
 public class ShootSpeakerL1 extends Command implements Constants {
@@ -26,17 +24,20 @@ public class ShootSpeakerL1 extends Command implements Constants {
         this.voltage = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intakeShooter);
-      // Adjust the desiredVoltage variable to the voltage value you want to use. 
-      // You can then use this instance of DefaultShoot in your robot's command scheduler or bind it to a button as needed for your specific control setup.
+        // Adjust the desiredVoltage variable to the voltage value you want to use.
+        // You can then use this instance of DefaultShoot in your robot's command
+        // scheduler or bind it to a button as needed for your specific control setup.
     }
 
     // Called when the command is initially scheduled.
     SequentialCommandGroup test;
     long startTime;
+
     @Override
     public void initialize() {
         startTime = System.currentTimeMillis();
-        // TODO: Recommend using encoders and PID to control the shooter speed. Much more consistant shots.  See notes in IntakeShooter. -DB
+        // TODO: Recommend using encoders and PID to control the shooter speed. Much
+        // more consistant shots. See notes in IntakeShooter. -DB
         intakeShooter.setShooterVoltage(voltage);
     }
     double timeSinceSpinUp = Double.MAX_VALUE;
@@ -52,17 +53,20 @@ public class ShootSpeakerL1 extends Command implements Constants {
             intakeShooter.setIntakeVoltage(voltage2);
         }
     }
+
     @Override
     public void end(boolean interrupted) {
         intakeShooter.setIntakeVoltage(0);
         intakeShooter.setShooterVoltage(0);
- 
+
     }
-    
+
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return false;
-        // return System.currentTimeMillis() - startTime > 3000 ;//|| IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel or the current it is greater than is correct. Please check that
+        // return System.currentTimeMillis() - startTime > 3000 ;//||
+        // IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel
+        // or the current it is greater than is correct. Please check that
     }
-    
+
 }

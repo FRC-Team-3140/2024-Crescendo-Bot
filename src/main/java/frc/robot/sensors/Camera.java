@@ -1,6 +1,6 @@
-// // Copyright (c) FIRST and other WPILib contributors.
-// // Open Source Software; you can modify and/or share it under the terms of
-// // the WPILib BSD license file in the root directory of this project.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.sensors;
 
@@ -8,7 +8,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -24,7 +23,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.pathfindToApriltag;
 import frc.robot.commands.turnToFaceApriltag;
@@ -36,18 +34,23 @@ public class Camera extends SubsystemBase {
 
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  private PhotonCamera april = new PhotonCamera("april");
-  private PhotonCamera notes = null;
-  
-  // TODO: Find the actual postition of the cameras on the bot. - TK
-  // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.368, 0.0, 0.2), new Rotation3d(0,0,Math.PI)); 
+  // Gets initial instantiation of Cameras - TK
+  private PhotonCamera april = aprilGetInstance();
+  private PhotonCamera notes = notesGetInstance();
 
-  // Cam mounted facing forward, half a meter forward of center, half a meter up from center. - TK
-  private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); 
+  // TODO: Find the actual postition of the cameras on the bot. - TK
+  // Cam mounted facing forward, half a meter forward of center, half a meter up
+  // from center. - TK
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.5, 0.0, 0.5), new Rotation3d(0, 0, Math.PI));
+
+  // Cam mounted facing forward, half a meter forward of center, half a meter up
+  // from center. - TK
+  // TODO: get measurements for note cam - TK : private Transform3d robotToNote =
+  // new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToApril);
+  private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+      PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToApril);
 
   private boolean connected = false;
   private int connectionAttempts = 2;
@@ -55,6 +58,8 @@ public class Camera extends SubsystemBase {
   // The heartbeat is a value in the Photonvision Networktable that continually
   // changes.
   private double heartbeat = 0;
+
+  // previousResult must start at a value that's not normally returned - TK
   private double previousResult = -1;
 
   // This thread allows this connection check to run in the background and not
@@ -71,6 +76,7 @@ public class Camera extends SubsystemBase {
   // Time to delay connection attempts is in SECONDS! - TK
   private double attemptDelay;
 
+  // Global variables for updating Pathplanner poses - TK
   private SwerveDrive swerveDrive;
   private Pose2d currentSwervePose2d;
   private double currentX;
@@ -78,9 +84,11 @@ public class Camera extends SubsystemBase {
   private double newX;
   private double newY;
 
+  // percentage of forward distance you want to drive before stopping (to prevent
+  // crashing). - TK
   private double percentTravelDist = 0.8; // Must be < 1
-  private double driveSpeed = Constants.maxSpeed;
 
+  // Global fiducial ids for important landmark apriltags - TK
   private aprilTagLayout aprilTagLayout;
   private int speakerAprilTag;
   private int ampAprilTag;
@@ -147,8 +155,15 @@ public class Camera extends SubsystemBase {
       notesGetInstance();
     }
 
+    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
+    // problems - TK
     swerveDrive = RobotContainer.swerve;
 
+    // Will also create a field layout object and set global variables for landmark
+    // apriltags
+    // as mentioned earlier. This is not to be confused with the Photonvision
+    // apriltag layout
+    // class! - TK
     configureTeam();
   }
 
@@ -229,10 +244,10 @@ public class Camera extends SubsystemBase {
       aprilGetInstance();
       notesGetInstance();
     }
-    // System.out.println(heartbeat);
   }
 
   public boolean getStatus() {
+    // Just returns the boolean that shows connction status - TK
     return connected;
   }
 
@@ -448,7 +463,8 @@ public class Camera extends SubsystemBase {
   }
 
   public aprilTagLayout getAprilTagLayout() {
-    // TODO: Check to see if this variable matches the one I just added for the photonvision pose estimator - TK
+    // TODO: Check to see if this variable matches the one I just added for the
+    // photonvision pose estimator - TK
     return aprilTagLayout;
   }
 
@@ -471,28 +487,32 @@ public class Camera extends SubsystemBase {
   public double getLatency(){
     return april.getLatestResult().getLatencyMillis();
   }
+  
   double lastResult = 0;
-  public boolean isConnected(){
-    if(!connected){
+
+  public boolean isConnected() {
+    if (!connected) {
       return false;
     }
-    boolean kjasdfl =  april.getLatestResult().hasTargets() && connected && april.getLatestResult().getTimestampSeconds() != lastResult;
+    boolean kjasdfl = april.getLatestResult().hasTargets() && connected
+        && april.getLatestResult().getTimestampSeconds() != lastResult;
     lastResult = april.getLatestResult().getTimestampSeconds();
     return kjasdfl;
   }
 
   public Pose2d getEstimatedGlobalPose() {
-        // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-        // if (connected && april.getLatestResult().hasTargets() && !april.getLatestResult().equals(lastResult)){
-          return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
-        // } else {
-          // return null;
-        // }
-    }
+    // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+    // if (connected && april.getLatestResult().hasTargets() &&
+    // !april.getLatestResult().equals(lastResult)){
+    return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
+    // } else {
+    // return null;
+    // }
+  }
 
   public SequentialCommandGroup pathfindToAprilTag() {
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(driveSpeed, speakerAprilTag, RobotContainer.swerve, Camera.getInstance()),
+        new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()),
         new InstantCommand(() -> {
           currentSwervePose2d = RobotContainer.swerve.getPose();
           currentX = currentSwervePose2d.getX();
@@ -503,7 +523,7 @@ public class Camera extends SubsystemBase {
         new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
             Camera.getInstance(),
             RobotContainer.swerve),
-        new turnToFaceApriltag(driveSpeed, speakerAprilTag, RobotContainer.swerve, Camera.getInstance()));
+        new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()));
 
     // Fallback code. NOT tested!!!!! - TK
     // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
@@ -530,7 +550,7 @@ public class Camera extends SubsystemBase {
 
   public SequentialCommandGroup pathfindToAprilTag(int id) {
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(driveSpeed, id, swerveDrive, Camera.getInstance()),
+        new turnToFaceApriltag(id, swerveDrive, Camera.getInstance()),
         new InstantCommand(() -> {
           currentSwervePose2d = swerveDrive.getPose();
           currentX = currentSwervePose2d.getX();
@@ -541,7 +561,7 @@ public class Camera extends SubsystemBase {
         new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
             Camera.getInstance(),
             swerveDrive),
-        new turnToFaceApriltag(driveSpeed, id, swerveDrive, Camera.getInstance()));
+        new turnToFaceApriltag(swerveDrive, Camera.getInstance()));
 
     return goToAprilTag;
   }

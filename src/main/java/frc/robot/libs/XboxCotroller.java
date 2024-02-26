@@ -2,11 +2,13 @@ package frc.robot.libs;
 
 import edu.wpi.first.wpilibj.XboxController;
 
-public class XboxCotroller extends XboxController{
-    public XboxCotroller(int port){
+public class XboxCotroller extends XboxController {
+    public XboxCotroller(int port) {
         super(port);
     }
+
     double deadband = .07;
+
     @Override
     public double getLeftX(){
         if(Math.abs(super.getLeftX()) > deadband){

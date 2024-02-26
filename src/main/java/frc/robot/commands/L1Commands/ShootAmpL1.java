@@ -17,26 +17,28 @@ import frc.robot.subsystems.IntakeShooter;
  * It sets the intake and shooter voltages to a specific value when initialized,
  * and sets them back to zero when the command ends.
  */
-public class ShootAmpL1 extends Command implements Constants{
+public class ShootAmpL1 extends Command implements Constants {
 
-    public IntakeShooter intakeShooter; 
+  public IntakeShooter intakeShooter;
 
-    public ShootAmpL1() {
-        intakeShooter = IntakeShooter.getInstance();
-        addRequirements(intakeShooter);
-    }
+  public ShootAmpL1() {
+    intakeShooter = IntakeShooter.getInstance();
+    addRequirements(intakeShooter);
+  }
 
   /**
    * Initializes the AmpShootL1 command.
    * Sets the intake and shooter voltages.
    */
   long startTime;
+
   @Override
   public void initialize() {
     startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(3);
     intakeShooter.setShooterVoltage(3);
   }
+
   /**
    * Determines whether the command has finished executing.
    * 
@@ -44,14 +46,15 @@ public class ShootAmpL1 extends Command implements Constants{
    */
   @Override
   public boolean isFinished() {
-      // TODO This should automatically terminate after a certain amount of time - DB
-      return System.currentTimeMillis() - startTime > 2000; 
-      
+    // TODO This should automatically terminate after a certain amount of time - DB
+    // TODO: I dont think the channel or the current it is greater than is correct. Please check that
+    return System.currentTimeMillis() - startTime > 2000 || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7; 
   }
+
   @Override
   public void end(boolean interrupted) {
-      intakeShooter.setIntakeVoltage(0);
-      intakeShooter.setShooterVoltage(0);
+    intakeShooter.setIntakeVoltage(0);
+    intakeShooter.setShooterVoltage(0);
   }
 
 }

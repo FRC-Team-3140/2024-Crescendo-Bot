@@ -20,7 +20,7 @@ public class pathfindToApriltag extends Command implements Constants {
   private Command pathToFollow;
   private SwerveDrive swerveDrive;
   private boolean pathCompleted = false;
-  
+
   /** Creates a new pathfindToApriltag. */
   public pathfindToApriltag(Pose2d updatedRobotPose, Camera camera, SwerveDrive swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -59,11 +59,11 @@ public class pathfindToApriltag extends Command implements Constants {
   @Override
   public void execute() {
     System.out.println("Following Path...");
-    
+
     if (pathToFollow.isFinished()) {
       pathCompleted = true;
     }
-    
+
     if (!pathToFollow.isScheduled()) {
       pathToFollow.schedule();
       System.out.println("!!!!!!!!!!!!!!!!!!!!\nScheduled Pathfinding\n!!!!!!!!!!!!!!!!!!!!");
@@ -72,7 +72,8 @@ public class pathfindToApriltag extends Command implements Constants {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
