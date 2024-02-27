@@ -144,3 +144,6 @@ In the context of FRC robot programming, we categorize our commands into differe
 ## Teleop
 - [ ] Make sure Climbers are working
 - [ ] Test out Drive while Turning
+
+## Misc
+- [ ] Error Checking with Photon Vision
