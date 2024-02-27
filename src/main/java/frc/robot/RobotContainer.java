@@ -47,8 +47,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotContainer implements Constants {
   public static XboxCotroller controller = new XboxCotroller(0);
   public static AHRS gyro = new AHRS(Port.kMXP);
-  public static SwerveDrive swerve = SwerveDrive.getInstance();
-  public static Camera camera = Camera.getInstance();
+  public static SwerveDrive swerve;
+  public static Camera camera;
   public static Arm arm = Arm.getInstance();
   // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -62,6 +62,8 @@ public class RobotContainer implements Constants {
    * The container for the robot. Contains subsystems, OI devices, and commppands.
    */
   public RobotContainer() {
+    swerve = SwerveDrive.getInstance();
+    camera = Camera.getInstance();
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
     // swerve.setDefaultCommand(new turnToFaceApriltag(8, swerve, camera));
     // arm.setDefaultCommand(new SetArmToDistanceL1());

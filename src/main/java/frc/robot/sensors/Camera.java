@@ -163,7 +163,7 @@ public class Camera extends SubsystemBase {
 
       // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
       // problems - TK
-      swerveDrive = RobotContainer.swerve;
+      swerveDrive = swerve;
     }
     // Will also create a field layout object and set global variables for landmark
     // apriltags
@@ -175,7 +175,7 @@ public class Camera extends SubsystemBase {
 
   public static Camera getInstance() {
     if (instance == null && checkVersion()) {
-      instance = new Camera(RobotContainer.swerve, 5, 1);
+      instance = new Camera(SwerveDrive.getInstance(), 5, 1);
     }
     return instance;
   }
