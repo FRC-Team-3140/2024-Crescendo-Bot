@@ -385,11 +385,7 @@ public class Camera extends SubsystemBase {
   }
 
   public double getAprilTagDist() {
-    double dist;
-
-    dist = Math.sqrt((Math.pow(getApriltagDistX(), 2) + Math.pow(getApriltagDistY(), 2)));
-
-    return dist;
+    return Math.sqrt((Math.pow(getApriltagDistX(), 2) + Math.pow(getApriltagDistY(), 2)));
   }
 
   public double getDegToApriltag() {
@@ -504,9 +500,11 @@ public class Camera extends SubsystemBase {
   double lastResult = 0;
 
   public boolean isConnected() {
-    if (!connected) {
+    if (!connected || !Camera.checkVersion()) {
       return false;
     }
+
+    // TODO: WHY? This doesn't even do any thing Channing... - PN #Jonathan was here. 
     boolean kjasdfl = april.getLatestResult().hasTargets() && connected
         && april.getLatestResult().getTimestampSeconds() != lastResult;
     lastResult = april.getLatestResult().getTimestampSeconds();
