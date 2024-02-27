@@ -76,8 +76,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       },
       new Pose2d(),
 
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
+      VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(30)));
 
   private Camera camera = Camera.getInstance();
 
@@ -95,8 +95,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
-            new PIDConstants(4, 0.0, 0), // Translation PID constants
-            new PIDConstants(1.0, 0.0, 0), // Rotation PID constants
+            new PIDConstants(8, 0.0, 0), // Translation PID constants
+            new PIDConstants(12, 0.0, 1), // Rotation PID constants
             maxSpeed, // Max module speed, in m/s
             botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -201,7 +201,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       poseEstimator.addVisionMeasurement(
       Camera.getInstance().getEstimatedGlobalPose(),
       Timer.getFPGATimestamp() - Camera.getInstance().getLatency()/1000);
-      System.out.println("Balls");
+      // System.out.println("Balls");
     }else{
       // System.out.println(Camera.getInstance().isConnected());
       System.out.println("No targets deteceted");

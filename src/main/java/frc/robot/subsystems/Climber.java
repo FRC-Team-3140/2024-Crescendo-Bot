@@ -48,8 +48,8 @@ public class Climber extends SubsystemBase{
         //.set(true) will pull the solenoids in. .set(false) will release the solenoids to lock the climbers.
 
         //Limit Switch DIO ports
-        leftLimit = new DigitalInput(0);
-        rightLimit = new DigitalInput(1);
+        leftLimit = new DigitalInput(2);
+        rightLimit = new DigitalInput(3);
 
         //set motor settings
         leftClimber.setIdleMode(IdleMode.kBrake);
