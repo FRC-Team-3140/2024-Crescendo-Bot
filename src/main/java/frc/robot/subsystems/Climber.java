@@ -32,7 +32,7 @@ public class Climber extends SubsystemBase {
 
     // Relay ports
     private int leftSolenoidChannelID = 0;
-    private int rightSolenoidChannelID = 4;
+    private int rightSolenoidChannelID = 5;
     
     //climber
     static Climber climber = new Climber();

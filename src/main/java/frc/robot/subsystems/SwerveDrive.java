@@ -93,8 +93,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
-            new PIDConstants(8, 0.0, 0), // Translation PID constants
-            new PIDConstants(12, 0.0, 1), // Rotation PID constants
+            new PIDConstants(0, 0.0, 0), // Translation PID constants
+            new PIDConstants(0, 0.0, 0), // Rotation PID constants
             maxSpeed, // Max module speed, in m/s
             botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -198,7 +198,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       // System.out.println(Camera.getInstance().isConnected());
       poseEstimator.addVisionMeasurement(
       Camera.getInstance().getEstimatedGlobalPose(),
-      Timer.getFPGATimestamp() - Camera.getInstance().getLatency()/1000);
+      Timer.getFPGATimestamp() - .05);
       // System.out.println("Balls");
     }else{
       // System.out.println(Camera.getInstance().isConnected());

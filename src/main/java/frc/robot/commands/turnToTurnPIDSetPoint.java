@@ -5,9 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrive;
 
-public class turnToTurnPIDSetPoint extends Command {
+public class turnToTurnPIDSetPoint extends Command implements Constants{
   private SwerveDrive swerve;
   private double setPoint;
   private double currentBotAngle;
@@ -35,7 +37,7 @@ public class turnToTurnPIDSetPoint extends Command {
   public void execute() {
     currentBotAngle = swerve.getPose().getRotation().getDegrees();
 
-    swerve.drive(0, 0, swerve.turnPID.calculate(-currentBotAngle), false);
+    swerve.drive(-maxSpeed * RobotContainer.controller.getLeftY(), -maxSpeed * RobotContainer.controller.getLeftX(), swerve.turnPID.calculate(-currentBotAngle), false);
   }
 
   // Called once the command ends or is interrupted.

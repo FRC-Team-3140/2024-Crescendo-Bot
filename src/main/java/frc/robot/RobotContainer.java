@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.turnToFaceApriltag;
+import frc.robot.commands.turnToTurnPIDSetPoint;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
@@ -59,11 +61,13 @@ public class RobotContainer implements Constants {
   public static IntakeShooter intakeShooter;
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * The container for the robot. Contains subsystems, OI devices, and commppands.
    */
   public RobotContainer() {
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
+    // swerve.setDefaultCommand(new turnToFaceApriltag(8, swerve, camera));
     // arm.setDefaultCommand(new SetArmToDistanceL1());
+
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
     NamedCommands.registerCommand("SpeakerShoot1", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
