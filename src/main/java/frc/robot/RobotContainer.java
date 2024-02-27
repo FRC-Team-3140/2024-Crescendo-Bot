@@ -68,11 +68,14 @@ public class RobotContainer implements Constants {
 
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
-    NamedCommands.registerCommand("SpeakerShoot1", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
+    NamedCommands.registerCommand("SpeakerShoot1",
+        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
-NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
-    NamedCommands.registerCommand("SpeakerShoot3", new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
-    
+    NamedCommands.registerCommand("SpeakerShoot2",
+        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
+    NamedCommands.registerCommand("SpeakerShoot3",
+        new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
+
     // Additional Commands (Not automatically improted by Pathplanner) - TK
     // autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
 
@@ -101,34 +104,44 @@ NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new Speaker
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .01;
     BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .01;
 
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight()).onFalse(new InstantCommand(climber::stopLeft));
-    new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight()).onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight)).onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft)).onFalse(new InstantCommand(climber::stopLeft));       
-    
-    //Resetting Gyro
-    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
-    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative = false;})).onFalse(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative=true;}));
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight())
+        .onFalse(new InstantCommand(climber::stopLeft));
+    new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight())
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight))
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft))
+        .onFalse(new InstantCommand(climber::stopLeft));
 
-    // new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
+    // Resetting Gyro
+    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
+    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(() -> {
+      BasicSwerveControlL2.fieldRelative = false;
+    })).onFalse(new InstantCommand(() -> {
+      BasicSwerveControlL2.fieldRelative = true;
+    }));
+
+    // new JoystickButton(controller, Button.kX.value).whileTrue(new
+    // DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
 
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-    new JoystickButton(controller2, Button.kA.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));  
-    //Intake/Shooter Controls     
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
-    new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new
+    // SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
+    new JoystickButton(controller2, Button.kA.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
+    // Intake/Shooter Controls
+    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
+        .onFalse(new ShootSpeakerL1(0, 0));
+    new JoystickButton(controller2, Button.kLeftBumper.value)
+        .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.1);
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
-      
-    10,4)).onFalse(new ShootSpeakerL1(0, 0));
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10,0)).onFalse(new ShootSpeakerL1(0,0));
-    
 
+        10, 4)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10, 0)).onFalse(new ShootSpeakerL1(0, 0));
 
   }
 

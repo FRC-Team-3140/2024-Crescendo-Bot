@@ -7,6 +7,7 @@ package frc.robot.sensors;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonVersion;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -32,7 +33,7 @@ public class Camera extends SubsystemBase {
 
   private static Camera instance = null;
 
-  private NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
   // Gets initial instantiation of Cameras - TK
   private PhotonCamera april = aprilGetInstance();
@@ -153,12 +154,11 @@ public class Camera extends SubsystemBase {
     if (connected == true) {
       aprilGetInstance();
       notesGetInstance();
+
+      // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
+      // problems - TK
+      swerveDrive = RobotContainer.swerve;
     }
-
-    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
-    // problems - TK
-    swerveDrive = RobotContainer.swerve;
-
     // Will also create a field layout object and set global variables for landmark
     // apriltags
     // as mentioned earlier. This is not to be confused with the Photonvision
@@ -168,7 +168,7 @@ public class Camera extends SubsystemBase {
   }
 
   public static Camera getInstance() {
-    if (instance == null) {
+    if (instance == null && checkVersion()) {
       instance = new Camera(RobotContainer.swerve, 5, 1);
     }
     return instance;
@@ -212,6 +212,14 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  private static boolean checkVersion() {
+    if (PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString(null))) {
+      return true;
+    } else { 
+      return false; 
+    }
+  }
+
   private boolean testConnection() {
     // Gets new result from april camera and test if it's equal to the previous
     // result
@@ -248,7 +256,11 @@ public class Camera extends SubsystemBase {
 
   public boolean getStatus() {
     // Just returns the boolean that shows connction status - TK
-    return connected;
+    if (connected && checkVersion()) {
+      return true; 
+    } else {
+      return false;
+    }
   }
 
   @Override
@@ -484,10 +496,11 @@ public class Camera extends SubsystemBase {
   public double getTimestamp() {
     return (1.0 * heartbeat);
   }
-  public double getLatency(){
+
+  public double getLatency() {
     return april.getLatestResult().getLatencyMillis();
   }
-  
+
   double lastResult = 0;
 
   public boolean isConnected() {

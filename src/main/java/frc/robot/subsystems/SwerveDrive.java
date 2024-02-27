@@ -85,7 +85,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public SwerveDrive() {
     gyro.reset();
 
-    // Autobuilder for Pathplanner Goes last in constructor! TK 
+    // Autobuilder for Pathplanner Goes last in constructor! TK
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -197,10 +197,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     if (Camera.getInstance().isConnected()) {
       // System.out.println(Camera.getInstance().isConnected());
       poseEstimator.addVisionMeasurement(
-      Camera.getInstance().getEstimatedGlobalPose(),
-      Timer.getFPGATimestamp() - .05);
+          Camera.getInstance().getEstimatedGlobalPose(),
+          Timer.getFPGATimestamp() - .05);
       // System.out.println("Balls");
-    }else{
+    } else {
       // System.out.println(Camera.getInstance().isConnected());
       System.out.println("No targets deteceted");
     }
@@ -225,12 +225,15 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
-  public double getDistanceFromSpeaker(){
-    return Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
+
+  public double getDistanceFromSpeaker() {
+    return Math.hypot(SwerveDrive.getInstance().getPose().getX(),
+        SwerveDrive.getInstance().getPose().getY() - (216 * .0254));
   }
-  
+
   public PIDController turnPID = new PIDController(.5, 0.0, 0);
-  public double turnToAprilTag(int ID){
+
+  public double turnToAprilTag(int ID) {
     // turnPID.enableContinuousInput(0, 360);
     double botAngle = getPose().getRotation().getDegrees();
     double offsetAngle = camera.getDegToApriltag(ID);

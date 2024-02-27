@@ -21,11 +21,11 @@ public class Climber extends SubsystemBase {
     Solenoid leftSolenoid;
     Solenoid rightSolenoid;
 
-    //Limit Switches
+    // Limit Switches
     DigitalInput leftLimit;
     DigitalInput rightLimit;
 
-    //CAN IDs
+    // CAN IDs
     private int leftCANID = 14;
     private int rightCANID = 15;
     // private int pcmCANID =
@@ -33,20 +33,21 @@ public class Climber extends SubsystemBase {
     // Relay ports
     private int leftSolenoidChannelID = 0;
     private int rightSolenoidChannelID = 5;
-    
-    //climber
+
+    // climber
     static Climber climber = new Climber();
-    
-    public Climber(){
+
+    public Climber() {
         leftClimber = new CANSparkMax(leftCANID, MotorType.kBrushless);
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
         ;
         // electromagnetic push-pull solenoids running on the PCM.
         leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID);
         rightSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, rightSolenoidChannelID);
-        //.set(true) will pull the solenoids in. .set(false) will release the solenoids to lock the climbers.
+        // .set(true) will pull the solenoids in. .set(false) will release the solenoids
+        // to lock the climbers.
 
-        //Limit Switch DIO ports
+        // Limit Switch DIO ports
         leftLimit = new DigitalInput(2);
         rightLimit = new DigitalInput(3);
 
@@ -61,43 +62,44 @@ public class Climber extends SubsystemBase {
         rightClimber.burnFlash();
 
     }
-    public static Climber getInstance(){
+
+    public static Climber getInstance() {
         return climber;
     }
 
     /*
      * Raising and lowering climbers
      */
-    //raises the left climber
-    public void raiseLeft(){
+    // raises the left climber
+    public void raiseLeft() {
         leftSolenoid.set(true);
-        leftClimber.set(1); //change to an actual value later
-        
+        leftClimber.set(1); // change to an actual value later
+
     }
 
-    //raises the right climber
-    public void raiseRight(){
+    // raises the right climber
+    public void raiseRight() {
         rightSolenoid.set(true);
-        rightClimber.set(.2); //change to an actual value later
-        
+        rightClimber.set(.2); // change to an actual value later
+
     }
 
-    //lowers the left climber
-    public void lowerLeft(){
-        if(!leftLimit.get()){
+    // lowers the left climber
+    public void lowerLeft() {
+        if (!leftLimit.get()) {
             leftSolenoid.set(true);
-            leftClimber.set(-.2); //change to an actual value later
-        }else{
+            leftClimber.set(-.2); // change to an actual value later
+        } else {
             leftClimber.set(0);
         }
     }
 
-    //lowers the right climber
-    public void lowerRight(){
-        if(!rightLimit.get()){
+    // lowers the right climber
+    public void lowerRight() {
+        if (!rightLimit.get()) {
             rightSolenoid.set(true);
-            rightClimber.set(-.2); //change to an actual value later
-        }else{
+            rightClimber.set(-.2); // change to an actual value later
+        } else {
             rightClimber.set(0);
         }
     }
@@ -107,14 +109,19 @@ public class Climber extends SubsystemBase {
         leftClimber.set(0);
         leftSolenoid.set(false);
     }
-    public SequentialCommandGroup increaseLeftHeight(){
-        return new SequentialCommandGroup(new InstantCommand(this::lowerLeft), new WaitCommand(.1), new InstantCommand(this::raiseLeft));
+
+    public SequentialCommandGroup increaseLeftHeight() {
+        return new SequentialCommandGroup(new InstantCommand(this::lowerLeft), new WaitCommand(.1),
+                new InstantCommand(this::raiseLeft));
     }
-    public SequentialCommandGroup increaseRightHeight(){
-        return new SequentialCommandGroup(new InstantCommand(this::lowerRight), new WaitCommand(.1), new InstantCommand(this::raiseRight));
+
+    public SequentialCommandGroup increaseRightHeight() {
+        return new SequentialCommandGroup(new InstantCommand(this::lowerRight), new WaitCommand(.1),
+                new InstantCommand(this::raiseRight));
     }
-    //stops the right climber
-    public void stopRight(){
+
+    // stops the right climber
+    public void stopRight() {
         rightClimber.set(0);
         rightSolenoid.set(false);
     }
