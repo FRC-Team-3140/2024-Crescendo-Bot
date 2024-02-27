@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -195,10 +198,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
     if (Camera.getInstance().isConnected()) {
+      Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
+      if(pose.isPresent()){
+        poseEstimator.addVisionMeasurement(
+        pose.get().estimatedPose.toPose2d(),
+        Timer.getFPGATimestamp() - .05);
+      }
       // System.out.println(Camera.getInstance().isConnected());
-      poseEstimator.addVisionMeasurement(
-          Camera.getInstance().getEstimatedGlobalPose(),
-          Timer.getFPGATimestamp() - .05);
       // System.out.println("Balls");
     } else {
       // System.out.println(Camera.getInstance().isConnected());
