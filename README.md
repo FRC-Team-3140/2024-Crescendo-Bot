@@ -136,12 +136,11 @@ In the context of FRC robot programming, we categorize our commands into differe
 
 # Todo Before SMR
 ## Auto 
-[ ] Tune Path Planner PID values 
-[ ] Finish Two Note Auto 
-[ ] Create Mobility Autos from other positions
-[ ] Create Two Note Autos from other positions
+- [ ] Tune Path Planner PID values 
+- [ ] Finish Two Note Auto 
+- [ ] Create Mobility Autos from other positions
+- [ ] Create Two Note Autos from other positions
 
 ## Teleop
-[ ] Make sure Climbers are working
-[ ] Test out Drive while Turning
-[ ] 
+- [ ] Make sure Climbers are working
+- [ ] Test out Drive while Turning
