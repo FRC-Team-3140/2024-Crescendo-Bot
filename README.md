@@ -134,3 +134,14 @@ In the context of FRC robot programming, we categorize our commands into differe
 | L3 | Intelligent Command | Completes complex tasks that integrate sensing and control, and may be composed of multiple simpler commands. Can complete complex objectives autonomously or with minimal driver control. | 
 | L4 | Skynet | Wins the game autonomously. No human intervention needed. |
 
+# Todo Before SMR
+## Auto 
+[ ] Tune Path Planner PID values 
+[ ] Finish Two Note Auto 
+[ ] Create Mobility Autos from other positions
+[ ] Create Two Note Autos from other positions
+
+## Teleop
+[ ] Make sure Climbers are working
+[ ] Test out Drive while Turning
+[ ] 
