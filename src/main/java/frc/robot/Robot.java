@@ -6,28 +6,25 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
-import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.pathfindToApriltag;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
+import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.SwerveDrive;
 
-
-public class Robot extends LoggedRobot implements Constants{
+public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  
-
-
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   @Override
   public void autonomousPeriodic() {
-   
+
   }
 
   @Override
@@ -35,31 +32,30 @@ public class Robot extends LoggedRobot implements Constants{
 
   }
 
-  // Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+    // Instantiate our RobotContainer. This will perform all our button bindings,
+    // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   }
 
   /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+   * This function is called every 20 ms, no matter the mode. Use this for items
+   * like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+   * <p>
+   * This runs after the mode specific periodic functions, but before LiveWindow
+   * and
    * SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
+    // Runs the Scheduler. This is responsible for polling buttons, adding
+    // newly-scheduled commands, running already-scheduled commands, removing
+    // finished or interrupted commands, and running subsystem periodic() methods.
+    // This must be called from the robot's periodic block in order for anything in
+    // the Command-based framework to work.
     CommandScheduler.getInstance().run();
     // System.out.println("pe" + photoElectric.get());
   }
@@ -74,10 +70,13 @@ public class Robot extends LoggedRobot implements Constants{
 
   @Override
   public void disabledPeriodic() {
-    
+
   }
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /**
+   * This autonomous runs the autonomous command selected by your
+   * {@link RobotContainer} class.
+   */
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -108,17 +107,19 @@ public class Robot extends LoggedRobot implements Constants{
   @Override
   public void testInit() {
     // test.intake(.6);
+    
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
     // Ready the arm for movement.
     Arm.getInstance().enable();
-    new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();;
+    new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
+  
+    // new turnToFaceApriltag(6, SwerveDrive.getInstance(), Camera.getInstance()).schedule();
+    new pathfindToApriltag(new Pose2d(Camera.getInstance().getApriltagDistX(), Camera.getInstance().getApriltagDistY(), new Rotation2d(SwerveDrive.getInstance().getPose().getRotation().getDegrees())), Camera.getInstance(), SwerveDrive.getInstance()).schedule();
   }
 
   /** This function is called periodically during test mode. */
-  // DigitalInput photoElectric = new DigitalInput(0);
-
   @Override
   public void testPeriodic() {
     // new SequentialCommandGroup(
@@ -137,7 +138,6 @@ public class Robot extends LoggedRobot implements Constants{
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
-
-
+  public void simulationPeriodic() {
+  }
 }

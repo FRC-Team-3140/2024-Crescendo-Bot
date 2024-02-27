@@ -63,15 +63,15 @@ public class IntakeShooter extends SubsystemBase {
     public IntakeShooter() {
         shooterTop.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
         shooterTop.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-    //determined 
+        // determined
         shooterTop.restoreFactoryDefaults();
         shooterTop.setIdleMode(IdleMode.kCoast);
         shooterTop.setInverted(false);
         shooterTop.setSmartCurrentLimit(40);
         shooterTop.burnFlash();
-        
+
         shooterBottom.follow(shooterTop);
-        shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100); 
+        shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
         shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
         shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
         shooterBottom.restoreFactoryDefaults();
@@ -85,28 +85,30 @@ public class IntakeShooter extends SubsystemBase {
         intakeMotor.burnFlash();
     }
 
-    /** 
+    /**
      * Sets the speed of the intake motor through voltage.
      */
     public void setIntakeVoltage(double voltage) {
         intakeMotor.setVoltage(voltage);
     }
 
-    public void setHoldingPiece(boolean holdingPiece){
+    public void setHoldingPiece(boolean holdingPiece) {
         this.holdingPiece = holdingPiece;
     }
 
-
-    /** 
-     * Sets the speed of the shooter's motor, make sure one is negative and one is postive.
+    /**
+     * Sets the speed of the shooter's motor, make sure one is negative and one is
+     * postive.
      */
     public void setShooterVoltage(double voltage) {
         shooterTop.setVoltage(voltage);
         shooterBottom.setVoltage(-voltage);
     }
+
     PIDController topController = new PIDController(.0018, 0, .00006);
     PIDController bottomController = new PIDController(.0018, 0, .00006);
-    public void setShooterSpeed(double speed){
+
+    public void setShooterSpeed(double speed) {
         topController.setSetpoint(speed);
         bottomController.setSetpoint(-speed);
         shooterTop.setVoltage(topController.calculate(shooterTop.getEncoder().getVelocity()));
@@ -118,28 +120,27 @@ public class IntakeShooter extends SubsystemBase {
         return Math.min(-shooterBottom.getEncoder().getVelocity(), shooterTop.getEncoder().getVelocity());
     }
 
-
-    public boolean hasNote(){
+    public boolean hasNote() {
         return holdingPiece;
     }
 
-    public boolean noteDetected(){
+    public boolean noteDetected() {
         return proximityThresholdExeeded;
     }
-    
-    /** 
+
+    /**
      * True when a note reaches the sensor.
      */
     public boolean proximityThresholdExeeded;
-    
+
     @Override
-    public void periodic() { 
+    public void periodic() {
         // The method getProximity() returns a value 0 - 2047, with the closest being .
         proximityThresholdExeeded = !peSensor.get();
-        if(!peSensor.get()){
+        if (!peSensor.get()) {
             // System.out.println("p44e" + !peSensor.get());
         }
-        //Open Smart Dashboard to see the color detected by the sensor.
+        // Open Smart Dashboard to see the color detected by the sensor.
         SmartDashboard.putBoolean("Has Note", holdingPiece);
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
         SmartDashboard.putNumber("SpeedTop", shooterTop.getEncoder().getVelocity());

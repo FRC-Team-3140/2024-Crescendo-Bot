@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -13,12 +12,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class Climber extends SubsystemBase{
-    //Motors
+public class Climber extends SubsystemBase {
+    // Motors
     private CANSparkMax leftClimber;
     private CANSparkMax rightClimber;
 
-    //Solenoids - runs on PCM ports 0 and 1
+    // Solenoids - runs on PCM ports 0 and 1
     Solenoid leftSolenoid;
     Solenoid rightSolenoid;
 
@@ -29,9 +28,9 @@ public class Climber extends SubsystemBase{
     //CAN IDs
     private int leftCANID = 14;
     private int rightCANID = 15;
-    // private int pcmCANID = 
+    // private int pcmCANID =
 
-    //Relay ports
+    // Relay ports
     private int leftSolenoidChannelID = 0;
     private int rightSolenoidChannelID = 4;
     
@@ -41,9 +40,9 @@ public class Climber extends SubsystemBase{
     public Climber(){
         leftClimber = new CANSparkMax(leftCANID, MotorType.kBrushless);
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
-;
-        //electromagnetic push-pull solenoids running on the PCM. 
-        leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID); 
+        ;
+        // electromagnetic push-pull solenoids running on the PCM.
+        leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID);
         rightSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, rightSolenoidChannelID);
         //.set(true) will pull the solenoids in. .set(false) will release the solenoids to lock the climbers.
 
@@ -51,7 +50,7 @@ public class Climber extends SubsystemBase{
         leftLimit = new DigitalInput(2);
         rightLimit = new DigitalInput(3);
 
-        //set motor settings
+        // set motor settings
         leftClimber.setIdleMode(IdleMode.kBrake);
         rightClimber.setIdleMode(IdleMode.kBrake);
 
@@ -103,8 +102,8 @@ public class Climber extends SubsystemBase{
         }
     }
 
-    //stops the left climber
-    public void stopLeft(){
+    // stops the left climber
+    public void stopLeft() {
         leftClimber.set(0);
         leftSolenoid.set(false);
     }
@@ -120,19 +119,17 @@ public class Climber extends SubsystemBase{
         rightSolenoid.set(false);
     }
 
-    //These will probably never be used
-    //raises both left and right climbers
-    public void raiseBoth(){
+    // These will probably never be used
+    // raises both left and right climbers
+    public void raiseBoth() {
         raiseLeft();
         raiseRight();
     }
 
-    //lowers both left and right climbers
-    public void lowerBoth(){
+    // lowers both left and right climbers
+    public void lowerBoth() {
         lowerLeft();
         lowerRight();
     }
 
 }
-
-

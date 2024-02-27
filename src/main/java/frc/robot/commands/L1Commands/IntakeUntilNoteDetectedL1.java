@@ -47,7 +47,7 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeShooter.setHoldingPiece(true);
-    
+
     intakeShooter.setIntakeVoltage(0);
   }
 

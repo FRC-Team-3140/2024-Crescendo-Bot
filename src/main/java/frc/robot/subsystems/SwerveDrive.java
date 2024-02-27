@@ -34,7 +34,6 @@ import frc.robot.sensors.Camera;
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
   private static SwerveDrive instance = null;
-  
 
   private final Translation2d[] locations = {
       new Translation2d(botLength, botLength),
@@ -42,34 +41,33 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new Translation2d(-botLength, botLength),
       new Translation2d(-botLength, -botLength)
   };
-  
-  
+
   SwerveModule[] modules = {
-      new SwerveModule("frontLeft", 3 , 8, 7, 0.701239),
+      new SwerveModule("frontLeft", 3, 8, 7, 0.701239),
       new SwerveModule("frontRight", 2, 6, 5, 0.707867),
       new SwerveModule("backLeft", 0, 2, 1, 0.219279),
       new SwerveModule("backRight", 1, 4, 3, 0.447409),
 
-    };
-    
+  };
+
   private static AHRS gyro = RobotContainer.gyro;
   private ChassisSpeeds botSpeeds = new ChassisSpeeds(0, 0, 0);
   private boolean pathInverted = false;
 
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    locations[0], locations[1], locations[2], locations[3]);
+      locations[0], locations[1], locations[2], locations[3]);
 
   /*
    * Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings.
    * The numbers used
    * below are robot specific, and should be tuned.
    */
-  
+
   private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
       kinematics,
       gyro.getRotation2d(),
       new SwerveModulePosition[] {
-        modules[0].getSwerveModulePosition(),
+          modules[0].getSwerveModulePosition(),
           modules[1].getSwerveModulePosition(),
           modules[2].getSwerveModulePosition(),
           modules[3].getSwerveModulePosition()
@@ -110,10 +108,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   }
 
   // var alliance = DriverStation.getAlliance();
-  //         if (alliance.isPresent() && allowPathMirroring) {
-  //           return alliance.get() == DriverStation.Alliance.Red;
-  //         }
-  //         return false;
+  // if (alliance.isPresent() && allowPathMirroring) {
+  // return alliance.get() == DriverStation.Alliance.Red;
+  // }
+  // return false;
 
   // WPILib
   StructArrayPublisher<SwerveModuleState> actualStates = NetworkTableInstance.getDefault()
@@ -122,7 +120,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       .getStructArrayTopic("Set States", SwerveModuleState.struct).publish();
   StructPublisher<Pose2d> odometryStruct = NetworkTableInstance.getDefault()
       .getStructTopic("Odometry", Pose2d.struct).publish();
-      SwerveModuleState[] states = new SwerveModuleState[4];
+  SwerveModuleState[] states = new SwerveModuleState[4];
 
   public void periodic() {
     for (int i = 0; i < 4; i++) {
@@ -132,8 +130,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     actualStates.set(swerveModuleStates);
     setStates.set(states);
 
-
-    // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(), camera.getTimestamp());
+    // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(),
+    // camera.getTimestamp());
     odometryStruct.set(poseEstimator.getEstimatedPosition());
   }
 
@@ -166,7 +164,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public void resetPose(Pose2d pose) {
     poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
   }
-  
+
   public void driveRobotRelative(ChassisSpeeds speeds) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
   }
@@ -196,7 +194,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // Also apply vision measurements. We use 0.3 seconds in the past as an example
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
-    if(Camera.getInstance().isConnected()){
+    if (Camera.getInstance().isConnected()) {
       // System.out.println(Camera.getInstance().isConnected());
       poseEstimator.addVisionMeasurement(
       Camera.getInstance().getEstimatedGlobalPose(),
@@ -215,7 +213,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     }
     return positions;
   }
-  
+
   public boolean shouldFlipPath() {
     return pathInverted;
   }
@@ -231,15 +229,15 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     return Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
   }
   
-  PIDController turnPID = new PIDController(.5, 0.0, 0);
+  public PIDController turnPID = new PIDController(.5, 0.0, 0);
   public double turnToAprilTag(int ID){
     // turnPID.enableContinuousInput(0, 360);
     double botAngle = getPose().getRotation().getDegrees();
     double offsetAngle = camera.getDegToApriltag(ID);
-    double setpoint =0;
+    double setpoint = 0;
     if (botAngle - offsetAngle <= 0)
       setpoint = botAngle + offsetAngle;
-    else 
+    else
       setpoint = botAngle - offsetAngle;
 
     turnPID.setSetpoint(setpoint);
