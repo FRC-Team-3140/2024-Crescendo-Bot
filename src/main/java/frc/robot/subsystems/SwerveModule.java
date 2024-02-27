@@ -39,7 +39,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
 
     public double botMass = 24.4;
 
-    public double P = .01;
+    public double P = .011;
 
     public double driveSetpointTolerance = .5;
     public double turnSetpointTolerance;
@@ -83,7 +83,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
         turnPID.enableContinuousInput(0, 360);
         turnPID.setTolerance(turnSetpointTolerance, turnVelocityTolerance);
         // determined from a SYSID scan
-        drivePID = new ProfiledPIDController(.11, 0, .015, constraints);
+        drivePID = new ProfiledPIDController(.6, 0, .015, constraints);
         drivePID.setTolerance(driveSetpointTolerance);
 
     }

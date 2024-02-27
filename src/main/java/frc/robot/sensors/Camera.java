@@ -80,8 +80,11 @@ public class Camera extends SubsystemBase {
   // Global variables for updating Pathplanner poses - TK
   private SwerveDrive swerveDrive;
   private Pose2d currentSwervePose2d;
+  private double currentRot;
   private double currentX;
   private double currentY;
+  private double aprilDist;
+  private double aprilTagRot;
   private double newX;
   private double newY;
 
@@ -215,8 +218,8 @@ public class Camera extends SubsystemBase {
   private static boolean checkVersion() {
     if (PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString(null))) {
       return true;
-    } else { 
-      return false; 
+    } else {
+      return false;
     }
   }
 
@@ -257,7 +260,7 @@ public class Camera extends SubsystemBase {
   public boolean getStatus() {
     // Just returns the boolean that shows connction status - TK
     if (connected && checkVersion()) {
-      return true; 
+      return true;
     } else {
       return false;
     }
@@ -504,7 +507,8 @@ public class Camera extends SubsystemBase {
       return false;
     }
 
-    // TODO: WHY? This doesn't even do any thing Channing... - PN #Jonathan was here. 
+    // TODO: WHY? This doesn't even do any thing Channing... - PN #Jonathan was
+    // here.
     boolean kjasdfl = april.getLatestResult().hasTargets() && connected
         && april.getLatestResult().getTimestampSeconds() != lastResult;
     lastResult = april.getLatestResult().getTimestampSeconds();
@@ -522,19 +526,36 @@ public class Camera extends SubsystemBase {
   }
 
   public SequentialCommandGroup pathfindToAprilTag() {
+    // double dist = Camera.getInstance().getAprilTagDist();
+    // double botRot =
+    // SwerveDrive.getInstance().getPose().getRotation().getRadians();
+    // double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
+
+    // new pathfindToApriltag(
+    // new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) +
+    // SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot +
+    // aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new
+    // Rotation2d(botRot + aprilTagRot)),
+    // Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()),
+        new turnToFaceApriltag(speakerAprilTag, swerveDrive, Camera.getInstance()),
         new InstantCommand(() -> {
-          currentSwervePose2d = RobotContainer.swerve.getPose();
+          currentSwervePose2d = swerveDrive.getPose();
+          currentRot = currentSwervePose2d.getRotation().getRadians();
           currentX = currentSwervePose2d.getX();
           currentY = currentSwervePose2d.getY();
+          aprilDist = getAprilTagDist();
+          aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
           newX = getApriltagDistX(speakerAprilTag);
           newY = percentTravelDist * getApriltagDistY(speakerAprilTag);
         }),
-        new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
-            Camera.getInstance(),
-            RobotContainer.swerve),
-        new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()));
+        new pathfindToApriltag(
+            new Pose2d((-(aprilDist * Math.cos(currentRot + aprilTagRot)) + swerveDrive.getPose().getX()),
+                (-(aprilDist * Math.sin(currentRot + aprilTagRot)) + swerveDrive.getPose().getY()),
+                new Rotation2d(currentRot + aprilTagRot)),
+            Camera.getInstance(), swerveDrive),
+        new turnToFaceApriltag(speakerAprilTag, swerveDrive, Camera.getInstance()));
 
     // Fallback code. NOT tested!!!!! - TK
     // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(

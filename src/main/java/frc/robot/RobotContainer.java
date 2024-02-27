@@ -80,6 +80,9 @@ public class RobotContainer implements Constants {
     // autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
 
     autobuilder = AutoBuilder.buildAutoChooser();
+
+    autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
+
     SmartDashboard.putData("Path planner", autobuilder);
 
     NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").setDouble(2);
