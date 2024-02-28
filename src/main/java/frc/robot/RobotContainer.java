@@ -100,8 +100,8 @@ NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new Speaker
    * joysticks}.
    */
   private void configureBindings() {
-    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .01;
-    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .01;
+    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .1;
+    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .1;
 
     new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight()).onFalse(new InstantCommand(climber::stopLeft));
     new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight()).onFalse(new InstantCommand(climber::stopRight));

@@ -93,7 +93,7 @@ public class Climber extends SubsystemBase {
     public void lowerLeft(){
         if(!leftLimit.get()){
             leftSolenoid.set(true);
-            leftClimber.set(-.2); //change to an actual value later
+            leftClimber.set(-.3); //change to an actual value later
         }else{
             leftClimber.set(0);
         }
@@ -103,7 +103,7 @@ public class Climber extends SubsystemBase {
     public void lowerRight(){
         if(!rightLimit.get()){
             rightSolenoid.set(true);
-            rightClimber.set(-.2); //change to an actual value later
+            rightClimber.set(-.3); //change to an actual value later
         }else{
             rightClimber.set(0);
         }

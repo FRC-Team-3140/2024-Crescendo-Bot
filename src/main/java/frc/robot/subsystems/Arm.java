@@ -66,12 +66,12 @@ public class Arm extends SubsystemBase {
   public static final double kSetpoiintIntakeDown = 8.0; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
-  public static final double kSetpointMove = 60.0; // The ready for intake but off the ground for movement and
+  public static final double kSetpointMove = 65.0; // The ready for intake but off the ground for movement and
                                                    // protection
 
   // Constants for the arm control
-  private static final double kDefaultForwardParam = .325; // The default forward control parameter
-  private static final double kArmEncoderOffset = -152; // The offset of the arm encoder from the zero position //
+  private static final double kDefaultForwardParam = .33; // The default forward control parameter
+  private static final double kArmEncoderOffset = -153; // The offset of the arm encoder from the zero position //
                                                         // degrees
 
   // Create a NetworkTable instance to enable the use of NetworkTables
@@ -154,7 +154,7 @@ public class Arm extends SubsystemBase {
     encoderConnected();
 
     angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
-    angleInterpolator.put(1.4605, 14.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
+    angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
     angleInterpolator.put(1.700, 21.0);
     angleInterpolator.put(1.9685, 27.5);
     angleInterpolator.put(2.4003, 34.0);
@@ -163,6 +163,8 @@ public class Arm extends SubsystemBase {
     angleInterpolator.put(3.4163, 40.4);
     angleInterpolator.put(3.5146, 40.7);
     angleInterpolator.put(3.9116, 41.6);
+
+  
     // angleInterpolator.put()
 
     
@@ -243,9 +245,10 @@ public class Arm extends SubsystemBase {
    * @return The setpoint angle for the arm
    */
   public double setArmToShootDistance(double distance) {
-    double interpolatedAngle = angleInterpolator.get(distance);
-    setArmToAngle(interpolatedAngle);
-    return interpolatedAngle;
+    // double interpolatedAngle = angleInterpolator.get(distance);
+    // setArmToAngle(interpolatedAngle);
+    setArmToAngle(-149.003 * Math.exp(distance*-1.11568) + 43.8496);
+    return -149.003 * Math.exp(distance*-1.11568) + 43.8496;
   }
 
   /**
