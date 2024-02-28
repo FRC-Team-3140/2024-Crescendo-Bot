@@ -56,8 +56,6 @@ public class turnToFaceApriltag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("!!!!!!!!!!!!!!!!!!!!\nTURNING\n!!!!!!!!!!!!!!!!!!!!");
-
     if (command.isFinished()) {
       complete = true;
     }
@@ -71,6 +69,8 @@ public class turnToFaceApriltag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("isFinished is bad.");
+
     if (complete) {
       return true;
     } else {

@@ -49,10 +49,6 @@ public class turnToTurnPIDSetPoint extends Command implements Constants {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(currentBotAngle - setPoint) < deadband) {
-      return true;
-    } else {
-      return false;
-    }
+    return Math.abs(currentBotAngle - setPoint) < deadband;
   }
 }

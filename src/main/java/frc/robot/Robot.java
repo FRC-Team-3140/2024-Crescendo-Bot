@@ -6,16 +6,12 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.pathfindToApriltag;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
@@ -124,13 +120,15 @@ public class Robot extends LoggedRobot implements Constants {
 
     // pathfinToApriltag test - TK
 
-    double dist = Camera.getInstance().getAprilTagDist();
-    double botRot = SwerveDrive.getInstance().getPose().getRotation().getRadians();
-    double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
+    // double dist = Camera.getInstance().getAprilTagDist();
+    // double botRot = SwerveDrive.getInstance().getPose().getRotation().getRadians();
+    // double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
 
-    new pathfindToApriltag(
-        new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new Rotation2d(botRot + aprilTagRot)),
-        Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+    // new pathfindToPose(
+    //     new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new Rotation2d(botRot + aprilTagRot)),
+    //     Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+
+    Camera.getInstance().pathfindToAprilTag().schedule();
   }
 
   /** This function is called periodically during test mode. */

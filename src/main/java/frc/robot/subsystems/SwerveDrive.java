@@ -207,11 +207,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
             pose.get().estimatedPose.toPose2d(),
             Timer.getFPGATimestamp() - .05);
       }
-      // System.out.println(Camera.getInstance().isConnected());
-      // System.out.println("Balls");
-    } else {
-      // System.out.println(Camera.getInstance().isConnected());
-      System.out.println("No targets deteceted");
     }
   }
 

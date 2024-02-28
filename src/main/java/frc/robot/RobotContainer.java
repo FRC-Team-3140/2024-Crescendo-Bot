@@ -75,11 +75,9 @@ public class RobotContainer implements Constants {
     NamedCommands.registerCommand("SpeakerShoot3",
         new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
 
-    // Additional Commands (Not automatically improted by Pathplanner) - TK
-    // autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
-
     autobuilder = AutoBuilder.buildAutoChooser();
 
+    // Additional Commands (Not automatically improted by Pathplanner) - TK
     autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
 
     SmartDashboard.putData("Path planner", autobuilder);

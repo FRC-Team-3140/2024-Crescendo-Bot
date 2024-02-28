@@ -27,8 +27,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.pathfindToApriltag;
+import frc.robot.commands.pathfindToPose;
 import frc.robot.commands.turnToFaceApriltag;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -536,7 +537,7 @@ public class Camera extends SubsystemBase {
     // SwerveDrive.getInstance().getPose().getRotation().getRadians();
     // double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
 
-    // new pathfindToApriltag(
+    // new pathfindToPose(
     // new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) +
     // SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot +
     // aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new
@@ -555,7 +556,7 @@ public class Camera extends SubsystemBase {
           newX = getApriltagDistX(speakerAprilTag);
           newY = percentTravelDist * getApriltagDistY(speakerAprilTag);
         }),
-        new pathfindToApriltag(
+        new pathfindToPose(
             new Pose2d((-(aprilDist * Math.cos(currentRot + aprilTagRot)) + swerveDrive.getPose().getX()),
                 (-(aprilDist * Math.sin(currentRot + aprilTagRot)) + swerveDrive.getPose().getY()),
                 new Rotation2d(currentRot + aprilTagRot)),
@@ -595,9 +596,11 @@ public class Camera extends SubsystemBase {
           newX = getApriltagDistX(id);
           newY = percentTravelDist * getApriltagDistY(id);
         }),
-        new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
+        new WaitCommand(1),
+        new pathfindToPose(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
             Camera.getInstance(),
             swerveDrive),
+        new WaitCommand(1),
         new turnToFaceApriltag(swerveDrive, Camera.getInstance()));
 
     return goToAprilTag;
