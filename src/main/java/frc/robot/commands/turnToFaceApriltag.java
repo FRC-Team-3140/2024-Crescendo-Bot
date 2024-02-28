@@ -12,7 +12,6 @@ import frc.robot.subsystems.SwerveDrive;
 public class turnToFaceApriltag extends Command {
   private SwerveDrive swerve;
   private Camera camera;
-  private boolean complete = false;
   private int ID = -1;
 
   private double degrees = 0;
@@ -56,9 +55,6 @@ public class turnToFaceApriltag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (command.isFinished()) {
-      complete = true;
-    }
   }
 
   // Called once the command ends or is interrupted.
@@ -71,10 +67,6 @@ public class turnToFaceApriltag extends Command {
   public boolean isFinished() {
     System.out.println("isFinished is bad.");
 
-    if (complete) {
-      return true;
-    } else {
-      return false;
-    }
+    return command.isFinished();
   }
 }

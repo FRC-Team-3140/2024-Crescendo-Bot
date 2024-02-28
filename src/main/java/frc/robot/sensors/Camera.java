@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.pathfindToPose;
 import frc.robot.commands.turnToFaceApriltag;
+import frc.robot.commands.turnToTurnPIDSetPoint;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Camera extends SubsystemBase {
@@ -165,9 +166,9 @@ public class Camera extends SubsystemBase {
       // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
       // problems - TK
     }
-    
+
     swerveDrive = swerve;
-    
+
     // Will also create a field layout object and set global variables for landmark
     // apriltags
     // as mentioned earlier. This is not to be confused with the Photonvision
@@ -507,6 +508,7 @@ public class Camera extends SubsystemBase {
   }
 
   double lastResult = 0;
+  double degrees;
 
   public boolean isConnected() {
     if (!connected || !Camera.checkVersion()) {
@@ -543,9 +545,12 @@ public class Camera extends SubsystemBase {
     // aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new
     // Rotation2d(botRot + aprilTagRot)),
     // Camera.getInstance(), SwerveDrive.getInstance()).schedule();
-    
+    degrees = getDegToApriltag();
+
+    degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
+
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(speakerAprilTag, swerveDrive, Camera.getInstance()),
+        new turnToTurnPIDSetPoint(swerveDrive, degrees),
         new InstantCommand(() -> {
           currentSwervePose2d = swerveDrive.getPose();
           currentRot = currentSwervePose2d.getRotation().getRadians();
@@ -561,7 +566,11 @@ public class Camera extends SubsystemBase {
                 (-(aprilDist * Math.sin(currentRot + aprilTagRot)) + swerveDrive.getPose().getY()),
                 new Rotation2d(currentRot + aprilTagRot)),
             Camera.getInstance(), swerveDrive),
-        new turnToFaceApriltag(speakerAprilTag, swerveDrive, Camera.getInstance()));
+        new InstantCommand(() -> {
+          degrees = getDegToApriltag();
+          degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
+        }),
+        new turnToTurnPIDSetPoint(swerveDrive, degrees));
 
     // Fallback code. NOT tested!!!!! - TK
     // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
