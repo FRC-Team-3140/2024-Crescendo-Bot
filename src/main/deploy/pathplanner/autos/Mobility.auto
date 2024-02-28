@@ -14,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "SpeakerShoot"
+            "name": "SetArmToIntake"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "SetArmToIntake"
+            "pathName": "ShootAndPickup"
           }
         },
         {
@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ShootAndPickup"
+                  "pathName": "New New New Path"
                 }
               },
               {

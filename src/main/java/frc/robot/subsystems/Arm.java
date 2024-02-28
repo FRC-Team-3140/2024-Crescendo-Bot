@@ -9,7 +9,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -52,9 +54,9 @@ public class Arm extends SubsystemBase {
   private static final IdleMode kDisabledMotorMode = IdleMode.kBrake; // Motor mode when disabled
 
   // Constants for the PID controller
-  private static final double kDefaultP = .25; // Proportional gain
+  private static final double kDefaultP = .3; // Proportional gain
   private static final double kDefaultI = 0.0; // Integral gain
-  private static final double kDefaultD = 0.003; // Derivative gain
+  private static final double kDefaultD = 0.004; // Derivative gain
 
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
@@ -70,9 +72,11 @@ public class Arm extends SubsystemBase {
                                                    // protection
 
   // Constants for the arm control
-  private static final double kDefaultForwardParam = .33; // The default forward control parameter
+  private static final double kDefaultForwardParam = .331; // The default forward control parameter
   private static final double kArmEncoderOffset = -153; // The offset of the arm encoder from the zero position //
                                                         // degrees
+  private static final double maxAcceleration = 2000;
+  private static final double maxVelocity = 360;
 
   // Create a NetworkTable instance to enable the use of NetworkTables
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -82,10 +86,10 @@ public class Arm extends SubsystemBase {
   private CANSparkMax armR;
   private CANSparkMax armL;
 
-  private PIDController pid;
+  private ProfiledPIDController pid;
 
   private DutyCycleEncoder armEncoder;
-
+  
   private InterpolatingDoubleTreeMap angleInterpolator;
 
   private double fcp = kDefaultForwardParam;
@@ -147,8 +151,8 @@ public class Arm extends SubsystemBase {
     double setpoint = inst.getTable(kNTArm).getEntry(kNTSetpoint).getDouble(kDefaultSetpoint);
     fcp = inst.getTable(kNTArm).getEntry(kNTForwardParam).getDouble(kDefaultForwardParam);
 
-    pid = new PIDController(p, i, d);
-    pid.setSetpoint(setpoint);
+    pid = new ProfiledPIDController(p, i, d, new Constraints(maxVelocity, maxAcceleration));
+    pid.setGoal(setpoint);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
     encoderConnected();
@@ -223,7 +227,7 @@ public class Arm extends SubsystemBase {
     double forward_power = kDefaultForwardParam
         * Math.cos(Math.toRadians(angle));
 
-    pid.setSetpoint(setpoint);
+    pid.setGoal(setpoint);
     double pid_power = pid.calculate(angle);
 
     double voltage = pid_power + forward_power;
@@ -247,10 +251,11 @@ public class Arm extends SubsystemBase {
   public double setArmToShootDistance(double distance) {
     // double interpolatedAngle = angleInterpolator.get(distance);
     // setArmToAngle(interpolatedAngle);
-    setArmToAngle(-149.003 * Math.exp(distance*-1.11568) + 43.8496);
+    double interpolatedAngle = Math.max(15, -120.271 * Math.exp(distance*-.889836) + 47.7493); 
+    setArmToAngle(interpolatedAngle);
     return -149.003 * Math.exp(distance*-1.11568) + 43.8496;
   }
-
+//zkzj
   /**
    * Sets the power of the arm motors
    * 
@@ -276,7 +281,7 @@ public class Arm extends SubsystemBase {
     // The forward controll needed is proportional to the cosine of the angle
     double forward_power = fcp * Math.cos(Math.toRadians(angle));
 
-    pid.setSetpoint(setpoint);
+    pid.setGoal(setpoint);
     double pid_power = pid.calculate(angle);
 
     double voltage = pid_power + forward_power;
@@ -328,7 +333,7 @@ public class Arm extends SubsystemBase {
    * @return The current setpoint of the PID controller
    */
   public double getSetpoint() {
-    return pid.getSetpoint();
+    return pid.getGoal().position;
   }
 
   /**

@@ -116,7 +116,7 @@ public class Robot extends LoggedRobot implements Constants {
     new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
   
     // new turnToFaceApriltag(6, SwerveDrive.getInstance(), Camera.getInstance()).schedule();
-    new pathfindToApriltag(new Pose2d(Camera.getInstance().getApriltagDistX(), Camera.getInstance().getApriltagDistY(), new Rotation2d(SwerveDrive.getInstance().getPose().getRotation().getDegrees())), Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+    // new pathfindToApriltag(new Pose2d(Camera.getInstance().getApriltagDistX(), Camera.getInstance().getApriltagDistY(), new Rotation2d(SwerveDrive.getInstance().getPose().getRotation().getDegrees())), Camera.getInstance(), SwerveDrive.getInstance()).schedule();
   }
 
   /** This function is called periodically during test mode. */
