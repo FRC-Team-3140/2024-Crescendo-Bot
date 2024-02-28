@@ -61,6 +61,8 @@ public class Camera extends SubsystemBase {
   private boolean connected = false;
   private int connectionAttempts = 2;
 
+  private boolean versionMatches = true;
+
   // The heartbeat is a value in the Photonvision Networktable that continually
   // changes.
   private double heartbeat = 0;
@@ -142,6 +144,8 @@ public class Camera extends SubsystemBase {
   }
 
   private Camera(SwerveDrive swerve, int PhotonvisionConnectionAttempts, double delayBetweenAttempts) {
+    versionMatches = checkVersion();
+    
     attemptDelay = delayBetweenAttempts;
 
     while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
@@ -178,7 +182,7 @@ public class Camera extends SubsystemBase {
   }
 
   public static Camera getInstance() {
-    if (instance == null && checkVersion()) {
+    if (instance == null) {
       instance = new Camera(RobotContainer.swerve, 5, 1);
     }
     return instance;
@@ -266,11 +270,21 @@ public class Camera extends SubsystemBase {
 
   public boolean getStatus() {
     // Just returns the boolean that shows connction status - TK
-    if (connected && checkVersion()) {
+    if (versionMatches && connected) {
       return true;
     } else {
       return false;
     }
+
+    setNetworktableStatus();
+  }
+
+  private void setNetworktableStatus() {
+    // TODO: ensure this publishes properly. Especially PhotonVersion.version! - TK
+    inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
+    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ").setString(inst.getTable("photonvision").getEntry("version").getString(null));
+    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ").setString(PhotonVersion.version);
+    inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
   }
 
   @Override
@@ -282,6 +296,9 @@ public class Camera extends SubsystemBase {
     // subsystems...
     // Dividing by ideal 20 Ms roboRio loop time. - TK
     if ((count % (delayTime / 20)) == 0 && !attemptReconnection.isAlive() && testConnection() == false) {
+      // Update Networktable information periodically - TK
+      setNetworktableStatus();
+
       try {
         attemptReconnection.start();
       } catch (IllegalThreadStateException e) {
@@ -302,7 +319,7 @@ public class Camera extends SubsystemBase {
   public int getApriltagID() {
     // If this function returns a 0, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getFiducialId();
     } else {
       return -1;
@@ -312,7 +329,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagYaw() {
     // If this function returns a 999, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getYaw();
     } else {
       return 999;
@@ -322,7 +339,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagYaw(int id) {
     // If this function returns a 999, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           return target.getYaw();
@@ -337,7 +354,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagPitch() {
     // If this function returns a 999, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getPitch();
     } else {
       return 999;
@@ -347,7 +364,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getBestCameraToTarget().getY();
     } else {
       return 0;
@@ -357,7 +374,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagDistX(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           return target.getBestCameraToTarget().getY();
@@ -372,7 +389,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagDistY() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getBestCameraToTarget().getX();
     } else {
       return 0;
@@ -382,7 +399,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagDistY(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           return target.getBestCameraToTarget().getX();
@@ -401,7 +418,7 @@ public class Camera extends SubsystemBase {
   public double getDegToApriltag() {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       // double targetYaw = getApriltagYaw();
       double requiredTurnDegrees;
 
@@ -438,7 +455,7 @@ public class Camera extends SubsystemBase {
   public double getDegToApriltag(int id) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           double requiredTurnDegrees;
@@ -467,7 +484,7 @@ public class Camera extends SubsystemBase {
   }
 
   public aprilTagLocation getAprilTagLocation(int id) {
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (versionMatches && connected april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           double dist = getApriltagDistY(id);
@@ -525,7 +542,7 @@ public class Camera extends SubsystemBase {
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-    // if (connected && april.getLatestResult().hasTargets() &&
+    // if (versionMatches && connected april.getLatestResult().hasTargets() &&
     // !april.getLatestResult().equals(lastResult)){
     return aprilTagPoseEstimator.update(april.getLatestResult());
     // } else {
