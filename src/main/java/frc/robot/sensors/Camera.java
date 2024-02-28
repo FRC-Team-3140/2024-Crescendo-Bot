@@ -4,6 +4,9 @@
 
 package frc.robot.sensors;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
@@ -500,11 +503,11 @@ public class Camera extends SubsystemBase {
     return kjasdfl;
   }
 
-  public Pose2d getEstimatedGlobalPose() {
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     // if (connected && april.getLatestResult().hasTargets() &&
     // !april.getLatestResult().equals(lastResult)){
-    return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
+    return aprilTagPoseEstimator.update(april.getLatestResult());
     // } else {
     // return null;
     // }

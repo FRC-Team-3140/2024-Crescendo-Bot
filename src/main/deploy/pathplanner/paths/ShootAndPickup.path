@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7515525931525792,
-        "y": 6.575218458493788
+        "x": 0.73,
+        "y": 6.69
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5491382641533051,
-        "y": 6.789204858030569
+        "x": 1.3837851372385206,
+        "y": 7.0615511847137435
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.76728039368319,
-        "y": 6.88215842944388
+        "x": 2.871963279471583,
+        "y": 7.00319125756735
       },
       "prevControl": {
-        "x": 1.0942318420433619,
-        "y": 6.683087731071536
-      },
-      "nextControl": {
-        "x": 2.2899378468088805,
-        "y": 7.036747253607817
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.823330006849587,
-        "y": 7.051824530189345
-      },
-      "prevControl": {
-        "x": 2.0743776084708565,
-        "y": 6.99346460304295
+        "x": 1.5971776809934781,
+        "y": 7.00319125756735
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,14 +30,14 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.05,
       "rotationDegrees": 60.0,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 1.25,
+      "waypointRelativePos": 0.75,
       "rotationDegrees": 0,
-      "rotateFast": false
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
@@ -61,8 +45,8 @@
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 280.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularVelocity": 120.0,
+    "maxAngularAcceleration": 240.0
   },
   "goalEndState": {
     "velocity": 0,
@@ -70,7 +54,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Real Paths",
+  "folder": null,
   "previewStartingState": {
     "rotation": 58.465208094811736,
     "velocity": 0
