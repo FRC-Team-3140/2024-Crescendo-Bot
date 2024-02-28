@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrive;
 
 public class DriveFacingApril extends Command {
-    private final SwerveDrive swerveDrive; // The swerve drive subsystem
+    // private final SwerveDrive swerveDrive; // The swerve drive subsystem
 
     public DriveFacingApril(SwerveDrive swerveDrive) {
-        this.swerveDrive = swerveDrive;
+        // this.swerveDrive = swerveDrive;
         addRequirements(swerveDrive); // This command requires the swerve drive subsystem
 
     }
@@ -18,8 +18,10 @@ public class DriveFacingApril extends Command {
         // Calculate the x speed based on the joystick input
         // final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; //
         // Calculate the y speed based on the joystick input
-        final var rot = swerveDrive.turnToAprilTag(9); // Calculate the rotation speed based on the joystick input
-        swerveDrive.drive(0, 0, rot, true); // Drive the swerve drive
+        
+        // TODO: Channing was here
+        // final var rot = swerveDrive.turnToAprilTag(9); // Calculate the rotation speed based on the joystick input
+        // swerveDrive.drive(0, 0, rot, true); // Drive the swerve drive
     }
 
     @Override

@@ -157,14 +157,16 @@ public class Camera extends SubsystemBase {
       }
     }
 
-    if (connected == true) {
+    if (connected) {
       aprilGetInstance();
       notesGetInstance();
 
       // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
       // problems - TK
-      swerveDrive = swerve;
     }
+    
+    swerveDrive = swerve;
+    
     // Will also create a field layout object and set global variables for landmark
     // apriltags
     // as mentioned earlier. This is not to be confused with the Photonvision
@@ -175,7 +177,7 @@ public class Camera extends SubsystemBase {
 
   public static Camera getInstance() {
     if (instance == null && checkVersion()) {
-      instance = new Camera(SwerveDrive.getInstance(), 5, 1);
+      instance = new Camera(RobotContainer.swerve, 5, 1);
     }
     return instance;
   }
@@ -540,7 +542,7 @@ public class Camera extends SubsystemBase {
     // aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new
     // Rotation2d(botRot + aprilTagRot)),
     // Camera.getInstance(), SwerveDrive.getInstance()).schedule();
-
+    
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
         new turnToFaceApriltag(speakerAprilTag, swerveDrive, Camera.getInstance()),
         new InstantCommand(() -> {

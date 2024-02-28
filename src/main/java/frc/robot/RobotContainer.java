@@ -3,7 +3,6 @@ package frc.robot;
 
 import java.util.function.BooleanSupplier;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,7 +29,6 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,7 +44,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotContainer implements Constants {
   public static XboxCotroller controller = new XboxCotroller(0);
-  public static AHRS gyro = new AHRS(Port.kMXP);
   public static SwerveDrive swerve;
   public static Camera camera;
   public static Arm arm = Arm.getInstance();
@@ -119,7 +116,7 @@ public class RobotContainer implements Constants {
         .onFalse(new InstantCommand(climber::stopLeft));
 
     // Resetting Gyro
-    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
+    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
     new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(() -> {
       BasicSwerveControlL2.fieldRelative = false;
     })).onFalse(new InstantCommand(() -> {
@@ -148,10 +145,6 @@ public class RobotContainer implements Constants {
         10, 4)).onFalse(new ShootSpeakerL1(0, 0));
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10, 0)).onFalse(new ShootSpeakerL1(0, 0));
 
-  }
-
-  public void resetGyro() {
-    gyro.reset();
   }
 
   /**
