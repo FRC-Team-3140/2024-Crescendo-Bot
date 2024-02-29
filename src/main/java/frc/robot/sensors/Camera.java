@@ -234,9 +234,10 @@ public class Camera extends SubsystemBase {
   private boolean testConnection() {
     // Gets new result from april camera and test if it's equal to the previous
     // result
+    heartbeat = inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
+    
     if (heartbeat == previousResult) {
       connected = false;
-      heartbeat = inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
     } else {
       connected = true;
     }
@@ -531,13 +532,7 @@ public class Camera extends SubsystemBase {
     if (!connected || !Camera.checkVersion()) {
       return false;
     }
-
-    // TODO: WHY? This doesn't even do any thing Channing... - PN #Jonathan was
-    // here.
-    boolean kjasdfl = april.getLatestResult().hasTargets() && connected
-        && april.getLatestResult().getTimestampSeconds() != lastResult;
-    lastResult = april.getLatestResult().getTimestampSeconds();
-    return kjasdfl;
+    return testConnection();
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
