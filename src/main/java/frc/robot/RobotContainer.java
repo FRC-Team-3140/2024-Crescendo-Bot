@@ -23,6 +23,7 @@ import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
+import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L3Commands.DriveFacingApril;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
@@ -121,17 +122,17 @@ NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new Speaker
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
     // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-    new JoystickButton(controller2, Button.kA.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));  
+    new JoystickButton(controller2, Button.kA.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
+    new JoystickButton(controller2, Button.kStart.value).onTrue(new SetArmToAngleL1(16)); //Optimal angle for shooting from against the speaker.  
+    
     //Intake/Shooter Controls     
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.1);
-    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
-      
-    10,4)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(10,4)).onFalse(new ShootSpeakerL1(0, 0));
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10,0)).onFalse(new ShootSpeakerL1(0,0));
-    
+    new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
 
   }

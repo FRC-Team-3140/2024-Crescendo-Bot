@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 
-import javax.swing.text.DefaultStyledDocument.ElementSpec;
-
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 

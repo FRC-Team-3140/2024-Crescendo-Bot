@@ -23,20 +23,9 @@ public class DriveFacingApril extends Command {
      */
     @Override
     public void execute() {
-        // if(RobotContainer.controller.getXButton()){
-        //     speed = maxSpeed /2;
-        //     turnSpeed = maxChassisTurnSpeed/2;
-        // }
-        double yDist = SwerveDrive.getInstance().getPose().getY()- (216*.0254);
-        double xDist = SwerveDrive.getInstance().getPose().getX();
         final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the joystick input
         final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the joystick input
-        var angle = Math.asin(yDist/ SwerveDrive.getInstance().getDistanceFromSpeaker()); // Calculate the rotation speed based on the joystick input
-        angle += 1/(yDist * yDist + 1)/ xDist * ySpeed * .02  - yDist/(xDist * xDist + 1)/xDist/xDist * xSpeed * .02;
-        
-        SmartDashboard.putNumber("ANgle", angle);
-        SmartDashboard.putNumber("FDJKL", SwerveDrive.getInstance().getPose().getY()- (216*.0254)/ SwerveDrive.getInstance().getDistanceFromSpeaker());
-        swerveDrive.drive(xSpeed, ySpeed, fieldRelative, angle); // Drive the swerve drive
+        swerveDrive.driveFacingSpeaker(xSpeed, ySpeed, fieldRelative); // Drive the swerve drive
     }
 
     /**
