@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 public interface Constants {
@@ -18,4 +21,7 @@ public interface Constants {
     // the module from the center, divided by 2 pi to convert to radians
     public static final double maxChassisTurnSpeed = maxSpeed / botRadius;
     public double encoderRotationToMeters = 2 * Math.PI * ((wheelDiameter / 2) / gearRatio) / 42;
+
+    public static final Translation2d blueSpeakerPose = new Translation2d(0, 216 * .0254);
+    public static final Translation2d redSpeakerPose = new Translation2d(16.55, 216 * .0254);
 }

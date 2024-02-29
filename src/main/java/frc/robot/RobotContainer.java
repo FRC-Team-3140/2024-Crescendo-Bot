@@ -24,6 +24,7 @@ import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L3Commands.DriveFacingApril;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.XboxCotroller;
 import frc.robot.sensors.Camera;
@@ -64,7 +65,7 @@ public class RobotContainer implements Constants {
    * The container for the robot. Contains subsystems, OI devices, and commppands.
    */
   public RobotContainer() {
-    swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
+    swerve.setDefaultCommand(new DriveFacingApril(swerve, maxSpeed));
     // swerve.setDefaultCommand(new turnToFaceApriltag(8, swerve, camera));
     // arm.setDefaultCommand(new SetArmToDistanceL1());
 
