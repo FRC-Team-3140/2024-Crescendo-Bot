@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7,
-      "y": 6.69
+      "x": 1.2542914308886268,
+      "y": 5.534588312284395
     },
-    "rotation": 60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAndPickup"
+            "pathName": "PickupNoteMiddle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAndPickup2"
+            "pathName": "PickupNoteCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleShoot"
           }
         },
         {
@@ -38,6 +50,6 @@
       ]
     }
   },
-  "folder": "Real Autos",
+  "folder": "Middle Auto",
   "choreoAuto": false
 }

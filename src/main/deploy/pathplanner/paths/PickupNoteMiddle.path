@@ -3,47 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.73,
-        "y": 6.69
+        "x": 1.2542914308886268,
+        "y": 5.534588312284395
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9950140759952825,
-        "y": 6.81859386474778
+        "x": 2.2542914308886264,
+        "y": 5.534588312284395
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.91,
-        "y": 6.995390431883621
+        "x": 3.332333882712879,
+        "y": 5.534588312284395
       },
       "prevControl": {
-        "x": 1.2354054776124723,
-        "y": 6.943498545546118
+        "x": 2.332333882712879,
+        "y": 5.534588312284395
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.2,
-      "rotationDegrees": 60.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": 0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "SetArmToIntake",
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeUntilNoteDetected"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
       "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
@@ -72,9 +78,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Left Paths",
+  "folder": "Middle Path",
   "previewStartingState": {
-    "rotation": 58.465208094811736,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true
