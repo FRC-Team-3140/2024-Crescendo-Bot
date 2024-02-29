@@ -106,6 +106,7 @@ public class Camera extends SubsystemBase {
   private int sourceAprilTag;
 
   public class aprilTagLayout {
+    // TODO: See if we still need this because PhotonVision provides an apriltag layout class - TK
     public final int speakerAprilTag;
     public final int ampAprilTag;
     public final int sourceAprilTag;
@@ -118,6 +119,8 @@ public class Camera extends SubsystemBase {
   }
 
   public class aprilTagLocation {
+    // TODO: See if we are using this effectively and if there are many instances being created
+    // but not handled (if that makes sense). - TK
     public final boolean isDetected;
     public final double distance;
     public final double angle;
@@ -227,11 +230,7 @@ public class Camera extends SubsystemBase {
   }
 
   private static boolean checkVersion() {
-    if (PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString(null))) {
-      return true;
-    } else {
-      return false;
-    }
+    return PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString(null));
   }
 
   private boolean testConnection() {
@@ -361,6 +360,9 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**************************************************************************************/
+  // All distance functions for the Apriltag must return 0 as the "error #" otherwise
+  // it would make the robot move even without an Apriltag detected. - TK
   public double getApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
@@ -410,6 +412,7 @@ public class Camera extends SubsystemBase {
       return 0;
     }
   }
+  /**************************************************************************************/
 
   public double getAprilTagDist() {
     return Math.sqrt((Math.pow(getApriltagDistX(), 2) + Math.pow(getApriltagDistY(), 2)));
@@ -431,14 +434,6 @@ public class Camera extends SubsystemBase {
        * right
        * by the arcTan or inverse tan of the X & Y coordinates. - TK
        */
-
-      // if (Math.signum(targetYaw) == -1) {
-      // requiredTurnDegrees = -Math.toDegrees(Math.atan2(getApriltagDistY(),
-      // getApriltagDistX()));
-      // } else {
-      // requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistY(),
-      // getApriltagDistX()));
-      // }
 
       // Need to use the getX method that we wrote for Y in atan because it returns
       // the Photon Y. - TK
@@ -507,8 +502,7 @@ public class Camera extends SubsystemBase {
     // If this function returns a 0, that means there is not any detected targets
 
     // Need to wait until cameras are on Final Robot because calculation requires
-    // specific
-    // measurements to the camera.
+    // specific measurements to the camera.
 
     notes.getLatestResult().getBestTarget();
     PhotonUtils.calculateDistanceToTargetMeters(0, 0, 0, 0);
@@ -551,6 +545,9 @@ public class Camera extends SubsystemBase {
   }
 
   public SequentialCommandGroup pathfindToAprilTag() {
+    // There is some untested "Fallback" code in earlier commits! - TK
+
+    /*************Basic concept for pathfinding math/code - TK*************/
     // double dist = Camera.getInstance().getAprilTagDist();
     // double botRot =
     // SwerveDrive.getInstance().getPose().getRotation().getRadians();
@@ -562,6 +559,8 @@ public class Camera extends SubsystemBase {
     // aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new
     // Rotation2d(botRot + aprilTagRot)),
     // Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+    /*****************************************************************/
+
     degrees = getDegToApriltag();
 
     degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
@@ -589,45 +588,39 @@ public class Camera extends SubsystemBase {
         }),
         new turnToTurnPIDSetPoint(swerveDrive, degrees));
 
-    // Fallback code. NOT tested!!!!! - TK
-    // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-    // // new InstantCommand(() -> swerveDrive.resetPose(new Pose2d(4.5, 6.5, new
-    // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()))))),
-    // new InstantCommand(() -> System.out.println("X: " +
-    // swerveDrive.getPose().getX() + " Y: " + swerveDrive.getPose().getY())),
-    // // new Pathfinding(new Pose2d((swerveDrive.getPose().getX()/* + 0.25*/),
-    // (swerveDrive.getPose().getY()/* + 0.25*/), new
-    // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees() +
-    // 45))), Camera.getInstance(), swerveDrive),
-    // new InstantCommand(() -> System.out.println("DistX to Target:
-    // "+getApriltagDistX(2))),
-    // // new InstantCommand(() -> RobotContainer.m_robotDrive.drive(0,
-    // Math.signum(getApriltagDistX(2)), getDegToApriltag(2), false)),
-    // new InstantCommand(() ->
-    // RobotContainer.swerve.drive(0,1.0*Math.signum(getApriltagDistX(2)), 0,
-    // false)),
-    // new InstantCommand(() -> System.out.println("DONE"))
-    // );
-
     return goToAprilTag;
   }
 
   public SequentialCommandGroup pathfindToAprilTag(int id) {
+    // TODO: The reason why the sequential command group wasn't working before is because 
+    // we were running this command and this command couldn't find the apriltag it was told
+    // to look for so it didn't move. - TK
+    degrees = getDegToApriltag(id);
+
+    degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
+
     SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-        new turnToFaceApriltag(id, swerveDrive, Camera.getInstance()),
+        new turnToTurnPIDSetPoint(swerveDrive, degrees),
         new InstantCommand(() -> {
           currentSwervePose2d = swerveDrive.getPose();
+          currentRot = currentSwervePose2d.getRotation().getRadians();
           currentX = currentSwervePose2d.getX();
           currentY = currentSwervePose2d.getY();
+          aprilDist = getAprilTagDist(id);
+          aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag(id));
           newX = getApriltagDistX(id);
           newY = percentTravelDist * getApriltagDistY(id);
         }),
-        new WaitCommand(1),
-        new pathfindToPose(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
-            Camera.getInstance(),
-            swerveDrive),
-        new WaitCommand(1),
-        new turnToFaceApriltag(swerveDrive, Camera.getInstance()));
+        new pathfindToPose(
+            new Pose2d((-(aprilDist * Math.cos(currentRot + aprilTagRot)) + swerveDrive.getPose().getX()),
+                (-(aprilDist * Math.sin(currentRot + aprilTagRot)) + swerveDrive.getPose().getY()),
+                new Rotation2d(currentRot + aprilTagRot)),
+            Camera.getInstance(), swerveDrive),
+        new InstantCommand(() -> {
+          degrees = getDegToApriltag(id);
+          degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
+        }),
+        new turnToTurnPIDSetPoint(swerveDrive, degrees));
 
     return goToAprilTag;
   }
