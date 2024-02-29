@@ -15,14 +15,15 @@ import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 
-public class pathfindToApriltag extends Command implements Constants {
+public class pathfindToPose extends Command implements Constants {
   private Pose2d updatedPose;
   private Command pathToFollow;
   private SwerveDrive swerveDrive;
   private boolean pathCompleted = false;
 
-  /** Creates a new pathfindToApriltag. */
-  public pathfindToApriltag(Pose2d updatedRobotPose, Camera camera, SwerveDrive swerve) {
+  /** Creates a new pathfindToPose. */
+  // TODO: rename to pathfindToPose() - TK
+  public pathfindToPose(Pose2d updatedRobotPose, Camera camera, SwerveDrive swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(camera, RobotContainer.swerve);
 

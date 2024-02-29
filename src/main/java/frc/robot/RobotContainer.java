@@ -3,7 +3,6 @@ package frc.robot;
 
 import java.util.function.BooleanSupplier;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,8 +15,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.turnToFaceApriltag;
-import frc.robot.commands.turnToTurnPIDSetPoint;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
@@ -34,7 +31,6 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,9 +46,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotContainer implements Constants {
   public static XboxCotroller controller = new XboxCotroller(0);
-  public static AHRS gyro = new AHRS(Port.kMXP);
-  public static SwerveDrive swerve = SwerveDrive.getInstance();
-  public static Camera camera = Camera.getInstance();
+  public static SwerveDrive swerve;
+  public static Camera camera;
   public static Arm arm = Arm.getInstance();
   // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -66,22 +61,27 @@ public class RobotContainer implements Constants {
    * The container for the robot. Contains subsystems, OI devices, and commppands.
    */
   public RobotContainer() {
+    swerve = SwerveDrive.getInstance();
+    camera = Camera.getInstance();
     swerve.setDefaultCommand(new DriveFacingApril(swerve, maxSpeed));
     // swerve.setDefaultCommand(new turnToFaceApriltag(8, swerve, camera));
     // arm.setDefaultCommand(new SetArmToDistanceL1());
 
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
-    NamedCommands.registerCommand("SpeakerShoot1", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
+    NamedCommands.registerCommand("SpeakerShoot1",
+        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
-NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3.5)));
-    NamedCommands.registerCommand("SpeakerShoot3", new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
-    NamedCommands.registerCommand("TurnToAngle", new turnToFaceApriltag(7, swerve, camera));
-
-    // Additional Commands (Not automatically improted by Pathplanner) - TK
-    // autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
+    NamedCommands.registerCommand("SpeakerShoot2",
+        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
+    NamedCommands.registerCommand("SpeakerShoot3",
+        new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
 
     autobuilder = AutoBuilder.buildAutoChooser();
+
+    // Additional Commands (Not automatically improted by Pathplanner) - TK
+    autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
+
     SmartDashboard.putData("Path planner", autobuilder);
 
     NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").setDouble(2);
@@ -106,16 +106,25 @@ NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new Speaker
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .1;
     BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .1;
 
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight()).onFalse(new InstantCommand(climber::stopLeft));
-    new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight()).onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight)).onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft)).onFalse(new InstantCommand(climber::stopLeft));       
-    
-    //Resetting Gyro
-    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((this::resetGyro)));
-    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative = false;})).onFalse(new InstantCommand(()->{BasicSwerveControlL2.fieldRelative=true;}));
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight())
+        .onFalse(new InstantCommand(climber::stopLeft));
+    new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight())
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight))
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft))
+        .onFalse(new InstantCommand(climber::stopLeft));
 
-    // new JoystickButton(controller, Button.kX.value).whileTrue(new DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
+    // Resetting Gyro
+    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
+    new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(() -> {
+      BasicSwerveControlL2.fieldRelative = false;
+    })).onFalse(new InstantCommand(() -> {
+      BasicSwerveControlL2.fieldRelative = true;
+    }));
+
+    // new JoystickButton(controller, Button.kX.value).whileTrue(new
+    // DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
 
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
@@ -130,15 +139,9 @@ NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new Speaker
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.1);
-    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(10,4)).onFalse(new ShootSpeakerL1(0, 0));
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10,0)).onFalse(new ShootSpeakerL1(0,0));
+    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(10, 4)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10, 0)).onFalse(new ShootSpeakerL1(0, 0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
-
-
-  }
-
-  public void resetGyro() {
-    gyro.reset();
   }
 
   /**

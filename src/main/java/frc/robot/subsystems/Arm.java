@@ -66,7 +66,8 @@ public class Arm extends SubsystemBase {
   // Favorite setpoints
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
   public static final double kSetpoiintIntakeDown = 8.0; // The setpoint for intaking
-  public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and protection
+  public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
+                                                          // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
   public static final double kSetpointMove = 65.0; // The ready for intake but off the ground for movement and
                                                    // protection
@@ -171,9 +172,10 @@ public class Arm extends SubsystemBase {
   
     // angleInterpolator.put()
 
-    
-    // angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
-    // angleInterpolator.put(1.35, 13.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
+    // angleInterpolator = new InterpolatingDoubleTreeMap();//Add your
+    // inverseInterpolator, interpolator, and comparator here
+    // angleInterpolator.put(1.35, 13.0); // 14 Degrees and 42 inches measured to
+    // the inside of the bot perimiter
     // angleInterpolator.put(2.42, 21.0);
     // angleInterpolator.put(3.14, 27.0);
 
