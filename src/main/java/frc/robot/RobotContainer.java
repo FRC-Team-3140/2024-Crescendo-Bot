@@ -72,9 +72,10 @@ public class RobotContainer implements Constants {
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
     NamedCommands.registerCommand("SpeakerShoot1", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
-NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
+NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3.5)));
     NamedCommands.registerCommand("SpeakerShoot3", new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
-    
+    NamedCommands.registerCommand("TurnToAngle", new turnToFaceApriltag(7, swerve, camera));
+
     // Additional Commands (Not automatically improted by Pathplanner) - TK
     // autobuilder.addOption("Pathfind To AprilTag", camera.pathfindToAprilTag());
 

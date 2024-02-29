@@ -17,6 +17,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,6 +25,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -148,8 +150,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    *                      field.
    */
   SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-
+  private double setPointAngle = Units.degreesToRadians(gyro.getYaw());
+  private double calculatedRotation;
+  private ProfiledPIDController thetaController = new ProfiledPIDController(4, 0, 0, new Constraints(360, 720)); 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    setPointAngle += rot * .02;
+    thetaController.setGoal(setPointAngle);
+    calculatedRotation = thetaController.calculate(Units.degreesToRadians(gyro.getAngle()));
     botSpeeds = ChassisSpeeds.discretize(new ChassisSpeeds(xSpeed, ySpeed, rot), .02);
     swerveModuleStates = kinematics.toSwerveModuleStates(
         ChassisSpeeds.discretize(

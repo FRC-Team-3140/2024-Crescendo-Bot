@@ -7,7 +7,7 @@ import frc.robot.subsystems.Arm;
 public class SetArmToAngleL1 extends Command {
     private final Arm arm;
     private final double targetAngle;
-    private final double kDefaultError = .3; // in degrees
+    private final double kDefaultError = .6; // in degrees
 
     /**
      * Creates a new SetArmToAngle command.

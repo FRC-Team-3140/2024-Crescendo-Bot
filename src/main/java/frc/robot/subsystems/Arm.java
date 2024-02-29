@@ -251,7 +251,7 @@ public class Arm extends SubsystemBase {
   public double setArmToShootDistance(double distance) {
     // double interpolatedAngle = angleInterpolator.get(distance);
     // setArmToAngle(interpolatedAngle);
-    double interpolatedAngle = Math.max(15, -120.271 * Math.exp(distance*-.889836) + 47.7493); 
+    double interpolatedAngle = Math.max(16, -120.271 * Math.exp(distance*-.889836) + 47.7493); 
     setArmToAngle(interpolatedAngle);
     return -149.003 * Math.exp(distance*-1.11568) + 43.8496;
   }
