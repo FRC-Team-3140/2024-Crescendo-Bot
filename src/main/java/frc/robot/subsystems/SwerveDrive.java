@@ -63,8 +63,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
       locations[0], locations[1], locations[2], locations[3]);
 
-  // TODO: See if the following boolean is neccessary
-  public boolean allowPathMirroring = false;
   public SwerveDrive() {
     gyro = new AHRS(Port.kMXP);
 

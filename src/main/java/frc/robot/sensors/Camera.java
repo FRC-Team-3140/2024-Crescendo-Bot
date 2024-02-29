@@ -116,9 +116,6 @@ public class Camera extends SubsystemBase {
   }
 
   public class aprilTagLocation {
-    // TODO: See if we are using this effectively and if there are many instances
-    // being created
-    // but not handled (if that makes sense). - TK
     public final boolean isDetected;
     public final double distance;
     public final double angle;
@@ -145,12 +142,11 @@ public class Camera extends SubsystemBase {
   }
 
   private Camera(SwerveDrive swerve, int PhotonvisionConnectionAttempts, double delayBetweenAttempts) {
-    versionMatches = checkVersion();
-
     attemptDelay = delayBetweenAttempts;
 
     while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
+        versionMatches = checkVersion();
         connected = true;
         System.out.println("PhotonVision is connected and is probably working as expected...");
         break;
@@ -167,11 +163,10 @@ public class Camera extends SubsystemBase {
     if (connected) {
       aprilGetInstance();
       notesGetInstance();
-
-      // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
-      // problems - TK
     }
-
+    
+    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
+    // problems - TK
     swerveDrive = swerve;
 
     // Will also create a field layout object and set global variables for landmark
@@ -235,7 +230,7 @@ public class Camera extends SubsystemBase {
     // Gets new result from april camera and test if it's equal to the previous
     // result
     heartbeat = inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
-    
+
     if (heartbeat == previousResult) {
       connected = false;
     } else {

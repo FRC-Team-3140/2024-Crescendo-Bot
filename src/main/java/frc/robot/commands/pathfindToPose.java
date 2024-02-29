@@ -33,7 +33,7 @@ public class pathfindToPose extends Command implements Constants {
     // This will prevent Pathplanner from mirroring the generated camera path
     // once the Pathfinding command hits it's end state it will be allowed to
     // path mirror again. - TK
-    swerveDrive.allowPathMirroring = false;
+    swerveDrive.setPathInverted(false);
   }
 
   // Called when the command is initially scheduled.
@@ -85,7 +85,7 @@ public class pathfindToPose extends Command implements Constants {
      * targetPose
      */
     if (/* swerveDrive.getPose().equals(updatedPose) */pathCompleted) {
-      swerveDrive.allowPathMirroring = true;
+      swerveDrive.setPathInverted(true);
       System.out.println(
           "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!FINISHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       return true;
