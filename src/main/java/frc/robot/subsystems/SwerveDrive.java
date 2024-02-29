@@ -177,8 +177,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     }
   }
   
-  public void driveFacingSpeaker(double xSpeed, double ySpeed, boolean fieldRelative) {
-    var angle = Math.asin(getExpectedPose().getY()/ getExpectedPose().getTranslation().getDistance(blueSpeakerPose)); // Calculate the rotation speed based on the joystick input
+  public void driveFacingAngle(double xSpeed, double ySpeed, boolean fieldRelative, double angle) {
+     // Calculate the rotation speed based on the joystick input
     thetaController.setGoal(angle);
     calculatedRotation = thetaController.calculate(getPose().getRotation().getRadians());
     SmartDashboard.putNumber("Angle Speed", calculatedRotation);
@@ -198,6 +198,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
 
   public void resetPose(Pose2d pose) {
     poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
+  }
+  public void resetGyro() {
+    gyro.reset();
   }
 
   public void driveRobotRelative(ChassisSpeeds speeds) {

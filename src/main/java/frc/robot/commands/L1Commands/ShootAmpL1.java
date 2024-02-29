@@ -49,7 +49,7 @@ public class ShootAmpL1 extends Command implements Constants {
     // TODO This should automatically terminate after a certain amount of time - DB
     // TODO: I dont think the channel or the current it is greater than is correct.
     // Please check that
-    return System.currentTimeMillis() - startTime > 2000 || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7;
+    return System.currentTimeMillis() - startTime > 2000;
   }
 
   @Override

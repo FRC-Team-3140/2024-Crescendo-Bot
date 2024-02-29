@@ -1,11 +1,15 @@
 package frc.robot.commands.L3Commands;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrive;
 
-public class DriveFacingApril extends Command {
+public class DriveFacingApril extends Command implements Constants{
     private final SwerveDrive swerveDrive; // The swerve drive subsystem
     private final double maxSpeed;
     public static boolean fieldRelative = true;
@@ -23,9 +27,11 @@ public class DriveFacingApril extends Command {
      */
     @Override
     public void execute() {
+        Translation2d speakerPose = DriverStation.getAlliance().get().equals(Alliance.Red) ? redSpeakerPose : blueSpeakerPose;
+        double angle = Math.asin(SwerveDrive.getInstance().getExpectedPose().getY()/ SwerveDrive.getInstance().getExpectedPose().getTranslation().getDistance(speakerPose));
         final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the joystick input
         final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the joystick input
-        swerveDrive.driveFacingSpeaker(xSpeed, ySpeed, fieldRelative); // Drive the swerve drive
+        swerveDrive.driveFacingAngle(xSpeed, ySpeed, fieldRelative, angle); // Drive the swerve drive
     }
 
     /**
