@@ -18,40 +18,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "SetArmToIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "ShootAndPickup"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeUntilNoteDetected"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ShootAndPickup2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "TurnToAngle"
+            "pathName": "ShootAndPickup2"
           }
         },
         {

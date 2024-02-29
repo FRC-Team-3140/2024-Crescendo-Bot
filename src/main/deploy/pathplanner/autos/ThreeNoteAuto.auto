@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "ShootAndPickup"
@@ -20,13 +26,44 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PickupAndShoot"
+            "pathName": "ShootAndPickup2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "PickupAndShoot2"
+            "pathName": "Middle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle2"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerShoot1"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "FakePath"
+                }
+              }
+            ]
           }
         }
       ]

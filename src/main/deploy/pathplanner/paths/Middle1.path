@@ -3,47 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.73,
-        "y": 6.69
+        "x": 3.4,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9950140759952825,
-        "y": 6.81859386474778
+        "x": 4.846474147924599,
+        "y": 7.129637766384538
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.91,
-        "y": 6.995390431883621
+        "x": 7.54075745118315,
+        "y": 7.440890711165308
       },
       "prevControl": {
-        "x": 1.2354054776124723,
-        "y": 6.943498545546118
+        "x": 6.354105599206459,
+        "y": 7.294990893299322
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.2,
-      "rotationDegrees": 60.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": 0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "SetArmToIntake",
+      "name": "ArmToIntake",
       "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
@@ -74,7 +63,7 @@
   "reversed": false,
   "folder": "Real Paths",
   "previewStartingState": {
-    "rotation": 58.465208094811736,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

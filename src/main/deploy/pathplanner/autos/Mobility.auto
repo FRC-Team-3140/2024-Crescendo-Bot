@@ -38,12 +38,6 @@
                 "data": {
                   "pathName": "ShootAndPickup2"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeUntilNoteDetected"
-                }
               }
             ]
           }
