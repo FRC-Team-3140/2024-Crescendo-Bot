@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.73,
-      "y": 6.69
+      "x": 0.72,
+      "y": 4.48
     },
-    "rotation": 60.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -18,33 +18,38 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "PickupNote1"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "SetArmToIntake"
+            "name": "SpeakerShoot1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAndPickup"
+            "pathName": "PickupNote2"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ShootAndPickup2"
-                }
-              }
-            ]
+            "pathName": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
           }
         }
       ]
     }
   },
-  "folder": "Real Autos",
+  "folder": "Right Autos",
   "choreoAuto": false
 }
