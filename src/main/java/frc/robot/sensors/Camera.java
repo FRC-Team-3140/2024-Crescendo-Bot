@@ -160,11 +160,13 @@ public class Camera extends SubsystemBase {
       }
     }
 
+    setNetworktableStatus();
+
     if (connected) {
       aprilGetInstance();
       notesGetInstance();
     }
-    
+
     // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
     // problems - TK
     swerveDrive = swerve;
@@ -429,12 +431,10 @@ public class Camera extends SubsystemBase {
 
       /*
        * Takes Photonvision Z angle theta value (3D processing mode on camera) and
-       * gets sign,
-       * if sign is negative (aprilTag is on left of frame), it will turn left the #
-       * of degs.
-       * that arcTan or inverse tan returns from the X & Y coorinates. Else it turns
-       * right
-       * by the arcTan or inverse tan of the X & Y coordinates. - TK
+       * gets sign, if sign is negative (aprilTag is on left of frame), it will turn
+       * left the # of degs. that arcTan or inverse tan returns from the X & Y
+       * coorinates. Else it turns right by the arcTan or inverse tan of the X & Y
+       * coordinates. - TK
        */
 
       // Need to use the getX method that we wrote for Y in atan because it returns
@@ -459,12 +459,10 @@ public class Camera extends SubsystemBase {
 
           /*
            * Takes Photonvision Z angle theta value (3D processing mode on camera) and
-           * gets sign,
-           * if sign is negative (aprilTag is on left of frame), it will turn left the #
-           * of degs.
-           * that arcTan or inverse tan returns from the X & Y coorinates. Else it turns
-           * right
-           * by the arcTan or inverse tan of the X & Y coordinates. - TK
+           * gets sign, if sign is negative (aprilTag is on left of frame), it will turn
+           * left the # of degs. that arcTan or inverse tan returns from the X & Y
+           * coorinates. Else it turns right by the arcTan or inverse tan of the X & Y
+           * coordinates. - TK
            */
 
           // Need to use the getX method that we wrote for Y in atan because it returns
@@ -586,11 +584,6 @@ public class Camera extends SubsystemBase {
   }
 
   public SequentialCommandGroup pathfindToAprilTag(int id) {
-    // TODO: The reason why the sequential command group wasn't working before is
-    // because
-    // we were running this command and this command couldn't find the apriltag it
-    // was told
-    // to look for so it didn't move. - TK
     degrees = getDegToApriltag(id);
 
     degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
