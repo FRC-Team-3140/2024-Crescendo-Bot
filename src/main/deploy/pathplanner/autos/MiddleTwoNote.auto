@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2542914308886268,
+      "y": 5.534588312284395
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PickupNoteMiddle"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Middle Auto",
+  "choreoAuto": false
+}
