@@ -16,7 +16,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,7 +32,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -156,7 +154,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    *                      field.
    */
   SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-  private double setPointAngle = Units.degreesToRadians(gyro.getYaw());
   private double calculatedRotation;
   private ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, 0, new Constraints(360, 720)); 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
