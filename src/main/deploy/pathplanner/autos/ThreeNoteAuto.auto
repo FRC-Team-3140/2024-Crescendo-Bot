@@ -38,12 +38,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "Middle2"
           }
         },

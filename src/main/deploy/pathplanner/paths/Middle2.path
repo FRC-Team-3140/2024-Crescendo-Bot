@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.54,
-        "y": 7.44
+        "x": 3.4,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.80519816177477,
-        "y": 7.448033342181972
+        "x": 4.59767656377418,
+        "y": 7.365734631218636
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 9.041806955794362,
+        "x": 7.5089934641022165,
         "y": 7.44
       },
       "prevControl": {
-        "x": 9.042338842871114,
-        "y": 7.490113923779697
+        "x": 7.52881642188135,
+        "y": 7.433114058723174
       },
       "nextControl": {
-        "x": 9.031519616923946,
-        "y": 6.47073614949235
+        "x": 7.489170506323083,
+        "y": 7.446885941276827
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.418535543838005,
-        "y": 6.5941842159373545
+        "x": 8.866922194997272,
+        "y": 7.44
       },
       "prevControl": {
-        "x": 6.711103521955879,
-        "y": 6.7177129178093455
+        "x": 8.914725670364062,
+        "y": 7.454657003201787
       },
       "nextControl": {
-        "x": 5.955605294669236,
-        "y": 6.39872477739943
+        "x": 7.910852687661566,
+        "y": 7.146859935964289
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +52,8 @@
         "y": 5.956369205971495
       },
       "prevControl": {
-        "x": 5.112043507295034,
-        "y": 6.275276710954424
+        "x": 4.505090513940426,
+        "y": 6.028380578064414
       },
       "nextControl": null,
       "isLocked": false,
@@ -65,7 +65,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 1.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -96,6 +96,23 @@
           ]
         }
       }
+    },
+    {
+      "name": "ArmDown",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetArmToIntake"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -105,7 +122,7 @@
     "maxAngularAcceleration": 240.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 10.0,
     "rotateFast": false
   },
