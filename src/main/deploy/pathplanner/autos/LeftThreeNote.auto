@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.73,
-      "y": 6.69
+      "y": 6.691938312786578
     },
     "rotation": 60.0
   },
@@ -14,13 +14,31 @@
         {
           "type": "named",
           "data": {
-            "name": "SpeakerShoot"
+            "name": "SpeakerShoot1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootAndPickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootAndPickup2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SetArmToIntake"
+            "name": "SpeakerShoot1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle2"
           }
         },
         {
@@ -28,15 +46,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "ShootAndPickup"
+                  "name": "SpeakerShoot1"
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "IntakeUntilNoteDetected"
+                  "pathName": "FakePath"
                 }
               }
             ]
@@ -45,6 +63,6 @@
       ]
     }
   },
-  "folder": "Real Autos",
+  "folder": "Left Autos",
   "choreoAuto": false
 }

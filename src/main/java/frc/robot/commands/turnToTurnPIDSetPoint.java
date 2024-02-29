@@ -29,7 +29,7 @@ public class turnToTurnPIDSetPoint extends Command implements Constants {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    swerve.turnPID.setSetpoint(setPoint);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,8 +37,7 @@ public class turnToTurnPIDSetPoint extends Command implements Constants {
   public void execute() {
     currentBotAngle = swerve.getPose().getRotation().getDegrees();
 
-    swerve.drive(-maxSpeed * RobotContainer.controller.getLeftY(), -maxSpeed * RobotContainer.controller.getLeftX(),
-        swerve.turnPID.calculate(-currentBotAngle), false);
+    swerve.driveFacingAngle(0, 0, false, setPoint);
   }
 
   // Called once the command ends or is interrupted.

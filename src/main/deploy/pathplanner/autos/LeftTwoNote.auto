@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.73,
-      "y": 6.691938312786578
+      "x": 0.7,
+      "y": 6.69
     },
     "rotation": 60.0
   },
@@ -11,6 +11,12 @@
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        },
         {
           "type": "path",
           "data": {
@@ -20,18 +26,18 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PickupAndShoot"
+            "pathName": "ShootAndPickup2"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "PickupAndShoot2"
+            "name": "SpeakerShoot1"
           }
         }
       ]
     }
   },
-  "folder": "Real Autos",
+  "folder": "Left Autos",
   "choreoAuto": false
 }
