@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -30,8 +29,7 @@ public class turnToFaceApriltag extends Command {
   /** Creates a new turnToFaceApriltag. */
   public turnToFaceApriltag(int id, SwerveDrive swerveDrive, Camera cam) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(cam);
-    addRequirements(RobotContainer.swerve);
+    addRequirements(swerveDrive, cam);
     swerve = swerveDrive;
     camera = cam;
     ID = id;
@@ -65,8 +63,6 @@ public class turnToFaceApriltag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("isFinished is bad.");
-
     return command.isFinished();
   }
 }

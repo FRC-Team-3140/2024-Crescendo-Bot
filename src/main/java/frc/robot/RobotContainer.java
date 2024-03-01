@@ -63,7 +63,7 @@ public class RobotContainer implements Constants {
   public RobotContainer() {
     swerve = SwerveDrive.getInstance();
     camera = Camera.getInstance();
-    swerve.setDefaultCommand(new DriveFacingApril(swerve, maxSpeed));
+    swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
     // swerve.setDefaultCommand(new turnToFaceApriltag(8, swerve, camera));
     // arm.setDefaultCommand(new SetArmToDistanceL1());
 

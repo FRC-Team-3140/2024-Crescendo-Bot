@@ -415,14 +415,26 @@ public class Camera extends SubsystemBase {
   /**************************************************************************************/
 
   public double getAprilTagDist() {
-    return Math.sqrt((Math.pow(getApriltagDistX(), 2) + Math.pow(getApriltagDistY(), 2)));
+    return getAprilTagDist(1);
+  }
+
+  public double getAprilTagDist(double forwardScalePercent) {
+    return Math.sqrt((Math.pow(getApriltagDistX(), 2) + Math.pow((forwardScalePercent * getApriltagDistY()), 2)));
   }
 
   public double getAprilTagDist(int id) {
-    return Math.sqrt((Math.pow(getApriltagDistX(id), 2) + Math.pow(getApriltagDistY(id), 2)));
+    return getAprilTagDist(id, 1);
+  }
+
+  public double getAprilTagDist(int id, double forwardScalePercent) {
+    return Math.sqrt((Math.pow(getApriltagDistX(id), 2) + Math.pow((forwardScalePercent * getApriltagDistY(id)), 2)));
   }
 
   public double getDegToApriltag() {
+    return getAprilTagDist(1);
+  }
+
+  public double getDegToApriltag(double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
     if (versionMatches && connected && april.getLatestResult().hasTargets()) {
@@ -439,9 +451,7 @@ public class Camera extends SubsystemBase {
 
       // Need to use the getX method that we wrote for Y in atan because it returns
       // the Photon Y. - TK
-      requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(), getApriltagDistY()));
-
-      System.out.println(requiredTurnDegrees);
+      requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(), (forwardScalePercent * getApriltagDistY())));
 
       return requiredTurnDegrees;
     } else {
@@ -450,6 +460,10 @@ public class Camera extends SubsystemBase {
   }
 
   public double getDegToApriltag(int id) {
+    return getAprilTagDist(id, 1);
+  }
+
+  public double getDegToApriltag(int id, double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
     if (versionMatches && connected && april.getLatestResult().hasTargets()) {
@@ -467,7 +481,7 @@ public class Camera extends SubsystemBase {
 
           // Need to use the getX method that we wrote for Y in atan because it returns
           // the Photon Y. - TK
-          requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(id), getApriltagDistY(id)));
+          requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(id), (forwardScalePercent * getApriltagDistY(id))));
 
           return requiredTurnDegrees;
         }
@@ -555,7 +569,7 @@ public class Camera extends SubsystemBase {
     // Camera.getInstance(), SwerveDrive.getInstance()).schedule();
     /*****************************************************************/
 
-    degrees = getDegToApriltag();
+    degrees = getDegToApriltag(percentTravelDist);
 
     degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
 
@@ -566,16 +580,16 @@ public class Camera extends SubsystemBase {
           currentRot = currentSwervePose2d.getRotation().getRadians();
           currentX = currentSwervePose2d.getX();
           currentY = currentSwervePose2d.getY();
-          aprilDist = getAprilTagDist();
-          aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
+          aprilDist = getAprilTagDist(percentTravelDist);
+          aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag(percentTravelDist));
         }),
         new pathfindToPose(
             new Pose2d((-(aprilDist * Math.cos(currentRot + aprilTagRot)) + currentX),
-                (percentTravelDist * (-(aprilDist * Math.sin(currentRot + aprilTagRot))) + currentY),
+                (-(aprilDist * Math.sin(currentRot + aprilTagRot)) + currentY),
                 new Rotation2d(currentRot + aprilTagRot)),
             Camera.getInstance(), swerveDrive),
         new InstantCommand(() -> {
-          degrees = getDegToApriltag();
+          degrees = getDegToApriltag(percentTravelDist);
           degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
         }),
         new turnToTurnPIDSetPoint(swerveDrive, degrees));
@@ -584,7 +598,7 @@ public class Camera extends SubsystemBase {
   }
 
   public SequentialCommandGroup pathfindToAprilTag(int id) {
-    degrees = getDegToApriltag(id);
+    degrees = getDegToApriltag(id, percentTravelDist);
 
     degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
 
@@ -595,16 +609,16 @@ public class Camera extends SubsystemBase {
           currentRot = currentSwervePose2d.getRotation().getRadians();
           currentX = currentSwervePose2d.getX();
           currentY = currentSwervePose2d.getY();
-          aprilDist = getAprilTagDist(id);
-          aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag(id));
+          aprilDist = getAprilTagDist(id, percentTravelDist);
+          aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag(id, percentTravelDist));
         }),
         new pathfindToPose(
             new Pose2d((-(aprilDist * Math.cos(currentRot + aprilTagRot)) + currentX),
-                (percentTravelDist * (-(aprilDist * Math.sin(currentRot + aprilTagRot))) + currentY),
+                (-(aprilDist * Math.sin(currentRot + aprilTagRot)) + currentY),
                 new Rotation2d(currentRot + aprilTagRot)),
             Camera.getInstance(), swerveDrive),
         new InstantCommand(() -> {
-          degrees = getDegToApriltag(id);
+          degrees = getDegToApriltag(id, percentTravelDist);
           degrees += SwerveDrive.getInstance().getPose().getRotation().getDegrees();
         }),
         new turnToTurnPIDSetPoint(swerveDrive, degrees));

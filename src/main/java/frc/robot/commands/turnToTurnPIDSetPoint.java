@@ -36,7 +36,7 @@ public class turnToTurnPIDSetPoint extends Command implements Constants {
   public void execute() {
     currentBotAngle = swerve.getPose().getRotation().getDegrees();
 
-    swerve.driveFacingAngle(0, 0, false, setPoint);
+    swerve.driveFacingAngle(0, 0, false, Math.toRadians(setPoint));
   }
 
   // Called once the command ends or is interrupted.
