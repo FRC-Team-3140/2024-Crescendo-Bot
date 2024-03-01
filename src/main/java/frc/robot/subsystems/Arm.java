@@ -71,7 +71,7 @@ public class Arm extends SubsystemBase {
 
   // Constants for the arm control
   private static final double kDefaultForwardParam = .325; // The default forward control parameter
-  private static final double kArmEncoderOffset = -152; // The offset of the arm encoder from the zero position //
+  private static final double kArmEncoderOffset = -154; // The offset of the arm encoder from the zero position //
                                                         // degrees
 
   // Create a NetworkTable instance to enable the use of NetworkTables

@@ -44,12 +44,12 @@ public class ShootSpeakerL1 extends Command implements Constants {
     boolean hitSpeed = false;
     @Override
     public void execute() {
-        if(intakeShooter.getShooterSpeed() >= 4600 && !hitSpeed){
+        if(intakeShooter.getShooterSpeed() >= 4500 && !hitSpeed){
             intakeShooter.setShooterVoltage(voltage + .5);
             hitSpeed = true;
             timeSinceSpinUp = System.currentTimeMillis();
         }
-        if(System.currentTimeMillis() - timeSinceSpinUp > 200 && intakeShooter.getShooterSpeed() >= 4600){
+        if(System.currentTimeMillis() - timeSinceSpinUp > 300 && intakeShooter.getShooterSpeed() >= 4500){
             intakeShooter.setIntakeVoltage(voltage2);
         }
     }

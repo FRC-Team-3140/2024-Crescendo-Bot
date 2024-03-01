@@ -68,7 +68,7 @@ public class RobotContainer implements Constants {
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
     NamedCommands.registerCommand("SpeakerShoot1", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
-NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
+    NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
     NamedCommands.registerCommand("SpeakerShoot3", new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
     
     // Additional Commands (Not automatically improted by Pathplanner) - TK
@@ -96,8 +96,8 @@ NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new Speaker
    * joysticks}.
    */
   private void configureBindings() {
-    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .01;
-    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .01;
+    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
+    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
     new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight()).onFalse(new InstantCommand(climber::stopLeft));
     new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight()).onFalse(new InstantCommand(climber::stopRight));
@@ -119,11 +119,11 @@ NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new Speaker
     //Intake/Shooter Controls     
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
-    BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.1);
-    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.1);
+    BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
+    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
       
-    10,4)).onFalse(new ShootSpeakerL1(0, 0));
+    9.5,5)).onFalse(new ShootSpeakerL1(0, 0));
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10,0)).onFalse(new ShootSpeakerL1(0,0));
     
 

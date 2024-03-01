@@ -26,6 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -34,7 +35,7 @@ import frc.robot.sensors.Camera;
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
   private static SwerveDrive instance = null;
-
+  public static AHRS gyro;
   private final Translation2d[] locations = {
       new Translation2d(botLength, botLength),
       new Translation2d(botLength, -botLength),
@@ -49,8 +50,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new SwerveModule("backRight", 1, 4, 3, 0.447409),
 
   };
-
-  private static AHRS gyro = RobotContainer.gyro;
+  
   private ChassisSpeeds botSpeeds = new ChassisSpeeds(0, 0, 0);
   private boolean pathInverted = false;
 
@@ -75,7 +75,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new Pose2d(),
 
       VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
-      VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(30)));
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(30)));
 
   private Camera camera = Camera.getInstance();
 
@@ -83,6 +83,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public boolean allowPathMirroring = false;
 
   public SwerveDrive() {
+    gyro = new AHRS(Port.kMXP);
     gyro.reset();
 
     // Autobuilder for Pathplanner Goes last in constructor! TK 
