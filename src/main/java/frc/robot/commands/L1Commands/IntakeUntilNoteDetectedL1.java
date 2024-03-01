@@ -15,7 +15,6 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   IntakeShooter intakeShooter = IntakeShooter.getInstance();
   final double intakeVoltage = Constants.intakeVoltage;
-  static PowerDistribution pdp = new PowerDistribution(55, ModuleType.kRev);
 
   /** Creates a new IntakeUntilNoteDetected. */
   public IntakeUntilNoteDetectedL1() {
@@ -27,21 +26,11 @@ public class IntakeUntilNoteDetectedL1 extends Command {
 
   @Override
   public void initialize() {
-    // intakeShooter.setHoldingPiece(false);
-    // lastVoltage = pdp.getCurrent(17);
-    // startTime = System.currentTimeMillis();
     intakeShooter.setIntakeVoltage(intakeVoltage);
   }
 
-  public void execute() {
-
-    // Starts running the intake at a slower speed when there is a current spike;
-    // The color sensor takes some time to recognize it.
-    // if(pdp.getCurrent(17) > 5 && System.currentTimeMillis() - startTime > 1000){
-    // intakeShooter.setIntakeVoltage(0);
-
-    // }
-  }
+  @Override
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
