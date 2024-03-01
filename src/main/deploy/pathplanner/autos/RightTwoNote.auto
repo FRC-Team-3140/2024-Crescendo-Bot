@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.72,
+      "y": 4.48
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PickupNote1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Right Autos",
+  "choreoAuto": false
+}

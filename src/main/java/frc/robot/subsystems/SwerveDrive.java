@@ -244,4 +244,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     turnPID.setSetpoint(setpoint);
     return turnPID.calculate(botAngle);
   }
+
+  public void resetGyro(){
+    gyro.reset();
+  }
 }

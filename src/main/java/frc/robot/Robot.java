@@ -6,16 +6,12 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.pathfindToApriltag;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
@@ -102,32 +98,45 @@ public class Robot extends LoggedRobot implements Constants {
     // Ready the arm for movement.
     Arm.getInstance().enable();
   }
+
   // IntakeAndShooter test = IntakeAndShooter.getInstance();
   double test = NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2);
+
   @Override
   public void testInit() {
     // test.intake(.6);
-    
+
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
     // Ready the arm for movement.
     Arm.getInstance().enable();
     new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
-  
-    // new turnToFaceApriltag(6, SwerveDrive.getInstance(), Camera.getInstance()).schedule();
-    new pathfindToApriltag(new Pose2d(Camera.getInstance().getApriltagDistX(), Camera.getInstance().getApriltagDistY(), new Rotation2d(SwerveDrive.getInstance().getPose().getRotation().getDegrees())), Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+
+    // turnToFaceApriltag test - TK
+
+    // new turnToFaceApriltag(6, SwerveDrive.getInstance(),
+    // Camera.getInstance()).schedule();
+
+    // pathfinToApriltag test - TK
+
+    // double dist = Camera.getInstance().getAprilTagDist();
+    // double botRot = SwerveDrive.getInstance().getPose().getRotation().getRadians();
+    // double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
+
+    // new pathfindToPose(
+    //     new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new Rotation2d(botRot + aprilTagRot)),
+    //     Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+
+    Camera.getInstance().pathfindToAprilTag().schedule();
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
     // new SequentialCommandGroup(
-    //   new ParallelCommandGroup(new RepeatCommand(()-> SwerveDrive.))) 
-    
-    
-    
-    
+    // new ParallelCommandGroup(new RepeatCommand(()-> SwerveDrive.)))
+
     // ).schedule();
   }
 

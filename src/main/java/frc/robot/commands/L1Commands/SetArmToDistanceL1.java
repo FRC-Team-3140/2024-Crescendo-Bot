@@ -11,7 +11,7 @@ public class SetArmToDistanceL1 extends Command {
     private final Arm arm = Arm.getInstance();
     private double distance;
     // private double setpoint;
-    private double angleTolerance = .25;
+    private double angleTolerance = .1;
 
     /**
      * This command sets the arm to a specific distance
@@ -31,7 +31,7 @@ public class SetArmToDistanceL1 extends Command {
         // SmartDashboard.putNumber("Distance", distance);
         // Code to initialize the command arm.setArmToShootDistance(distance);
     }
-
+    
     @Override
     public void execute() {
         // Code to initialize the command

@@ -40,8 +40,10 @@ public class ShootSpeakerL1 extends Command implements Constants {
         // more consistant shots. See notes in IntakeShooter. -DB
         intakeShooter.setShooterVoltage(voltage);
     }
+
     double timeSinceSpinUp = Double.MAX_VALUE;
     boolean hitSpeed = false;
+
     @Override
     public void execute() {
         if(intakeShooter.getShooterSpeed() >= 4500 && !hitSpeed){

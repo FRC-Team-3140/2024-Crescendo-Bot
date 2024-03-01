@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
+        "x": 3.4,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8622366249520472,
-        "y": 6.99346460304295
+        "x": 4.846474147924599,
+        "y": 7.129637766384538
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 7.0
+        "x": 7.54075745118315,
+        "y": 7.440890711165308
       },
       "prevControl": {
-        "x": 2.4793093674254454,
-        "y": 7.0
+        "x": 6.354105599206459,
+        "y": 7.294990893299322
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "ArmToIntake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetArmToIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 3.0,
@@ -43,7 +61,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": null,
+  "folder": "Left Paths",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }
