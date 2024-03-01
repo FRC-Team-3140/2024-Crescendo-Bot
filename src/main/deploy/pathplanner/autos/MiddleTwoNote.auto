@@ -22,10 +22,41 @@
           "data": {
             "pathName": "PickupNoteMiddle"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopMoving"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopMoving"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpeakerShoot1"
+                }
+              }
+            ]
+          }
         }
       ]
     }
   },
-  "folder": "Middle Auto",
+  "folder": null,
   "choreoAuto": false
 }

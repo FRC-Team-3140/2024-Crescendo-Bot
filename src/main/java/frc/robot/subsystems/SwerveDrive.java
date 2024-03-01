@@ -75,6 +75,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public SwerveDrive() {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     thetaController.setTolerance(Math.PI/24);
+    gyro = new AHRS(Port.kMXP);
     gyro.reset();
 
     // Autobuilder for Pathplanner Goes last in constructor! TK
@@ -158,7 +159,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    *                      field.
    */
   SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-  private double setPointAngle = Units.degreesToRadians(gyro.getYaw());
+  // private double setPointAngle = Units.degreesToRadians(gyro.getYaw());
   private double calculatedRotation;
   private ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, 0, new Constraints(360, 720)); 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {

@@ -63,7 +63,8 @@ public class RobotContainer implements Constants {
   public RobotContainer() {
     swerve = SwerveDrive.getInstance();
     camera = Camera.getInstance();
-    swerve.setDefaultCommand(new DriveFacingApril(swerve, maxSpeed));
+    swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
+    // swerve.setDefaultCommand(new DriveFacingApril(swerve, maxSpeed));
     // swerve.setDefaultCommand(new turnToFaceApriltag(8, swerve, camera));
     // arm.setDefaultCommand(new SetArmToDistanceL1());
 
@@ -76,7 +77,8 @@ public class RobotContainer implements Constants {
         new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
     NamedCommands.registerCommand("SpeakerShoot3",
         new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
-
+    NamedCommands.registerCommand("StopMoving", new InstantCommand(()-> {swerve.drive(0, 0,0, false);}));
+    NamedCommands.registerCommand("Wait", new WaitCommand(2));
     autobuilder = AutoBuilder.buildAutoChooser();
 
     // Additional Commands (Not automatically improted by Pathplanner) - TK
