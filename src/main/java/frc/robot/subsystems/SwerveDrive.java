@@ -32,9 +32,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -69,6 +69,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
       locations[0], locations[1], locations[2], locations[3]);
 
+  // TODO: See if the following boolean is neccessary
+  public boolean allowPathMirroring = false;
   public SwerveDrive() {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     thetaController.setTolerance(Math.PI/24);
@@ -110,8 +112,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         },
         new Pose2d(),
 
-        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
-        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(30)));
+        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+        VecBuilder.fill(0.01, 0.1, Units.degreesToRadians(30)));
 
     Logger.recordOutput("Actual States", states);
     Logger.recordOutput("Set States", swerveModuleStates);
@@ -156,6 +158,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    *                      field.
    */
   SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
+  // private double setPointAngle = Units.degreesToRadians(gyro.getYaw());
   private double calculatedRotation;
   private ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, 0, new Constraints(360, 720)); 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
