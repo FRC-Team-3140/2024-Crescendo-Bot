@@ -22,7 +22,7 @@ import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
-import frc.robot.commands.L3Commands.DriveFacingApril;
+// import frc.robot.commands.L3Commands.DriveFacingApril;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.XboxCotroller;
 import frc.robot.sensors.Camera;
@@ -70,22 +70,25 @@ public class RobotContainer implements Constants {
 
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
+
     NamedCommands.registerCommand("SpeakerShoot1",
         new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
+
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
+
     NamedCommands.registerCommand("SpeakerShoot2",
         new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
+
     NamedCommands.registerCommand("SpeakerShoot3",
         new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
+
     NamedCommands.registerCommand("StopMoving", new InstantCommand(()-> {swerve.drive(0, 0,0, false);}));
+
     NamedCommands.registerCommand("Wait", new WaitCommand(2));
     autobuilder = AutoBuilder.buildAutoChooser();
 
-    NamedCommands.registerCommand("SpeakerShoot2", new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
-    NamedCommands.registerCommand("SpeakerShoot3", new ParallelCommandGroup(new SetArmToAngleL1(18), new ShootSpeakerL1(10., 3)));
-    
     // Additional Commands (Not automatically improted by Pathplanner) - TK
-    autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
+    // autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
 
     SmartDashboard.putData("Path planner", autobuilder);
 
