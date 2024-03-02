@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
 
   // Favorite setpoints
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
-  public static final double kSetpoiintIntakeDown = 8.0; // The setpoint for intaking
+  public static final double kSetpoiintIntakeDown = 6.0; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
                                                           // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
@@ -73,7 +73,7 @@ public class Arm extends SubsystemBase {
 
   // Constants for the arm control
   private static final double kDefaultForwardParam = .331; // The default forward control parameter
-  private static final double kArmEncoderOffset = -153; // The offset of the arm encoder from the zero position //
+  private static final double kArmEncoderOffset = -152; // The offset of the arm encoder from the zero position //
                                                         // degrees
   private static final double maxAcceleration = 2000;
   private static final double maxVelocity = 360;
@@ -252,9 +252,9 @@ public class Arm extends SubsystemBase {
   public double setArmToShootDistance(double distance) {
     // double interpolatedAngle = angleInterpolator.get(distance);
     // setArmToAngle(interpolatedAngle);
-    double interpolatedAngle = Math.max(16, -120.271 * Math.exp(distance*-.889836) + 47.7493); 
+    double interpolatedAngle = Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311); 
     setArmToAngle(interpolatedAngle);
-    return -149.003 * Math.exp(distance*-1.11568) + 43.8496;
+    return -149.003 * Math.exp(distance*-1.11568) + 45.3496;
   }
 //zkzj
   /**

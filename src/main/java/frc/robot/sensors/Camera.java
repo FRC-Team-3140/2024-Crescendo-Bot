@@ -143,7 +143,7 @@ public class Camera extends SubsystemBase {
 
   private Camera(SwerveDrive swerve, int PhotonvisionConnectionAttempts, double delayBetweenAttempts) {
     attemptDelay = delayBetweenAttempts;
-
+    
     while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
         versionMatches = checkVersion();
@@ -225,7 +225,7 @@ public class Camera extends SubsystemBase {
   }
 
   private static boolean checkVersion() {
-    return PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString(null));
+    return PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString("2024.2.8"));
   }
 
   private boolean testConnection() {
@@ -274,11 +274,10 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  private void setNetworktableStatus() {
+                        private void setNetworktableStatus() {
     // TODO: ensure this publishes properly. Especially PhotonVersion.version! - TK
     inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
-    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
-        .setString(inst.getTable("photonvision").getEntry("version").getString(null));
+    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ").setString(inst.getTable("photonvision").getEntry("version").getString("2024.2.8"));
     inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
         .setString(PhotonVersion.versionString);
     inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
@@ -536,7 +535,7 @@ public class Camera extends SubsystemBase {
   double degrees;
 
   public boolean isConnected() {
-    if (!connected || !Camera.checkVersion()) {
+    if (!connected) {
       return false;
     }
     return testConnection();
