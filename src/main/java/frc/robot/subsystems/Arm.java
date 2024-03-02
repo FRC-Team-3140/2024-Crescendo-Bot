@@ -89,7 +89,7 @@ public class Arm extends SubsystemBase {
   private ProfiledPIDController pid;
 
   private DutyCycleEncoder armEncoder;
-  
+
   private InterpolatingDoubleTreeMap angleInterpolator;
 
   private double fcp = kDefaultForwardParam;
@@ -157,7 +157,8 @@ public class Arm extends SubsystemBase {
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
     encoderConnected();
 
-    angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
+    angleInterpolator = new InterpolatingDoubleTreeMap();// Add your inverseInterpolator, interpolator, and comparator
+                                                         // here
     angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
     angleInterpolator.put(1.700, 21.0);
     angleInterpolator.put(1.9685, 27.5);
@@ -168,7 +169,6 @@ public class Arm extends SubsystemBase {
     angleInterpolator.put(3.5146, 40.7);
     angleInterpolator.put(3.9116, 41.6);
 
-  
     // angleInterpolator.put()
 
     // angleInterpolator = new InterpolatingDoubleTreeMap();//Add your
@@ -252,11 +252,12 @@ public class Arm extends SubsystemBase {
   public double setArmToShootDistance(double distance) {
     // double interpolatedAngle = angleInterpolator.get(distance);
     // setArmToAngle(interpolatedAngle);
-    double interpolatedAngle = Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311); 
+    double interpolatedAngle = Math.max(16, -132.744 * Math.exp(distance * -1.06174) + 45.2311);
     setArmToAngle(interpolatedAngle);
-    return -149.003 * Math.exp(distance*-1.11568) + 45.3496;
+    return -149.003 * Math.exp(distance * -1.11568) + 45.3496;
   }
-//zkzj
+
+  // zkzj
   /**
    * Sets the power of the arm motors
    * 

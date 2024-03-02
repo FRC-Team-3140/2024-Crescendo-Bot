@@ -143,7 +143,7 @@ public class Camera extends SubsystemBase {
 
   private Camera(SwerveDrive swerve, int PhotonvisionConnectionAttempts, double delayBetweenAttempts) {
     attemptDelay = delayBetweenAttempts;
-    
+
     while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
         versionMatches = checkVersion();
@@ -274,10 +274,11 @@ public class Camera extends SubsystemBase {
     }
   }
 
-                        private void setNetworktableStatus() {
+  private void setNetworktableStatus() {
     // TODO: ensure this publishes properly. Especially PhotonVersion.version! - TK
     inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
-    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ").setString(inst.getTable("photonvision").getEntry("version").getString("2024.2.8"));
+    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
+        .setString(inst.getTable("photonvision").getEntry("version").getString("2024.2.8"));
     inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
         .setString(PhotonVersion.versionString);
     inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
@@ -480,7 +481,8 @@ public class Camera extends SubsystemBase {
 
           // Need to use the getX method that we wrote for Y in atan because it returns
           // the Photon Y. - TK
-          requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(id), (forwardScalePercent * getApriltagDistY(id))));
+          requiredTurnDegrees = Math
+              .toDegrees(Math.atan2(getApriltagDistX(id), (forwardScalePercent * getApriltagDistY(id))));
 
           return requiredTurnDegrees;
         }

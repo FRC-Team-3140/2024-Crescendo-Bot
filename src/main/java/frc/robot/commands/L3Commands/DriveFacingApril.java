@@ -8,13 +8,13 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrive;
 
-public class DriveFacingApril extends Command implements Constants{
+public class DriveFacingApril extends Command implements Constants {
     private final SwerveDrive swerveDrive; // The swerve drive subsystem
     private final double maxSpeed;
     public static boolean fieldRelative = true;
 
     public DriveFacingApril(SwerveDrive swerveDrive, double maxSpeed) {
-       this.swerveDrive = swerveDrive;
+        this.swerveDrive = swerveDrive;
         this.maxSpeed = maxSpeed;
         addRequirements(swerveDrive); // This command requires the swerve drive subsystem
 
@@ -26,10 +26,14 @@ public class DriveFacingApril extends Command implements Constants{
      */
     @Override
     public void execute() {
-        Translation2d speakerPose = DriverStation.getAlliance().get().equals(Alliance.Red) ? redSpeakerPose : blueSpeakerPose;
-        double angle = Math.asin(SwerveDrive.getInstance().getExpectedPose().getY()/ SwerveDrive.getInstance().getExpectedPose().getTranslation().getDistance(speakerPose));
-        final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the joystick input
-        final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the joystick input
+        Translation2d speakerPose = DriverStation.getAlliance().get().equals(Alliance.Red) ? redSpeakerPose
+                : blueSpeakerPose;
+        double angle = Math.asin(SwerveDrive.getInstance().getExpectedPose().getY()
+                / SwerveDrive.getInstance().getExpectedPose().getTranslation().getDistance(speakerPose));
+        final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the
+                                                                             // joystick input
+        final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the
+                                                                             // joystick input
         swerveDrive.driveFacingAngle(xSpeed, ySpeed, fieldRelative, angle); // Drive the swerve drive
     }
 

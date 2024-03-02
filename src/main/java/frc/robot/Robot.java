@@ -121,12 +121,16 @@ public class Robot extends LoggedRobot implements Constants {
     // pathfinToApriltag test - TK
 
     // double dist = Camera.getInstance().getAprilTagDist();
-    // double botRot = SwerveDrive.getInstance().getPose().getRotation().getRadians();
+    // double botRot =
+    // SwerveDrive.getInstance().getPose().getRotation().getRadians();
     // double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
 
     // new pathfindToPose(
-    //     new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new Rotation2d(botRot + aprilTagRot)),
-    //     Camera.getInstance(), SwerveDrive.getInstance()).schedule();
+    // new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) +
+    // SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot +
+    // aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new
+    // Rotation2d(botRot + aprilTagRot)),
+    // Camera.getInstance(), SwerveDrive.getInstance()).schedule();
 
     Camera.getInstance().pathfindToAprilTag().schedule();
   }

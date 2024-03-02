@@ -7,8 +7,6 @@ import frc.robot.subsystems.IntakeShooter;
 
 public class SpitOutNote extends Command {
     private final IntakeShooter intakeShooter;
-    
-    
 
     /**
      * Creates a new ShooterSpeedL1 command.
@@ -41,11 +39,11 @@ public class SpitOutNote extends Command {
      *         command for the shooter
      */
 
-     @Override
-     public void end(boolean interrupted) {
-         intakeShooter.setShooterSpeed(0);
+    @Override
+    public void end(boolean interrupted) {
+        intakeShooter.setShooterSpeed(0);
         intakeShooter.setIntakeVoltage(0);
-     }
+    }
 
     @Override
     public boolean isFinished() {

@@ -82,7 +82,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
         // we don't use I or D
         turnPID.enableContinuousInput(-180, 180);
         turnPID.setTolerance(turnSetpointTolerance, turnVelocityTolerance);
-        //determined from a SYSID scan
+        // determined from a SYSID scan
         drivePID = new ProfiledPIDController(.6, 0, .015, constraints);
         drivePID.setTolerance(driveSetpointTolerance);
 
@@ -114,7 +114,8 @@ public class SwerveModule extends SubsystemBase implements Constants {
 
     public void setDriveSpeed(double velocity) {
         drivePID.setGoal(new State(velocity, 0));
-        double voltage = Math.min(12, driveFeedforward.calculate(velocity) + drivePID.calculate(driveEncoder.getVelocity()));
+        double voltage = Math.min(12,
+                driveFeedforward.calculate(velocity) + drivePID.calculate(driveEncoder.getVelocity()));
         driveMotor.setVoltage(voltage);
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Set Speed").setDouble(velocity);
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Actual Speed")

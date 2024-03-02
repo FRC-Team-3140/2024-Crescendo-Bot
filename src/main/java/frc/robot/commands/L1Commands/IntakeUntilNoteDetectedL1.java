@@ -28,7 +28,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -22,7 +22,6 @@ public class pathfindToPose extends Command implements Constants {
   private boolean pathCompleted = false;
 
   /** Creates a new pathfindToPose. */
-  // TODO: rename to pathfindToPose() - TK
   public pathfindToPose(Pose2d updatedRobotPose, Camera camera, SwerveDrive swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(camera, RobotContainer.swerve);
