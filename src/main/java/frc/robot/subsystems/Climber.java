@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Climber extends SubsystemBase {
     // Motors
@@ -32,12 +35,14 @@ public class Climber extends SubsystemBase {
 
     // Relay ports
     private int leftSolenoidChannelID = 0;
-    private int rightSolenoidChannelID = 5;
+    private int rightSolenoidChannelID = 3;
 
     // climber
     static Climber climber = new Climber();
-
+    BooleanSupplier leftLimitSwitchPressed;
+    BooleanSupplier rightLimitSwitchPressed;
     public Climber() {
+        
         leftClimber = new CANSparkMax(leftCANID, MotorType.kBrushless);
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
         
@@ -50,13 +55,18 @@ public class Climber extends SubsystemBase {
         //Limit Switch DIO ports
         leftLimit = new DigitalInput(4);
         rightLimit = new DigitalInput(3);
-
+        
+        leftLimitSwitchPressed = () -> leftLimit.get();
+        rightLimitSwitchPressed = () -> rightLimit.get();
         // set motor settings
         leftClimber.setIdleMode(IdleMode.kBrake);
         rightClimber.setIdleMode(IdleMode.kBrake);
 
         leftClimber.setInverted(false);
         rightClimber.setInverted(false);
+
+        new Trigger(leftLimitSwitchPressed).onTrue(new InstantCommand(this::stopLeft));
+        new Trigger(rightLimitSwitchPressed).onTrue(new InstantCommand(this::stopRight));
 
         leftClimber.burnFlash();
         rightClimber.burnFlash();
