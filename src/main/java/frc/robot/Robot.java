@@ -128,7 +128,7 @@ public class Robot extends LoggedRobot implements Constants {
     //     new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new Rotation2d(botRot + aprilTagRot)),
     //     Camera.getInstance(), SwerveDrive.getInstance()).schedule();
 
-    Camera.getInstance().pathfindToAprilTag().schedule();
+    // Camera.getInstance().pathfindToAprilTag().schedule();
   }
 
   /** This function is called periodically during test mode. */

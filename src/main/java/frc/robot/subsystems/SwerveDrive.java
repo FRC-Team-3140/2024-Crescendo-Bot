@@ -26,7 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -83,7 +83,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public boolean allowPathMirroring = false;
 
   public SwerveDrive() {
-    gyro = new AHRS(Port.kMXP);
+    gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
 
     // Autobuilder for Pathplanner Goes last in constructor! TK 
@@ -199,7 +199,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       // System.out.println(Camera.getInstance().isConnected());
       poseEstimator.addVisionMeasurement(
       Camera.getInstance().getEstimatedGlobalPose(),
-      Timer.getFPGATimestamp() - Camera.getInstance().getLatency()/1000);
+      Timer.getFPGATimestamp());
       // System.out.println("Balls");
     }else{
       // System.out.println(Camera.getInstance().isConnected());
