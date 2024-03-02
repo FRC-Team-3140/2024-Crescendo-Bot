@@ -4,7 +4,11 @@
 
 package frc.robot.subsystems;
 
+import java.sql.Driver;
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -14,18 +18,24 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -34,8 +44,14 @@ import frc.robot.sensors.Camera;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
-  private static SwerveDrive instance = null;
+  
+  private static SwerveDrive instance = new SwerveDrive();
+  ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, .1, new Constraints(360, 720));
+  SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
+  private final SwerveDrivePoseEstimator poseEstimator;
+  private Camera camera = Camera.getInstance();
   public static AHRS gyro;
+  
   private final Translation2d[] locations = {
       new Translation2d(botLength, botLength),
       new Translation2d(botLength, -botLength),
@@ -62,27 +78,12 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * The numbers used
    * below are robot specific, and should be tuned.
    */
-
-  private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
-      kinematics,
-      gyro.getRotation2d(),
-      new SwerveModulePosition[] {
-          modules[0].getSwerveModulePosition(),
-          modules[1].getSwerveModulePosition(),
-          modules[2].getSwerveModulePosition(),
-          modules[3].getSwerveModulePosition()
-      },
-      new Pose2d(),
-
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(30)));
-
-  private Camera camera = Camera.getInstance();
-
   // TODO: See if the following boolean is neccessary
   public boolean allowPathMirroring = false;
 
   public SwerveDrive() {
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.setTolerance(Math.PI/60); //3 degrees
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
 
@@ -94,15 +95,28 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
-            new PIDConstants(8, 0.0, 0), // Translation PID constants
-            new PIDConstants(12, 0.0, 1), // Rotation PID constants
-            maxSpeed, // Max module speed, in m/s
+            new PIDConstants(4, 0.0, 0), // Translation PID constants
+            new PIDConstants(2.5, 0.0, 0), // Rotation PID constants
+            maxChassisSpeed, // Max module speed, in m/s
             botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         this::shouldFlipPath,
         this // Reference to this subsystem to set requirements
     );
+    poseEstimator = new SwerveDrivePoseEstimator(
+      kinematics,
+      gyro.getRotation2d(),
+      new SwerveModulePosition[] {
+          modules[0].getSwerveModulePosition(),
+          modules[1].getSwerveModulePosition(),
+          modules[2].getSwerveModulePosition(),
+          modules[3].getSwerveModulePosition()
+      },
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
+      VecBuilder.fill(0.005, 0.005, Units.degreesToRadians(30)));
+
     Logger.recordOutput("Actual States", states);
     Logger.recordOutput("Set States", swerveModuleStates);
     Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
@@ -145,8 +159,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     botSpeeds = ChassisSpeeds.discretize(new ChassisSpeeds(xSpeed, ySpeed, rot), .02);
     swerveModuleStates = kinematics.toSwerveModuleStates(
@@ -155,30 +167,37 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             .02));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxModuleSpeed);
 
     for (int i = 0; i < 4; i++) {
       modules[i].setStates(swerveModuleStates[i], false);
     }
   }
 
-  public void resetPose(Pose2d pose) {
-    poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
-  }
-
   public void driveRobotRelative(ChassisSpeeds speeds) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
   }
 
-  public void setPathInverted(Boolean inverted) {
-    pathInverted = inverted;
+  public void driveRobotAtAngle(double xSpeed, double ySpeed, double angleRadians, boolean fieldRelative){
+    thetaController.setGoal(angleRadians);
+    double angularSpeed = thetaController.calculate(getPose().getRotation().getRadians());
+    drive(xSpeed, ySpeed, angularSpeed, fieldRelative);
   }
 
-  public static SwerveDrive getInstance() {
-    if (instance == null) {
-      instance = new SwerveDrive();
+  public void driveRobotFacingSpeaker(double xSpeed, double ySpeed, boolean fieldRelative){
+    Translation2d distanceFromSpeaker;
+    if(shouldFlipPath()){
+      distanceFromSpeaker = getExpectedPose().getTranslation().minus(redSpeakerTranslation); 
+    }else{
+      distanceFromSpeaker = getExpectedPose().getTranslation().minus(blueSpeakerTranslation);
     }
-    return instance;
+    double angle = Math.atan2(distanceFromSpeaker.getY(), distanceFromSpeaker.getX());
+
+    driveRobotAtAngle(xSpeed, ySpeed, angle, fieldRelative);
+  }
+
+  public void setPathInverted(Boolean inverted) {
+    pathInverted = inverted;
   }
 
   /** Updates the field relative position of the robot. */
@@ -196,14 +215,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
     if (Camera.getInstance().isConnected()) {
-      // System.out.println(Camera.getInstance().isConnected());
-      poseEstimator.addVisionMeasurement(
-      Camera.getInstance().getEstimatedGlobalPose(),
-      Timer.getFPGATimestamp());
-      // System.out.println("Balls");
-    }else{
-      // System.out.println(Camera.getInstance().isConnected());
-      System.out.println("No targets deteceted");
+      Optional<EstimatedRobotPose> robotPose = Camera.getInstance().getEstimatedGlobalPose();
+      if(robotPose.isPresent()){
+        poseEstimator.addVisionMeasurement(
+        robotPose.get().estimatedPose.toPose2d(),
+        Timer.getFPGATimestamp());
+        System.out.println("Target Detected");
+      }
     }
   }
 
@@ -216,7 +234,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   }
 
   public boolean shouldFlipPath() {
-    return pathInverted;
+    return DriverStation.getAlliance().get().equals(Alliance.Red);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -226,9 +244,37 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
-  public double getDistanceFromSpeaker(){
-    return Math.hypot(SwerveDrive.getInstance().getPose().getX(), SwerveDrive.getInstance().getPose().getY()- (216*.0254));
+
+  public Pose2d getExpectedPose(){
+    return  getPose().plus(new Transform2d(new Translation2d(botSpeeds.vxMetersPerSecond * .05, botSpeeds.vyMetersPerSecond * .05), new Rotation2d()));
   }
+
+  public double getExpectedDistanceFromSpeaker(){
+    //.05 is a placeholder timesteo, may be changed in the future
+    if(shouldFlipPath()){
+      return redSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
+    }
+    return blueSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
+  }
+
+  public double getDistanceFromSpeaker(){
+    if(shouldFlipPath()){
+      return redSpeakerTranslation.getDistance(getPose().getTranslation());
+    }
+    return blueSpeakerTranslation.getDistance(getPose().getTranslation());
+  }
+
+  public static SwerveDrive getInstance() {
+    if (instance == null) {
+      instance = new SwerveDrive();
+    }
+    return instance;
+  }
+
+  public void setVisionStdDeviations(double deviation){
+    poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(deviation,deviation, Units.degreesToRadians(30)));
+  }
+
   
   public PIDController turnPID = new PIDController(.5, 0.0, 0);
   public double turnToAprilTag(int ID){
@@ -248,4 +294,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public void resetGyro(){
     gyro.reset();
   }
+  
+  public void resetPose(Pose2d pose) {
+    poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
+  }
+
 }

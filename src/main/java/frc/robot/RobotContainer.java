@@ -1,6 +1,7 @@
 
 package frc.robot;
 
+import java.time.Instant;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
@@ -22,6 +24,8 @@ import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L2Commands.SetArmToDistanceWhileMovingL2;
+import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 // import frc.robot.commands.L3Commands.DriveFacingApril;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.XboxCotroller;
@@ -30,6 +34,8 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -63,10 +69,7 @@ public class RobotContainer implements Constants {
   public RobotContainer() {
     swerve = SwerveDrive.getInstance();
     camera = Camera.getInstance();
-    swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxSpeed, maxChassisTurnSpeed));
-    // swerve.setDefaultCommand(new DriveFacingApril(swerve, maxSpeed));
-    // swerve.setDefaultCommand(new turnToFaceApriltag(8, swerve, camera));
-    // arm.setDefaultCommand(new SetArmToDistanceL1());
+    swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxChassisSpeed, maxChassisTurnSpeed));
 
     intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
@@ -130,9 +133,7 @@ public class RobotContainer implements Constants {
     })).onFalse(new InstantCommand(() -> {
       BasicSwerveControlL2.fieldRelative = true;
     }));
-
-    // new JoystickButton(controller, Button.kX.value).whileTrue(new
-    // DriveFacingApril(swerve, maxSpeed, maxChassisTurnSpeed));
+    new JoystickButton(controller, Button.kA.value).whileTrue(new DriveFacingSpeaker(swerve, maxChassisSpeed));
 
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
@@ -140,8 +141,8 @@ public class RobotContainer implements Constants {
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
     // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
     new JoystickButton(controller2, Button.kA.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
-    new JoystickButton(controller2, Button.kStart.value).onTrue(new SetArmToAngleL1(16)); //Optimal angle for shooting from against the speaker.  
-    
+    new JoystickButton(controller2, Button.kStart.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(()-> {swerve.resetPose(new Pose2d(1.3,5.5, new Rotation2d()));})); //Optimal angle for shooting from against the speaker.  
+    new POVButton(controller2, 0).whileTrue(new RepeatCommand(new SetArmToDistanceWhileMovingL2()));
     //Intake/Shooter Controls     
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
@@ -150,10 +151,8 @@ public class RobotContainer implements Constants {
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
       
     9.5,5)).onFalse(new ShootSpeakerL1(0, 0));
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(10,0)).onFalse(new ShootSpeakerL1(0,0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.5,0)).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
-
-
 
   }
 

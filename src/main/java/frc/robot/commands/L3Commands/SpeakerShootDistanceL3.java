@@ -82,8 +82,7 @@ public class SpeakerShootDistanceL3 extends SequentialCommandGroup implements Co
 // }
 // @Override
 // public void end(boolean interrupted) {
-// System.out.println("At teh stripped club rn. Straight up jorking it. And by
-// it, haha, lets just say my peantis");
+
 
 // }
 // @Override
