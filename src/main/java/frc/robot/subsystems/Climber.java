@@ -35,7 +35,7 @@ public class Climber extends SubsystemBase {
 
     // Relay ports
     private int leftSolenoidChannelID = 0;
-    private int rightSolenoidChannelID = 3;
+    private int rightSolenoidChannelID = 5;
 
     // climber
     static Climber climber = new Climber();
@@ -54,7 +54,7 @@ public class Climber extends SubsystemBase {
 
         //Limit Switch DIO ports
         leftLimit = new DigitalInput(4);
-        rightLimit = new DigitalInput(3);
+        rightLimit = new DigitalInput(5);
         
         leftLimitSwitchPressed = () -> leftLimit.get();
         rightLimitSwitchPressed = () -> rightLimit.get();
@@ -105,7 +105,7 @@ public class Climber extends SubsystemBase {
     public void lowerLeft() {
         if (!leftLimit.get()) {
             leftSolenoid.set(true);
-            leftClimber.set(-.3); //change to an actual value later
+            leftClimber.set(-.35); //change to an actual value later
         }else{
             leftClimber.set(0);
         }
@@ -115,7 +115,7 @@ public class Climber extends SubsystemBase {
     public void lowerRight() {
         if (!rightLimit.get()) {
             rightSolenoid.set(true);
-            rightClimber.set(-.3); //change to an actual value later
+            rightClimber.set(-.35); //change to an actual value later
         }else{
             rightClimber.set(0);
         }

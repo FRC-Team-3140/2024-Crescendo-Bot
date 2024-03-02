@@ -27,6 +27,7 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   @Override
   public void initialize() {
     intakeShooter.setIntakeVoltage(intakeVoltage);
+    intakeShooter.setShooterVoltage(0);
   }
 
   @Override

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
@@ -77,6 +78,7 @@ public class Robot extends LoggedRobot implements Constants {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
+    SwerveDrive.getInstance().setVisionStdDeviations(.1);
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -87,6 +89,7 @@ public class Robot extends LoggedRobot implements Constants {
 
   @Override
   public void teleopInit() {
+    SwerveDrive.getInstance().setVisionStdDeviations(.004);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -128,7 +131,7 @@ public class Robot extends LoggedRobot implements Constants {
     //     new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new Rotation2d(botRot + aprilTagRot)),
     //     Camera.getInstance(), SwerveDrive.getInstance()).schedule();
 
-    Camera.getInstance().pathfindToAprilTag().schedule();
+    // Camera.getInstance().pathfindToAprilTag().schedule();
   }
 
   /** This function is called periodically during test mode. */

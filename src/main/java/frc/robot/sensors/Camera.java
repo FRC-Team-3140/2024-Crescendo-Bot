@@ -4,6 +4,9 @@
 
 package frc.robot.sensors;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
@@ -17,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -41,7 +45,7 @@ public class Camera extends SubsystemBase {
   // TODO: Find the actual postition of the cameras on the bot. - TK
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-0.5, 0.0, 0.5), new Rotation3d(0, 0, Math.PI));
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-Units.inchesToMeters(29)/2, 0.0, 0.5), new Rotation3d(0, 0, Math.PI));
 
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
@@ -500,11 +504,11 @@ public class Camera extends SubsystemBase {
     return kjasdfl;
   }
 
-  public Pose2d getEstimatedGlobalPose() {
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     // if (connected && april.getLatestResult().hasTargets() &&
     // !april.getLatestResult().equals(lastResult)){
-    return aprilTagPoseEstimator.update(april.getLatestResult()).get().estimatedPose.toPose2d();
+    return aprilTagPoseEstimator.update(april.getLatestResult());
     // } else {
     // return null;
     // }

@@ -107,7 +107,7 @@ public class IntakeShooter extends SubsystemBase {
 
     PIDController topController = new PIDController(.0018, 0, .00006);
     PIDController bottomController = new PIDController(.0018, 0, .00006);
-
+    //TODO: Calibrate values
     public void setShooterSpeed(double speed) {
         topController.setSetpoint(speed);
         bottomController.setSetpoint(-speed);
