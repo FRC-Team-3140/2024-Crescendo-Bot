@@ -75,7 +75,7 @@ public class RobotContainer implements Constants {
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
     NamedCommands.registerCommand("SpeakerShoot1",
-        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2)));
+        new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
 
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
 
@@ -150,8 +150,8 @@ public class RobotContainer implements Constants {
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerL1(
       
-    9.5,5)).onFalse(new ShootSpeakerL1(0, 0));
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.5,0)).onFalse(new ShootSpeakerL1(0,0));
+    9.6,5)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.6,0)).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }

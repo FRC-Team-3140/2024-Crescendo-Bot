@@ -18,6 +18,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
     private final IntakeShooter intakeShooter;
     private final double voltage;
     private final double voltage2;
+    private double freeSpeed;
 
     public ShootSpeakerL1(double shooterVoltage, double intakeVoltage) {
         this.intakeShooter = IntakeShooter.getInstance();
@@ -35,10 +36,12 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     @Override
     public void initialize() {
+        freeSpeed = voltage * 473;
         startTime = System.currentTimeMillis();
         // TODO: Recommend using encoders and PID to control the shooter speed. Much
         // more consistant shots. See notes in IntakeShooter. -DB
-        intakeShooter.setShooterVoltage(voltage);
+        intakeShooter.setShooterVoltageTop(voltage);
+        intakeShooter.setShooterVoltageBottom(voltage);
     }
 
     double timeSinceSpinUp = Double.MAX_VALUE;
@@ -46,12 +49,13 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     @Override
     public void execute() {
-        if(intakeShooter.getShooterSpeed() >= 4450 && !hitSpeed){
-            intakeShooter.setShooterVoltage(voltage + .5);
+        if(intakeShooter.getShooterSpeed() >= freeSpeed && !hitSpeed){
+            intakeShooter.setShooterVoltageTop(voltage);
+            intakeShooter.setShooterVoltageBottom(voltage);
             hitSpeed = true;
             timeSinceSpinUp = System.currentTimeMillis();
         }
-        if(System.currentTimeMillis() - timeSinceSpinUp > 300 && intakeShooter.getShooterSpeed() >= 4450){
+        if(System.currentTimeMillis() - timeSinceSpinUp > 300 && intakeShooter.getShooterSpeed() >= freeSpeed){
             intakeShooter.setIntakeVoltage(voltage2);
         }
     }

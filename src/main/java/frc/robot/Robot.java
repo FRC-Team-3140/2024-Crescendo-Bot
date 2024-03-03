@@ -6,12 +6,19 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot implements Constants {
@@ -54,6 +61,7 @@ public class Robot extends LoggedRobot implements Constants {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    
     // System.out.println("pe" + photoElectric.get());
   }
 
@@ -78,7 +86,7 @@ public class Robot extends LoggedRobot implements Constants {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
-    SwerveDrive.getInstance().setVisionStdDeviations(.1);
+    NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").setDouble(.02);
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -89,7 +97,7 @@ public class Robot extends LoggedRobot implements Constants {
 
   @Override
   public void teleopInit() {
-    SwerveDrive.getInstance().setVisionStdDeviations(.004);
+    NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").setDouble(.02);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -110,11 +118,11 @@ public class Robot extends LoggedRobot implements Constants {
     // test.intake(.6);
 
     // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+    // CommandScheduler.getInstance().cancelAll();
 
-    // Ready the arm for movement.
-    Arm.getInstance().enable();
-    new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
+    // // Ready the arm for movement.
+    // Arm.getInstance().enable();
+    // new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
 
     // turnToFaceApriltag test - TK
 
@@ -132,6 +140,18 @@ public class Robot extends LoggedRobot implements Constants {
     //     Camera.getInstance(), SwerveDrive.getInstance()).schedule();
 
     // Camera.getInstance().pathfindToAprilTag().schedule();
+    IntakeShooter intakeShooter = IntakeShooter.getInstance();
+    Climber climber = Climber.getInstance();
+    
+    new SequentialCommandGroup(
+      new InstantCommand(()-> {intakeShooter.setIntakeVoltage(7);}),
+      new InstantCommand(()-> {intakeShooter.setShooterVoltage(10);}),
+      new SetArmToAngleL1(20),
+      new InstantCommand(()-> {climber.raiseBoth();}),
+      new InstantCommand(()->{climber.lowerBoth();}),
+      AutoBuilder.buildAuto("Straight Line"),
+      AutoBuilder.buildAuto("Turn")
+    ).schedule();
   }
 
   /** This function is called periodically during test mode. */

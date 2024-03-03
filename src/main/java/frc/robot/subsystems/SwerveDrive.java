@@ -82,8 +82,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public boolean allowPathMirroring = false;
 
   public SwerveDrive() {
+    NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").setDouble(.01);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setTolerance(Math.PI/60); //3 degrees
+    thetaController.setTolerance(Math.PI/45); //4 degrees
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
 
@@ -96,7 +97,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
             new PIDConstants(4, 0.0, 0), // Translation PID constants
-            new PIDConstants(2.5, 0.0, 0), // Rotation PID constants
+            new PIDConstants(4, 0.0, 0), // Rotation PID constants
             maxChassisSpeed, // Max module speed, in m/s
             botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -104,6 +105,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         this::shouldFlipPath,
         this // Reference to this subsystem to set requirements
     );
+
     poseEstimator = new SwerveDrivePoseEstimator(
       kinematics,
       gyro.getRotation2d(),
@@ -115,7 +117,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       },
       new Pose2d(),
       VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
-      VecBuilder.fill(0.005, 0.005, Units.degreesToRadians(30)));
+      VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(30)));
 
     Logger.recordOutput("Actual States", states);
     Logger.recordOutput("Set States", swerveModuleStates);
@@ -144,10 +146,11 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     updateOdometry();
     actualStates.set(swerveModuleStates);
     setStates.set(states);
-
+    double visionStdDev =     NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").getDouble(.02);
+    poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Units.degreesToRadians(30)));
     // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(),
     // camera.getTimestamp());
-    odometryStruct.set(poseEstimator.getEstimatedPosition());
+    odometryStruct.set(getPose());
   }
 
   /**
@@ -215,13 +218,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
     if (Camera.getInstance().isConnected()) {
-      Optional<EstimatedRobotPose> robotPose = Camera.getInstance().getEstimatedGlobalPose();
-      if(robotPose.isPresent()){
         poseEstimator.addVisionMeasurement(
-        robotPose.get().estimatedPose.toPose2d(),
+        Camera.getInstance().getEstimatedGlobalPose(),
         Timer.getFPGATimestamp());
         System.out.println("Target Detected");
-      }
     }
   }
 

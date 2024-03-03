@@ -15,6 +15,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -54,7 +55,7 @@ public class Camera extends SubsystemBase {
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-      PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToApril);
+      PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToApril);
 
   private boolean connected = false;
   private int connectionAttempts = 2;
@@ -138,7 +139,7 @@ public class Camera extends SubsystemBase {
 
   private Camera(SwerveDrive swerve, int PhotonvisionConnectionAttempts, double delayBetweenAttempts) {
     attemptDelay = delayBetweenAttempts;
-
+    aprilTagPoseEstimator.setReferencePose(new Pose2d(0, 0, new Rotation2d()));
     while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
         connected = true;
@@ -504,11 +505,17 @@ public class Camera extends SubsystemBase {
     return kjasdfl;
   }
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+  public Pose2d getEstimatedGlobalPose() {
+    aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
+    Optional<EstimatedRobotPose> pose = aprilTagPoseEstimator.update(april.getLatestResult()); 
+    if(pose.isPresent()){
+      return pose.get().estimatedPose.toPose2d();
+    }else{
+      return aprilTagPoseEstimator.getReferencePose().toPose2d();
+    }
     // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     // if (connected && april.getLatestResult().hasTargets() &&
     // !april.getLatestResult().equals(lastResult)){
-    return aprilTagPoseEstimator.update(april.getLatestResult());
     // } else {
     // return null;
     // }

@@ -104,6 +104,12 @@ public class IntakeShooter extends SubsystemBase {
         shooterTop.setVoltage(voltage);
         shooterBottom.setVoltage(-voltage);
     }
+    public void setShooterVoltageTop(double voltage) {
+        shooterTop.setVoltage(voltage+.15);
+    }
+    public void setShooterVoltageBottom(double voltage) {
+        shooterBottom.setVoltage(-voltage);
+    }
 
     PIDController topController = new PIDController(.0018, 0, .00006);
     PIDController bottomController = new PIDController(.0018, 0, .00006);
