@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
-import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeShooter;
-import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
@@ -38,6 +38,8 @@ public class Robot extends LoggedRobot implements Constants {
 
   @Override
   public void robotInit() {
+    // DataLogManager.start();
+    
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -134,26 +136,35 @@ public class Robot extends LoggedRobot implements Constants {
     // double dist = Camera.getInstance().getAprilTagDist();
     // double botRot = SwerveDrive.getInstance().getPose().getRotation().getRadians();
     // double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
-
+ Arm.getInstance().enable();
     // new pathfindToPose(
     //     new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot + aprilTagRot)) + SwerveDrive.getInstance().getPose().getY(), new Rotation2d(botRot + aprilTagRot)),
     //     Camera.getInstance(), SwerveDrive.getInstance()).schedule();
 
     // Camera.getInstance().pathfindToAprilTag().schedule();
+   
     IntakeShooter intakeShooter = IntakeShooter.getInstance();
-    Climber climber = Climber.getInstance();
-    
+
+    Climber climber = Climber.getInstance(); 
     new SequentialCommandGroup(
-      new InstantCommand(()-> {intakeShooter.setIntakeVoltage(7);}),
-      new InstantCommand(()-> {intakeShooter.setShooterVoltage(10);}),
+      new SetArmToAngleL1(80),
+      new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(7);}), new WaitCommand(2)),
+      new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(0);}), new WaitCommand(1)),
+      new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(10);}), new WaitCommand(2)),
+      new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}), new WaitCommand(1)),
       new SetArmToAngleL1(20),
-      new InstantCommand(()-> {climber.raiseBoth();}),
-      new InstantCommand(()->{climber.lowerBoth();}),
+      new ParallelRaceGroup(new InstantCommand(()-> {climber.raiseBoth();}), new WaitCommand(1)),
+      new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
+      new ParallelRaceGroup(new InstantCommand(()-> {climber.lowerBoth();}), new WaitCommand(1)),
+      new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
+
       AutoBuilder.buildAuto("Straight Line"),
       AutoBuilder.buildAuto("Turn")
     ).schedule();
+ 
+    
+    
   }
-
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {

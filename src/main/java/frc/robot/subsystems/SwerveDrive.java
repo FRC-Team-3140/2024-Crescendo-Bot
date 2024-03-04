@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.sql.Driver;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
@@ -39,7 +38,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 
 /** Represents a swerve drive style drivetrain. */
@@ -140,6 +138,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   SwerveModuleState[] states = new SwerveModuleState[4];
 
   public void periodic() {
+
     for (int i = 0; i < 4; i++) {
       states[i] = modules[i].getState();
     }
@@ -151,6 +150,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(),
     // camera.getTimestamp());
     odometryStruct.set(getPose());
+
+    
   }
 
   /**
@@ -218,10 +219,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
     if (Camera.getInstance().isConnected()) {
-        poseEstimator.addVisionMeasurement(
-        Camera.getInstance().getEstimatedGlobalPose(),
-        Timer.getFPGATimestamp());
-        System.out.println("Target Detected");
+        Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
+        if(pose.isPresent() && Camera.getInstance().getApriltagDistX().ambiguity < 0.4 && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5){
+          poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
+          Timer.getFPGATimestamp());
+          // System.out.println("Target Detected");
+        }  
+        
     }
   }
 

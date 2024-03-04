@@ -146,6 +146,10 @@ public class Climber extends SubsystemBase {
         raiseRight();
     }
 
+    public void stopBoth(){
+        stopLeft();
+        stopRight();
+    }
     // lowers both left and right climbers
     public void lowerBoth() {
         lowerLeft();

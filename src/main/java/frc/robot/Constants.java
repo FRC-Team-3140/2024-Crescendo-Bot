@@ -1,7 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -27,5 +25,5 @@ public interface Constants {
     public double encoderRotationToMeters = 2 * Math.PI * ((wheelDiameter / 2) / gearRatio) / 42;
 
     public static final Translation2d blueSpeakerTranslation = new Translation2d(0, 216 * .0254);
-    public static final Translation2d redSpeakerTranslation = new Translation2d(16.55, 216 * .0254);
+    public static final Translation2d redSpeakerTranslation = new Translation2d(16.4846, 216 * .0254);
 }

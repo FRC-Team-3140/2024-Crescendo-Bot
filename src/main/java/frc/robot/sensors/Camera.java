@@ -15,7 +15,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -25,8 +24,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 // import frc.robot.commands.pathfindToApriltag;
@@ -46,7 +43,8 @@ public class Camera extends SubsystemBase {
   // TODO: Find the actual postition of the cameras on the bot. - TK
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-Units.inchesToMeters(29)/2, 0.0, 0.5), new Rotation3d(0, 0, Math.PI));
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-Units.inchesToMeters(29) / 2, 0.0, 0.5),
+      new Rotation3d(0, 0, Math.PI));
 
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
@@ -134,6 +132,16 @@ public class Camera extends SubsystemBase {
       this.isDetected = isDetected;
       this.distance = dist;
       this.angle = angle;
+    }
+  }
+
+  public class DistAmb {
+    public final double distance;
+    public final double ambiguity;
+
+    public DistAmb(double distance, double ambiguity) {
+      this.distance = distance;
+      this.ambiguity = ambiguity;
     }
   }
 
@@ -327,62 +335,70 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  public double getApriltagDistX() {
+  public DistAmb getApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     if (connected && april.getLatestResult().hasTargets()) {
-      return april.getLatestResult().getBestTarget().getBestCameraToTarget().getY();
+      PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+      return new DistAmb(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
     } else {
-      return 0;
+      return null;
     }
   }
 
-  public double getApriltagDistX(int id) {
-    // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
-    // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
-      for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-        if (target.getFiducialId() == id) {
-          return target.getBestCameraToTarget().getY();
-        }
-      }
-      return 0;
-    } else {
-      return 0;
-    }
-  }
-
-  public double getApriltagDistY() {
-    // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
-    // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
-      return april.getLatestResult().getBestTarget().getBestCameraToTarget().getX();
-    } else {
-      return 0;
-    }
-  }
-
-  public double getApriltagDistY(int id) {
+  public DistAmb getApriltagDistX(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     if (connected && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
-          return target.getBestCameraToTarget().getX();
+          return new DistAmb(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
         }
       }
-      return 0;
+      return null;
     } else {
-      return 0;
+      return null;
     }
   }
 
-  public double getAprilTagDist() {
+  public DistAmb getApriltagDistY() {
+    // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
+    // phase.
+    if (connected && april.getLatestResult().hasTargets()) {
+      PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+      return new DistAmb(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
+    } else {
+      return null;
+    }
+  }
+
+  public DistAmb getApriltagDistY(int id) {
+    // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
+    // phase.
+    if (connected && april.getLatestResult().hasTargets()) {
+      for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
+        if (target.getFiducialId() == id) {
+          return new DistAmb(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
+        }
+      }
+      return null;
+    } else {
+      return null;
+    }
+  }
+
+  public DistAmb getAprilTagDist() {
     double dist;
+    DistAmb distAmbX = getApriltagDistX();
+    DistAmb distAmbY = getApriltagDistY();
+    double x = distAmbX.distance;
+    double y = distAmbY.distance;
+    double ambX = distAmbX.ambiguity;
+    double ambY = distAmbY.ambiguity;
 
-    dist = Math.sqrt((Math.pow(getApriltagDistX(), 2) + Math.pow(getApriltagDistY(), 2)));
+    dist = Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2)));
 
-    return dist;
+    return new DistAmb(dist, ((ambX + ambY) / 2));
   }
 
   public double getDegToApriltag() {
@@ -412,7 +428,7 @@ public class Camera extends SubsystemBase {
 
       // Need to use the getX method that we wrote for Y in atan because it returns
       // the Photon Y. - TK
-      requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(), getApriltagDistY()));
+      requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX().distance, getApriltagDistY().distance));
 
       System.out.println(requiredTurnDegrees);
 
@@ -442,7 +458,7 @@ public class Camera extends SubsystemBase {
 
           // Need to use the getX method that we wrote for Y in atan because it returns
           // the Photon Y. - TK
-          requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(id), getApriltagDistY(id)));
+          requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(id).distance, getApriltagDistY(id).distance));
 
           return requiredTurnDegrees;
         }
@@ -457,7 +473,7 @@ public class Camera extends SubsystemBase {
     if (connected && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
-          double dist = getApriltagDistY(id);
+          double dist = getApriltagDistY(id).distance;
           double deg = getDegToApriltag(id);
 
           return new aprilTagLocation(true, dist, deg, id);
@@ -489,10 +505,11 @@ public class Camera extends SubsystemBase {
   public double getTimestamp() {
     return (1.0 * heartbeat);
   }
-  public double getLatency(){
+
+  public double getLatency() {
     return april.getLatestResult().getLatencyMillis();
   }
-  
+
   double lastResult = 0;
 
   public boolean isConnected() {
@@ -505,14 +522,9 @@ public class Camera extends SubsystemBase {
     return kjasdfl;
   }
 
-  public Pose2d getEstimatedGlobalPose() {
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
-    Optional<EstimatedRobotPose> pose = aprilTagPoseEstimator.update(april.getLatestResult()); 
-    if(pose.isPresent()){
-      return pose.get().estimatedPose.toPose2d();
-    }else{
-      return aprilTagPoseEstimator.getReferencePose().toPose2d();
-    }
+    return aprilTagPoseEstimator.update(april.getLatestResult());
     // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     // if (connected && april.getLatestResult().hasTargets() &&
     // !april.getLatestResult().equals(lastResult)){
@@ -522,58 +534,64 @@ public class Camera extends SubsystemBase {
   }
 
   // public SequentialCommandGroup pathfindToAprilTag() {
-  //   SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-  //       new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()),
-  //       new InstantCommand(() -> {
-  //         currentSwervePose2d = RobotContainer.swerve.getPose();
-  //         currentX = currentSwervePose2d.getX();
-  //         currentY = currentSwervePose2d.getY();
-  //         newX = getApriltagDistX(speakerAprilTag);
-  //         newY = percentTravelDist * getApriltagDistY(speakerAprilTag);
-  //       }),
-  //       new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
-  //           Camera.getInstance(),
-  //           RobotContainer.swerve),
-  //       new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve, Camera.getInstance()));
+  // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
+  // new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve,
+  // Camera.getInstance()),
+  // new InstantCommand(() -> {
+  // currentSwervePose2d = RobotContainer.swerve.getPose();
+  // currentX = currentSwervePose2d.getX();
+  // currentY = currentSwervePose2d.getY();
+  // newX = getApriltagDistX(speakerAprilTag);
+  // newY = percentTravelDist * getApriltagDistY(speakerAprilTag);
+  // }),
+  // new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new
+  // Rotation2d(0)),
+  // Camera.getInstance(),
+  // RobotContainer.swerve),
+  // new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve,
+  // Camera.getInstance()));
 
-  //   // Fallback code. NOT tested!!!!! - TK
-  //   // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-  //   // // new InstantCommand(() -> swerveDrive.resetPose(new Pose2d(4.5, 6.5, new
-  //   // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()))))),
-  //   // new InstantCommand(() -> System.out.println("X: " +
-  //   // swerveDrive.getPose().getX() + " Y: " + swerveDrive.getPose().getY())),
-  //   // // new Pathfinding(new Pose2d((swerveDrive.getPose().getX()/* + 0.25*/),
-  //   // (swerveDrive.getPose().getY()/* + 0.25*/), new
-  //   // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees() +
-  //   // 45))), Camera.getInstance(), swerveDrive),
-  //   // new InstantCommand(() -> System.out.println("DistX to Target:
-  //   // "+getApriltagDistX(2))),
-  //   // // new InstantCommand(() -> RobotContainer.m_robotDrive.drive(0,
-  //   // Math.signum(getApriltagDistX(2)), getDegToApriltag(2), false)),
-  //   // new InstantCommand(() ->
-  //   // RobotContainer.swerve.drive(0,1.0*Math.signum(getApriltagDistX(2)), 0,
-  //   // false)),
-  //   // new InstantCommand(() -> System.out.println("DONE"))
-  //   // );
+  // // Fallback code. NOT tested!!!!! - TK
+  // // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
+  // // // new InstantCommand(() -> swerveDrive.resetPose(new Pose2d(4.5, 6.5, new
+  // //
+  // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()))))),
+  // // new InstantCommand(() -> System.out.println("X: " +
+  // // swerveDrive.getPose().getX() + " Y: " + swerveDrive.getPose().getY())),
+  // // // new Pathfinding(new Pose2d((swerveDrive.getPose().getX()/* + 0.25*/),
+  // // (swerveDrive.getPose().getY()/* + 0.25*/), new
+  // // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()
+  // +
+  // // 45))), Camera.getInstance(), swerveDrive),
+  // // new InstantCommand(() -> System.out.println("DistX to Target:
+  // // "+getApriltagDistX(2))),
+  // // // new InstantCommand(() -> RobotContainer.m_robotDrive.drive(0,
+  // // Math.signum(getApriltagDistX(2)), getDegToApriltag(2), false)),
+  // // new InstantCommand(() ->
+  // // RobotContainer.swerve.drive(0,1.0*Math.signum(getApriltagDistX(2)), 0,
+  // // false)),
+  // // new InstantCommand(() -> System.out.println("DONE"))
+  // // );
 
-  //   return goToAprilTag;
+  // return goToAprilTag;
   // }
 
   // public SequentialCommandGroup pathfindToAprilTag(int id) {
-  //   SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-  //       new turnToFaceApriltag(id, swerveDrive, Camera.getInstance()),
-  //       new InstantCommand(() -> {
-  //         currentSwervePose2d = swerveDrive.getPose();
-  //         currentX = currentSwervePose2d.getX();
-  //         currentY = currentSwervePose2d.getY();
-  //         newX = getApriltagDistX(id);
-  //         newY = percentTravelDist * getApriltagDistY(id);
-  //       }),
-  //       new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new Rotation2d(0)),
-  //           Camera.getInstance(),
-  //           swerveDrive),
-  //       new turnToFaceApriltag(swerveDrive, Camera.getInstance()));
+  // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
+  // new turnToFaceApriltag(id, swerveDrive, Camera.getInstance()),
+  // new InstantCommand(() -> {
+  // currentSwervePose2d = swerveDrive.getPose();
+  // currentX = currentSwervePose2d.getX();
+  // currentY = currentSwervePose2d.getY();
+  // newX = getApriltagDistX(id);
+  // newY = percentTravelDist * getApriltagDistY(id);
+  // }),
+  // new pathfindToApriltag(new Pose2d((currentX - newX), (currentY - newY), new
+  // Rotation2d(0)),
+  // Camera.getInstance(),
+  // swerveDrive),
+  // new turnToFaceApriltag(swerveDrive, Camera.getInstance()));
 
-  //   return goToAprilTag;
+  // return goToAprilTag;
   // }
 }
