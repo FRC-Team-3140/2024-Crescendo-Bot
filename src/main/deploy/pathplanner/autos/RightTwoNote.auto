@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "PickupNote1"
