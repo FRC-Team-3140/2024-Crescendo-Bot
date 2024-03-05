@@ -218,20 +218,27 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // Also apply vision measurements. We use 0.3 seconds in the past as an example
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
-    if (Camera.getInstance().isConnected()) {
-      Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-      if (pose.isPresent() && Camera.getInstance().getApriltagDistX().ambiguity < 0.3
-          /*&& getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose
-              .getTranslation().toTranslation2d()) < .58*/) {
-        poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
-            Timer.getFPGATimestamp());
-        // System.out.println("Target Detected");
-      } //else {
-        //poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
-     // }
-
+    try {
+      if (Camera.getInstance().isConnected()) {
+        Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
+        if (pose.isPresent() && Camera.getInstance().getApriltagDistX().ambiguity < 0.3
+        /*
+         * && getPose().getTranslation().getDistance(Camera.getInstance().
+         * getEstimatedGlobalPose().get().estimatedPose
+         * .getTranslation().toTranslation2d()) < .58
+         */) {
+          poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
+              Timer.getFPGATimestamp());
+          // System.out.println("Target Detected");
+        } // else {
+          // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
+        // }
+      }
+    } catch (Error test) {
+      System.err.println("Bozo");
     }
   }
+
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];

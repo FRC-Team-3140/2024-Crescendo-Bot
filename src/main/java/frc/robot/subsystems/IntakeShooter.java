@@ -67,7 +67,7 @@ public class IntakeShooter extends SubsystemBase {
         shooterTop.restoreFactoryDefaults();
         shooterTop.setIdleMode(IdleMode.kCoast);
         shooterTop.setInverted(false);
-        shooterTop.setSmartCurrentLimit(40);
+        shooterTop.setSmartCurrentLimit(30);
         shooterTop.burnFlash();
 
         shooterBottom.follow(shooterTop);
@@ -77,11 +77,12 @@ public class IntakeShooter extends SubsystemBase {
         shooterBottom.restoreFactoryDefaults();
         shooterBottom.setIdleMode(IdleMode.kCoast);
         shooterBottom.setInverted(true);
-        shooterBottom.setSmartCurrentLimit(40);
+        shooterBottom.setSmartCurrentLimit(30);
         shooterBottom.burnFlash();
 
         intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeMotor.setInverted(true);
+        intakeMotor.setSmartCurrentLimit(30);
         intakeMotor.burnFlash();
     }
 

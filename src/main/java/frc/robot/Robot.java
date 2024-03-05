@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.LoggedRobot;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -38,13 +39,13 @@ public class Robot extends LoggedRobot implements Constants {
 
   @Override
   public void robotInit() {
-    // DataLogManager.start();
+    DataLogManager.start();
     
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   }
-
+ 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items
    * like diagnostics

@@ -23,7 +23,7 @@ public class OneNoteAuto extends Command {
   @Override
   public void initialize() {
     new SequentialCommandGroup(
-      new SetArmToDistanceL1(),
+      new SetArmToAngleL1(16),
       new ShootSpeakerL1(shooterVoltage, intakeVoltage)
     ).schedule();
   }
