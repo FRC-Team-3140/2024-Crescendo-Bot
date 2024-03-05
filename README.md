@@ -148,3 +148,4 @@ In the context of FRC robot programming, we categorize our commands into differe
 ## Misc
 - [ ] Error Checking with Photon Vision
 - [ ] Dealing with photon vision inaccurate measurements 
+- [ ] Disconnect Gyro from Odometry
