@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.Camera;
+import frc.robot.sensors.Camera.DistAmb;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase implements Constants {
@@ -218,10 +219,13 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // Also apply vision measurements. We use 0.3 seconds in the past as an example
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
+
+
     try {
       if (Camera.getInstance().isConnected()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-        if (pose.isPresent() && Camera.getInstance().getApriltagDistX().ambiguity < 0.3
+        DistAmb reading = Camera.getInstance().getApriltagDistX();
+        if (pose.isPresent() && reading != null && reading.ambiguity < 0.3
         /*
          * && getPose().getTranslation().getDistance(Camera.getInstance().
          * getEstimatedGlobalPose().get().estimatedPose
@@ -230,12 +234,12 @@ public class SwerveDrive extends SubsystemBase implements Constants {
           poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
               Timer.getFPGATimestamp());
           // System.out.println("Target Detected");
-        } // else {
-          // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
+        }//  else {
+        //    poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
         // }
       }
     } catch (Error test) {
-      System.err.println("Bozo");
+      System.err.println(test);
     }
   }
 

@@ -283,11 +283,11 @@ public class Camera extends SubsystemBase {
     count++;
 
     // TODO: Figure out why getAprilTagX(id) accasionally returns 0. - TK
-    aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
-    inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
-    inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
-    inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
-    inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
+    // // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
   }
 
   public int getApriltagID() {
@@ -469,6 +469,7 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /* TODO: Broken calls 
   public aprilTagLocation getAprilTagLocation(int id) {
     if (connected && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
@@ -481,7 +482,7 @@ public class Camera extends SubsystemBase {
       }
     }
     return new aprilTagLocation(false, 0, 0, -1);
-  }
+  }*/
 
   public aprilTagLayout getAprilTagLayout() {
     // TODO: Check to see if this variable matches the one I just added for the
