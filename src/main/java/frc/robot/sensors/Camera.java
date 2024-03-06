@@ -388,6 +388,7 @@ public class Camera extends SubsystemBase {
   }
 
   public DistAmb getAprilTagDist() {
+    // TODO: Handle null value error with following functions 
     double dist;
     DistAmb distAmbX = getApriltagDistX();
     DistAmb distAmbY = getApriltagDistY();

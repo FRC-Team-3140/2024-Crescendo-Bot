@@ -298,6 +298,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public PIDController turnPID = new PIDController(.5, 0.0, 0);
 
   public double turnToAprilTag(int ID) {
+    // TODO: Potential null error unhandled here 
     // turnPID.enableContinuousInput(0, 360);
     double botAngle = getPose().getRotation().getDegrees();
     double offsetAngle = camera.getDegToApriltag(ID);
