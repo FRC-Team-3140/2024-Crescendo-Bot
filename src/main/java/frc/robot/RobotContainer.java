@@ -23,6 +23,7 @@ import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
+import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L2Commands.SetArmToDistanceWhileMovingL2;
@@ -71,10 +72,11 @@ public class RobotContainer implements Constants {
    */
   public RobotContainer() {
     swerve = SwerveDrive.getInstance();
+    intakeShooter = IntakeShooter.getInstance();
     camera = Camera.getInstance();
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxChassisSpeed, maxChassisTurnSpeed));
+    intakeShooter.setDefaultCommand(new ShooterSpeedL1(5 * 473));
 
-    intakeShooter = IntakeShooter.getInstance();
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
     NamedCommands.registerCommand("SpeakerShoot1",
@@ -154,13 +156,13 @@ public class RobotContainer implements Constants {
   })); //Optimal angle for shooting from against the speaker.  
     new POVButton(controller2, 0).whileTrue(new RepeatCommand(new SetArmToDistanceWhileMovingL2()));
     //Intake/Shooter Controls     
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0,0));
+    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(intakeShooter.getDefaultCommand());//.onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(
       
-    9.6,5)).onFalse(new ShootSpeakerL1(0, 0));
+    9.6,5)).onFalse(intakeShooter.getDefaultCommand());//.onFalse(new ShootSpeakerL1(0, 0));
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.6,0));//.onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 

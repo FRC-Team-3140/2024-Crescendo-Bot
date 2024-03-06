@@ -152,5 +152,5 @@ public class IntakeShooter extends SubsystemBase {
         SmartDashboard.putBoolean("NoteDetected", proximityThresholdExeeded);
         SmartDashboard.putNumber("SpeedTop", shooterTop.getEncoder().getVelocity());
         SmartDashboard.putNumber("SpeedBottom", -shooterBottom.getEncoder().getVelocity());
-    }
+    }   
 }
