@@ -75,7 +75,7 @@ public class RobotContainer implements Constants {
     intakeShooter = IntakeShooter.getInstance();
     camera = Camera.getInstance();
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxChassisSpeed, maxChassisTurnSpeed));
-    intakeShooter.setDefaultCommand(new ShooterSpeedL1(5 * 473));
+    intakeShooter.setDefaultCommand(new InstantCommand(()-> {intakeShooter.setShooterVoltage(5);}, intakeShooter));
 
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 

@@ -70,6 +70,7 @@ public class IntakeShooter extends SubsystemBase {
         shooterTop.setSmartCurrentLimit(30);
         shooterTop.burnFlash();
 
+        shooterBottom.restoreFactoryDefaults();
         shooterBottom.follow(shooterTop);
         shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
         shooterBottom.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
@@ -80,6 +81,7 @@ public class IntakeShooter extends SubsystemBase {
         shooterBottom.setSmartCurrentLimit(30);
         shooterBottom.burnFlash();
 
+        intakeMotor.restoreFactoryDefaults();
         intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeMotor.setInverted(true);
         intakeMotor.setSmartCurrentLimit(30);
@@ -123,7 +125,7 @@ public class IntakeShooter extends SubsystemBase {
 
     }
 
-    public double getShooterSpeed() {
+       public double getShooterSpeed() {
         return Math.min(-shooterBottom.getEncoder().getVelocity(), shooterTop.getEncoder().getVelocity());
     }
 

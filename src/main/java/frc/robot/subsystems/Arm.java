@@ -46,7 +46,7 @@ public class Arm extends SubsystemBase {
   private static final int kArmEncoderID = 1;
 
   // Constants for the arm motor configuration
-  private static final int kMotorCurrentLimit = 40; // The current limit for the arm motors
+  private static final int kMotorCurrentLimit = 30; // The current limit for the arm motors
   private static final boolean kArmRightReversed = true; // Motor direction for right arm
   private static final boolean kArmLeftReversed = false; // Motor direction for left arm
   private static final IdleMode kEnabledMotorMode = IdleMode.kBrake; // Motor mode when enabled
@@ -128,7 +128,7 @@ public class Arm extends SubsystemBase {
     armL.restoreFactoryDefaults();
     armL.setIdleMode(kDisabledMotorMode);
     armL.setInverted(kArmLeftReversed);
-    armR.setSmartCurrentLimit(kMotorCurrentLimit);
+    armL.setSmartCurrentLimit(kMotorCurrentLimit);
     armL.burnFlash();
 
     // Create entries for P, I, and D values
