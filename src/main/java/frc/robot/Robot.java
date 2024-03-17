@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.IntakeShooter;
 
 public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
@@ -144,24 +143,23 @@ public class Robot extends LoggedRobot implements Constants {
 
     // Camera.getInstance().pathfindToAprilTag().schedule();
    
-    IntakeShooter intakeShooter = IntakeShooter.getInstance();
 
-    Climber climber = Climber.getInstance(); 
-    new SequentialCommandGroup(
-      new SetArmToAngleL1(80),
-      new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(7);}), new WaitCommand(2)),
-      new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(0);}), new WaitCommand(1)),
-      new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(10);}), new WaitCommand(2)),
-      new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}), new WaitCommand(1)),
-      new SetArmToAngleL1(20),
-      new ParallelRaceGroup(new InstantCommand(()-> {climber.raiseBoth();}), new WaitCommand(1)),
-      new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
-      new ParallelRaceGroup(new InstantCommand(()-> {climber.lowerBoth();}), new WaitCommand(1)),
-      new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
+    // Climber climber = Climber.getInstance(); 
+    // new SequentialCommandGroup(
+    //   new SetArmToAngleL1(80),
+    //   new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(7);}), new WaitCommand(2)),
+    //   new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(0);}), new WaitCommand(1)),
+    //   new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(10);}), new WaitCommand(2)),
+    //   new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}), new WaitCommand(1)),
+    //   new SetArmToAngleL1(20),
+    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.raiseBoth();}), new WaitCommand(1)),
+    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
+    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.lowerBoth();}), new WaitCommand(1)),
+    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
 
-      AutoBuilder.buildAuto("Straight Line"),
-      AutoBuilder.buildAuto("Turn")
-    ).schedule();
+    //   AutoBuilder.buildAuto("Straight Line"),
+    //   AutoBuilder.buildAuto("Turn")
+    // ).schedule();
  
     
     

@@ -34,7 +34,8 @@ import frc.robot.libs.XboxCotroller;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -65,17 +66,18 @@ public class RobotContainer implements Constants {
   public static Climber climber = Climber.getInstance();
 
   public static XboxCotroller controller2 = new XboxCotroller(1);
-  public static IntakeShooter intakeShooter;
+  public static Intake intake;
+  public static Shooter shooter;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commppands.
    */
   public RobotContainer() {
     swerve = SwerveDrive.getInstance();
-    intakeShooter = IntakeShooter.getInstance();
+    intake = Intake.getInstance();
+    shooter = Shooter.getInstance();
     camera = Camera.getInstance();
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxChassisSpeed, maxChassisTurnSpeed));
-    intakeShooter.setDefaultCommand(new InstantCommand(()-> {intakeShooter.setShooterVoltage(5);}, intakeShooter));
 
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
@@ -156,13 +158,13 @@ public class RobotContainer implements Constants {
   })); //Optimal angle for shooting from against the speaker.  
     new POVButton(controller2, 0).whileTrue(new RepeatCommand(new SetArmToDistanceWhileMovingL2()));
     //Intake/Shooter Controls     
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(intakeShooter.getDefaultCommand());//.onFalse(new ShootSpeakerL1(0,0));
+    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0, 0));//.onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(
       
-    9.6,5)).onFalse(intakeShooter.getDefaultCommand());//.onFalse(new ShootSpeakerL1(0, 0));
+    9.6,5)).onFalse(new ShootSpeakerL1(0, 0));//.onFalse(new ShootSpeakerL1(0, 0));
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.6,0));//.onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
