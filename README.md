@@ -134,18 +134,21 @@ In the context of FRC robot programming, we categorize our commands into differe
 | L3 | Intelligent Command | Completes complex tasks that integrate sensing and control, and may be composed of multiple simpler commands. Can complete complex objectives autonomously or with minimal driver control. | 
 | L4 | Skynet | Wins the game autonomously. No human intervention needed. |
 
-# Todo Before SMR
+# Todo Before RC
 ## Auto 
-- [ ] Tune Path Planner PID values 
-- [ ] Finish Two Note Auto 
-- [ ] Create Mobility Autos from other positions
-- [ ] Create Two Note Autos from other positions
-
-## Teleop
-- [ ] Make sure Climbers are working
-- [ ] Test out Drive while Turning
-
-## Misc
-- [ ] Error Checking with Photon Vision
-- [ ] Dealing with photon vision inaccurate measurements 
+- [ ] The start of all autos against the speaker should be as close to the field wall as possible
+- [ ] Figure out if theres a solution to it spinning at the end of a path
+- [ ] Create a pick-up-from-the-centerline-only auto
+## Climber
+- [ ] Add upper limit onto Climber
+## Camera
+- [ ] Add more error checking in Camera class
+- [ ] Take out unused methods/classes
+- [ ] Create a god tier calibration on 960 x 720
+## Intake Shooter
+- [ ] Seperate Intake and Shooter
+## Drivetrain 
 - [ ] Disconnect Gyro from Odometry
+## Arm
+- [ ] Redo the tree map for Distance Shooting (maybe)
+
