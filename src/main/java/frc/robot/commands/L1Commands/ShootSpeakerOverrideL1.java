@@ -14,22 +14,20 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
-public class ShootSpeakerL1 extends Command implements Constants {
+public class ShootSpeakerOverrideL1 extends Command implements Constants {
 
     private final Shooter shooter;
     private final Intake intake;
     private final double shooterSpeed;
     private final double voltage2;
-    private double freeSpeed;
-    private double deadband = 20;
 
-    public ShootSpeakerL1(double shooterSpeed, double intakeVoltage) {
+    public ShootSpeakerOverrideL1(double shooterSpeed, double intakeVoltage) {
         this.intake = Intake.getInstance();
         this.shooter = Shooter.getInstance();
         this.shooterSpeed = shooterSpeed;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
-        freeSpeed = shooterSpeed - deadband;
+
         // Adjust the desiredVoltage variable to the voltage value you want to use.
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.
@@ -52,13 +50,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     @Override
     public void execute() {
-        if(shooter.getShooterSpeed() >= freeSpeed && !hitSpeed){
-            hitSpeed = true;
-            timeSinceSpinUp = System.currentTimeMillis();
-        }
-        if(System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed){
-            intake.setIntakeVoltage(voltage2);
-        }
+        intake.setIntakeVoltage(voltage2);
     }
 
     @Override
@@ -69,8 +61,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     @Override
     public boolean isFinished() {
-        
-        return System.currentTimeMillis() - timeSinceSpinUp > 600 && shooter.getShooterSpeed() >= freeSpeed;
+        return System.currentTimeMillis() - timeSinceSpinUp > 600;
         // return System.currentTimeMillis() - startTime > 3000 ;//||
         // IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel
         // or the current it is greater than is correct. Please check that

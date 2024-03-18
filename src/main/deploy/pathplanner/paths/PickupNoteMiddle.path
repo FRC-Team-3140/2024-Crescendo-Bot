@@ -16,12 +16,28 @@
     },
     {
       "anchor": {
-        "x": 3.332333882712879,
-        "y": 5.534588312284395
+        "x": 3.219173155138291,
+        "y": 5.51401363454356
       },
       "prevControl": {
-        "x": 2.332333882712879,
-        "y": 5.534588312284395
+        "x": 2.219173155138291,
+        "y": 5.51401363454356
+      },
+      "nextControl": {
+        "x": 4.219173155138291,
+        "y": 5.51401363454356
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.8694036335441093,
+        "y": 5.54487565115481
+      },
+      "prevControl": {
+        "x": 3.3796909724145263,
+        "y": 5.524300973413976
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +48,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "Intake",
       "waypointRelativePos": 0.5,
       "command": {
         "type": "sequential",
@@ -42,6 +58,23 @@
               "type": "named",
               "data": {
                 "name": "IntakeUntilNoteDetected"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Arm",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetArmToIntake"
               }
             }
           ]
@@ -61,7 +94,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Middle",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "PickupNote1"
@@ -26,6 +32,6 @@
       ]
     }
   },
-  "folder": "Right Autos",
+  "folder": "Right",
   "choreoAuto": false
 }

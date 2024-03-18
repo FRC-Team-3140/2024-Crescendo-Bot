@@ -46,7 +46,7 @@ public class Arm extends SubsystemBase {
   private static final int kArmEncoderID = 1;
 
   // Constants for the arm motor configuration
-  private static final int kMotorCurrentLimit = 40; // The current limit for the arm motors
+  private static final int kMotorCurrentLimit = 30; // The current limit for the arm motors
   private static final boolean kArmRightReversed = true; // Motor direction for right arm
   private static final boolean kArmLeftReversed = false; // Motor direction for left arm
   private static final IdleMode kEnabledMotorMode = IdleMode.kBrake; // Motor mode when enabled
@@ -54,17 +54,17 @@ public class Arm extends SubsystemBase {
 
   // Constants for the PID controller
   private static final double kDefaultP = .3; // Proportional gain
-  private static final double kDefaultI = 0.0; // Integral gain
+  private static final double kDefaultI = 0.0001; // Integral gain
   private static final double kDefaultD = 0.004; // Derivative gain
 
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
   private static final double kMaxSetpoint = 94.0; // Maximum setpoint; Test again with Amp
-  private static final double kMinSetpoint = 8.0; // Minimum setpoint
+  private static final double kMinSetpoint = 6.5; // Minimum setpoint
 
   // Favorite setpoints
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
-  public static final double kSetpoiintIntakeDown = 6.0; // The setpoint for intaking
+  public static final double kSetpoiintIntakeDown = 6.5; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
                                                           // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
@@ -73,9 +73,9 @@ public class Arm extends SubsystemBase {
 
   // Constants for the arm control
   private static final double kDefaultForwardParam = .331; // The default forward control parameter
-  private static final double kArmEncoderOffset = -152; // The offset of the arm encoder from the zero position //
+  private static final double kArmEncoderOffset = -155; // The offset of the arm encoder from the zero position //
                                                         // degrees
-  private static final double maxAcceleration = 2000;
+  private static final double maxAcceleration = 720;
   private static final double maxVelocity = 360;
 
   // Create a NetworkTable instance to enable the use of NetworkTables
@@ -128,7 +128,7 @@ public class Arm extends SubsystemBase {
     armL.restoreFactoryDefaults();
     armL.setIdleMode(kDisabledMotorMode);
     armL.setInverted(kArmLeftReversed);
-    armR.setSmartCurrentLimit(kMotorCurrentLimit);
+    armL.setSmartCurrentLimit(kMotorCurrentLimit);
     armL.burnFlash();
 
     // Create entries for P, I, and D values
@@ -142,7 +142,7 @@ public class Arm extends SubsystemBase {
     pEntry.setPersistent();
     iEntry.setPersistent();
     dEntry.setPersistent();
-    setpointEntry.setPersistent();
+    // setpointEntry.setPersistent();
     fcpEntry.setPersistent();
 
     double p = inst.getTable(kNTArm).getEntry(kNTP).getDouble(kDefaultP);
@@ -213,7 +213,6 @@ public class Arm extends SubsystemBase {
     }
 
     // Update the setpoint incase it has changed
-    inst.getTable(kNTArm).getEntry(kNTSetpoint).setDouble(setpoint);
 
     // set the arm motor power
     updatePower(pid.calculate(getAngle()));
@@ -252,9 +251,12 @@ public class Arm extends SubsystemBase {
   public double setArmToShootDistance(double distance) {
     // double interpolatedAngle = angleInterpolator.get(distance);
     // setArmToAngle(interpolatedAngle);
-    double interpolatedAngle = Math.max(16, -132.744 * Math.exp(distance * -1.06174) + 45.2311);
+    // double interpolatedAngle = angleInterpolator.get(distance);
+
+
+    double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance*-1.07775) + 43.0501); 
     setArmToAngle(interpolatedAngle);
-    return -149.003 * Math.exp(distance * -1.11568) + 45.3496;
+    return -149.003 * Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311);
   }
 
   // zkzj

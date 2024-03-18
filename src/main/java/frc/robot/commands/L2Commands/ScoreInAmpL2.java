@@ -6,7 +6,6 @@ import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.IntakeShooter;
 
 //Work on this 
 // TODO: This needs testing - DB
@@ -24,7 +23,7 @@ public class ScoreInAmpL2 extends SequentialCommandGroup {
          * @param arm           The Arm subsystem
          * @param intakeShooter The IntakeShooter subsystem
          */
-        public ScoreInAmpL2(Arm arm, IntakeShooter intakeShooter) {
+        public ScoreInAmpL2() {
                 addCommands(
 
                                 // Step 1: In parallel, set the arm to an angle and rev the shooter speed so it

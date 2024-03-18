@@ -14,16 +14,16 @@ public interface Constants {
 
     // In meters per second, determined from the free speed of the bot via
     // SwerveDriveSpecialties
-    public static final double maxSpeed = 5.05968 * 1.4044;
-
+    public static final double maxChassisSpeed = 5.05968; //* 1.4044;
+    public static final double maxModuleSpeed = maxChassisSpeed/wheelDiameter/Math.PI;
     public static final double maxTurnSpeed = Double.MAX_VALUE; // These are basically infinite for our purposes
     public static final double maxAcceleration = 4000;
     public static final double botRadius = Math.hypot(botLength, botLength);
     // Max Speed divided by the circumference a circle determined by the distance of
     // the module from the center, divided by 2 pi to convert to radians
-    public static final double maxChassisTurnSpeed = maxSpeed / botRadius;
+    public static final double maxChassisTurnSpeed = maxChassisSpeed / botRadius;
     public double encoderRotationToMeters = 2 * Math.PI * ((wheelDiameter / 2) / gearRatio) / 42;
 
-    public static final Translation2d blueSpeakerPose = new Translation2d(0, 216 * .0254);
-    public static final Translation2d redSpeakerPose = new Translation2d(16.55, 216 * .0254);
+    public static final Translation2d blueSpeakerTranslation = new Translation2d(0, 216 * .0254);
+    public static final Translation2d redSpeakerTranslation = new Translation2d(16.4846, 216 * .0254);
 }

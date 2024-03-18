@@ -1,19 +1,27 @@
 package frc.robot.commands.L3Commands;
 
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrive;
+//Works Well
 
-public class DriveFacingApril extends Command implements Constants {
+/**
+ * This class represents a basic swerve control command.
+ * It is intended to be the default command for the drive.
+ */
+public class DriveFacingSpeaker extends Command {
     private final SwerveDrive swerveDrive; // The swerve drive subsystem
-    private final double maxSpeed;
+    private final double maxSpeed; // The maximum speed for the swerve drive
     public static boolean fieldRelative = true;
 
-    public DriveFacingApril(SwerveDrive swerveDrive, double maxSpeed) {
+    /**
+     * Creates a new BasicSwerveControlL2 command.
+     *
+     * @param swerveDrive         The swerve drive subsystem
+     * @param maxSpeed            The maximum speed for the swerve drive
+     * @param maxChassisTurnSpeed The maximum turn speed for the chassis
+     */
+    public DriveFacingSpeaker(SwerveDrive swerveDrive, double maxSpeed) {
         this.swerveDrive = swerveDrive;
         this.maxSpeed = maxSpeed;
         addRequirements(swerveDrive); // This command requires the swerve drive subsystem
@@ -26,15 +34,11 @@ public class DriveFacingApril extends Command implements Constants {
      */
     @Override
     public void execute() {
-        Translation2d speakerPose = DriverStation.getAlliance().get().equals(Alliance.Red) ? redSpeakerPose
-                : blueSpeakerPose;
-        double angle = Math.asin(SwerveDrive.getInstance().getExpectedPose().getY()
-                / SwerveDrive.getInstance().getExpectedPose().getTranslation().getDistance(speakerPose));
         final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the
                                                                              // joystick input
         final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the
                                                                              // joystick input
-        swerveDrive.driveFacingAngle(xSpeed, ySpeed, fieldRelative, angle); // Drive the swerve drive
+        swerveDrive.driveRobotFacingSpeaker(xSpeed, ySpeed, fieldRelative); // Drive the swerve drive
     }
 
     /**

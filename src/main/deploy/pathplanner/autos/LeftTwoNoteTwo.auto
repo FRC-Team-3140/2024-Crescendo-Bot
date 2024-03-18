@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.58,
-      "y": 6.68
+      "x": 0.7418259386281802,
+      "y": 6.6822116582621796
     },
     "rotation": 60.0
   },
@@ -30,34 +30,15 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "ShootEndLeft"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "SpeakerShoot1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle2"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SpeakerShoot1"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "FakePath"
-                }
-              }
-            ]
           }
         }
       ]

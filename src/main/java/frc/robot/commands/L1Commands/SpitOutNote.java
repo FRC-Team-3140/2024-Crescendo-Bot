@@ -1,12 +1,16 @@
 package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
 //Works Well
 
 public class SpitOutNote extends Command {
-    private final IntakeShooter intakeShooter;
+    private final Intake intake;
+    private final Shooter shooter;
+    
+    
 
     /**
      * Creates a new ShooterSpeedL1 command.
@@ -15,9 +19,9 @@ public class SpitOutNote extends Command {
      * @param speed         The speed to set the IntakeShooter to
      */
     public SpitOutNote() {
-        this.intakeShooter = IntakeShooter.getInstance();
-
-        addRequirements(intakeShooter); // This command requires the IntakeShooter subsystem
+        this.intake = Intake.getInstance();
+        this.shooter = Shooter.getInstance();
+        addRequirements(intake,shooter); // This command requires the IntakeShooter subsystem
     }
 
     /**
@@ -26,8 +30,8 @@ public class SpitOutNote extends Command {
      */
     @Override
     public void execute() {
-        intakeShooter.setShooterSpeed(-0.25);
-        intakeShooter.setIntakeVoltage(-3);
+        shooter.setShooterVoltage(-2);
+        intake.setIntakeVoltage(-3);
     }
 
     /**
@@ -39,11 +43,11 @@ public class SpitOutNote extends Command {
      *         command for the shooter
      */
 
-    @Override
-    public void end(boolean interrupted) {
-        intakeShooter.setShooterSpeed(0);
-        intakeShooter.setIntakeVoltage(0);
-    }
+     @Override
+     public void end(boolean interrupted) {
+         shooter.setShooterVoltage(0);
+        intake.setIntakeVoltage(0);
+     }
 
     @Override
     public boolean isFinished() {

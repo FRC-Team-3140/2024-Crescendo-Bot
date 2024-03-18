@@ -6,7 +6,7 @@ import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.IntakeShooter;
+
 
 //Work 
 // TODO: This needs testing - DB
@@ -24,7 +24,7 @@ public class ScoreInSpeakerL2 extends SequentialCommandGroup {
          * @param arm           The Arm subsystem
          * @param intakeShooter The IntakeShooter subsystem
          */
-        public ScoreInSpeakerL2(Arm arm, IntakeShooter intakeShooter) {
+        public ScoreInSpeakerL2() {
                 addCommands(
 
                                 // Step 1: In parallel, set the arm to an angle and rev the shooter speed so it

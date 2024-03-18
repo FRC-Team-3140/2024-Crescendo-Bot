@@ -7,16 +7,19 @@ package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+
 
 public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
-  IntakeShooter intakeShooter = IntakeShooter.getInstance();
+  Intake intake = Intake.getInstance();
+  Shooter shooter = Shooter.getInstance();
   final double intakeVoltage = Constants.intakeVoltage;
 
   /** Creates a new IntakeUntilNoteDetected. */
   public IntakeUntilNoteDetectedL1() {
-    addRequirements(intakeShooter);
+    addRequirements(intake, shooter);
   }
 
   long startTime; // Called when the command is initially scheduled.
@@ -24,7 +27,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
 
   @Override
   public void initialize() {
-    intakeShooter.setIntakeVoltage(intakeVoltage);
+    intake.setIntakeVoltage(intakeVoltage);
+    shooter.setShooterVoltage(0);
   }
 
   @Override
@@ -34,15 +38,13 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeShooter.setHoldingPiece(true);
-
-    intakeShooter.setIntakeVoltage(0);
+    intake.setIntakeVoltage(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intakeShooter.noteDetected();
+    return intake.noteDetected();
     // return false;
   }
 

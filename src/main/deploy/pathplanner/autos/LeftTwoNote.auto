@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7,
-      "y": 6.69
+      "x": 0.58,
+      "y": 6.68
     },
     "rotation": 60.0
   },
@@ -38,6 +38,6 @@
       ]
     }
   },
-  "folder": "Left Autos",
+  "folder": "Left",
   "choreoAuto": false
 }
