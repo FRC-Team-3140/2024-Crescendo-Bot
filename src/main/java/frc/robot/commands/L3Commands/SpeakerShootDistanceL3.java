@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
-import frc.robot.subsystems.IntakeShooter;
-import frc.robot.subsystems.SwerveDrive;
 
 /**
  * This class represents a command for shooting at a specific distance using the
@@ -22,8 +20,6 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class SpeakerShootDistanceL3 extends SequentialCommandGroup implements Constants {
 
-    public IntakeShooter intakeShooter;
-    public SwerveDrive swerve;
     public boolean finished;
 
     // private InterpolatingDoubleTreeMap angleInterpolator;
