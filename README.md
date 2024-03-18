@@ -1,4 +1,4 @@
-This is the repository for our competition bot, yet to be named, for 2024 Crescendo.
+This is the repository for our competition bot, Steambot Willie, for 2024 Crescendo.
 
 # Reference
 
@@ -51,8 +51,10 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 |---|---|---|---|
 | Climer Motor Left | CANSparkMax | CAN ID: 14 | A **motor** for controlling the left climber |
 | Climer Motor Right | CANSparkMax | CAN ID: 15 | A **motor** for controlling the right climber |
-| Solenoid Left | Relay | Relay Port: 0 | A solenoid that is powered by a **relay** that locks the position of the left climber |
-| Solenoid Right | Relay | Relay Port: 1 | A solenoid that is powered by a **relay** that locks the position of the right climber |
+| Solenoid Left | PCM | PCM Channel: 0 | A solenoid that is powered by a **PCM** that locks the position of the left climber |
+| Solenoid Right | PCM | PCM Channel: 5 | A solenoid that is powered by a **PCM** that locks the position of the right climber |
+| Limit Switch Left | DIO | DIO Port 4 | A limit switch located at the lower end of the climber to prevent it from getting too low/stuck. |
+| Limit Switch Right | DIO | DIO Port 5 | A limit switch located at the lower end of the climber to prevent it from getting too low/stuck. |
 
 ## Swerve Drive
 
