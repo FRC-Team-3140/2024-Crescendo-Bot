@@ -65,6 +65,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       new SwerveModule("backRight", 1, 4, 3, 0.447409),
 
   };
+  double odometryOffset = 0;
 
   private ChassisSpeeds botSpeeds = new ChassisSpeeds(0, 0, 0);
   private boolean pathInverted = false;
@@ -313,6 +314,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   }
 
   public void resetGyro() {
+    odometryOffset = gyro.getAngle();
     gyro.reset();
   }
 

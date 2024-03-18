@@ -127,10 +127,10 @@ public class Climber extends SubsystemBase {
         leftSolenoid.set(false);
     }
     public SequentialCommandGroup increaseLeftHeight(){
-        return new SequentialCommandGroup(new InstantCommand(this::lowerLeftForRaising), new WaitCommand(.05), new InstantCommand(this::raiseLeft));
+        return new SequentialCommandGroup(new InstantCommand(this::lowerLeftForRaising), new WaitCommand(.075), new InstantCommand(this::raiseLeft));
     }
     public SequentialCommandGroup increaseRightHeight(){
-        return new SequentialCommandGroup(new InstantCommand(this::lowerRightForRaising), new WaitCommand(.05), new InstantCommand(this::raiseRight));
+        return new SequentialCommandGroup(new InstantCommand(this::lowerRightForRaising), new WaitCommand(.075), new InstantCommand(this::raiseRight));
     }
 
     // stops the right climber

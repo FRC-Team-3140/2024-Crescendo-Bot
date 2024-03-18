@@ -75,7 +75,7 @@ public class RobotContainer implements Constants {
     intakeShooter = IntakeShooter.getInstance();
     camera = Camera.getInstance();
     swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, maxChassisSpeed, maxChassisTurnSpeed));
-    intakeShooter.setDefaultCommand(new InstantCommand(()-> {intakeShooter.setShooterVoltage(5);}, intakeShooter));
+    // intakeShooter.setDefaultCommand(new InstantCommand(()-> {intakeShooter.setShooterVoltage(5);}, intakeShooter));
 
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
@@ -125,15 +125,6 @@ public class RobotContainer implements Constants {
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
     BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(climber.increaseLeftHeight())
-        .onFalse(new InstantCommand(climber::stopLeft));
-    new JoystickButton(controller, Button.kRightBumper.value).onTrue(climber.increaseRightHeight())
-        .onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(rightTriggerC1).onTrue(new InstantCommand(climber::lowerRight))
-        .onFalse(new InstantCommand(climber::stopRight));
-    new Trigger(leftTriggerC1).onTrue(new InstantCommand(climber::lowerLeft))
-        .onFalse(new InstantCommand(climber::stopLeft));
-
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
     new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(() -> {
@@ -156,14 +147,26 @@ public class RobotContainer implements Constants {
   })); //Optimal angle for shooting from against the speaker.  
     new POVButton(controller2, 0).whileTrue(new RepeatCommand(new SetArmToDistanceWhileMovingL2()));
     //Intake/Shooter Controls     
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(intakeShooter.getDefaultCommand());//.onFalse(new ShootSpeakerL1(0,0));
+    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0, 0));//.onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
-    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(
-      
-    9.6,5)).onFalse(intakeShooter.getDefaultCommand());//.onFalse(new ShootSpeakerL1(0, 0));
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.6,0));//.onFalse(new ShootSpeakerL1(0,0));
+    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6,5)).onFalse(new ShootSpeakerL1(0, 0));//.onFalse(new ShootSpeakerL1(0, 0));
+    BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
+    BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
+    BooleanSupplier upControllerRightC2 = () -> (controller2.getRightY() > 0.3);
+    BooleanSupplier downControllerRightC2 = () -> (controller2.getRightY() < -0.3);
+    
+    new Trigger(upControllerLeftC2).onTrue(climber.increaseLeftHeight())
+        .onFalse(new InstantCommand(climber::stopLeft));
+    new Trigger(upControllerRightC2).onTrue(climber.increaseRightHeight())
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(downControllerRightC2).onTrue(new InstantCommand(climber::lowerRight))
+        .onFalse(new InstantCommand(climber::stopRight));
+    new Trigger(downControllerLeftC2).onTrue(new InstantCommand(climber::lowerLeft))
+        .onFalse(new InstantCommand(climber::stopLeft));
+
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.6,0)).onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }
