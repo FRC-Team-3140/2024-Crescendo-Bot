@@ -10,6 +10,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonVersion;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -58,6 +59,8 @@ public class Camera extends SubsystemBase {
   private boolean connected = false;
   private int connectionAttempts = 2;
 
+  private boolean versionMatches = true;
+
   // The heartbeat is a value in the Photonvision Networktable that continually
   // changes.
   private double heartbeat = 0;
@@ -79,13 +82,17 @@ public class Camera extends SubsystemBase {
   // Time to delay connection attempts is in SECONDS! - TK
   private double attemptDelay;
 
-  // Global variables for updating Pathplanner poses - TK
-  private SwerveDrive swerveDrive;
-  private Pose2d currentSwervePose2d;
-  private double currentX;
-  private double currentY;
-  private double newX;
-  private double newY;
+  // TODO: Determine if we need the pathfind to apriltag code
+
+  /*
+   * // Global variables for updating Pathplanner poses - TK
+   * private SwerveDrive swerveDrive;
+   * private Pose2d currentSwervePose2d;
+   * private double currentX;
+   * private double currentY;
+   * private double newX;
+   * private double newY;
+   */
 
   // percentage of forward distance you want to drive before stopping (to prevent
   // crashing). - TK
@@ -149,6 +156,9 @@ public class Camera extends SubsystemBase {
     attemptDelay = delayBetweenAttempts;
     // TODO: Look at the following line
     aprilTagPoseEstimator.setReferencePose(new Pose2d(0, 0, new Rotation2d()));
+
+    versionMatches = checkVersion();
+
     while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
         connected = true;
@@ -281,7 +291,6 @@ public class Camera extends SubsystemBase {
     inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
         .setString(PhotonVersion.versionString);
     inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
-    return connected;
   }
 
   @Override
@@ -304,10 +313,14 @@ public class Camera extends SubsystemBase {
 
     // TODO: Figure out why getAprilTagX(id) accasionally returns 0. - TK
     // // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("ID:
+    // ").setInteger(tag.id);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected:
+    // ").setBoolean(tag.isDetected);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist:
+    // ").setDouble(tag.distance);
+    // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees:
+    // ").setDouble(tag.angle);
   }
 
   public int getApriltagID() {
@@ -414,7 +427,8 @@ public class Camera extends SubsystemBase {
   }
 
   public double getAprilTagDist(double forwardScalePercent) {
-    return Math.sqrt((Math.pow(getApriltagDistX(), 2) + Math.pow((forwardScalePercent * getApriltagDistY()), 2)));
+    return Math.sqrt(
+        (Math.pow(getApriltagDistX().distance, 2) + Math.pow((forwardScalePercent * getApriltagDistY().distance), 2)));
   }
 
   public double getAprilTagDist(int id) {
@@ -422,7 +436,8 @@ public class Camera extends SubsystemBase {
   }
 
   public double getAprilTagDist(int id, double forwardScalePercent) {
-    return Math.sqrt((Math.pow(getApriltagDistX(id), 2) + Math.pow((forwardScalePercent * getApriltagDistY(id)), 2)));
+    return Math.sqrt((Math.pow(getApriltagDistX(id).distance, 2)
+        + Math.pow((forwardScalePercent * getApriltagDistY(id).distance), 2)));
   }
 
   public double getDegToApriltag() {
@@ -454,7 +469,8 @@ public class Camera extends SubsystemBase {
 
       // Need to use the getX method that we wrote for Y in atan because it returns
       // the Photon Y. - TK
-      requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX().distance, (forwardScalePercent * getApriltagDistY().distance)));
+      requiredTurnDegrees = Math
+          .toDegrees(Math.atan2(getApriltagDistX().distance, (forwardScalePercent * getApriltagDistY().distance)));
 
       return requiredTurnDegrees;
     } else {
@@ -484,7 +500,8 @@ public class Camera extends SubsystemBase {
 
           // Need to use the getX method that we wrote for Y in atan because it returns
           // the Photon Y. - TK
-          requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX(id).distance, getApriltagDistY(id).distance));
+          requiredTurnDegrees = Math
+              .toDegrees(Math.atan2(getApriltagDistX(id).distance, getApriltagDistY(id).distance));
 
           return requiredTurnDegrees;
         }
@@ -495,20 +512,22 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  /* TODO: Broken calls 
-  public aprilTagLocation getAprilTagLocation(int id) {
-    if (connected && april.getLatestResult().hasTargets()) {
-      for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-        if (target.getFiducialId() == id) {
-          double dist = getApriltagDistY(id).distance;
-          double deg = getDegToApriltag(id);
-
-          return new aprilTagLocation(true, dist, deg, id);
-        }
-      }
-    }
-    return new aprilTagLocation(false, 0, 0, -1);
-  }*/
+  /*
+   * TODO: Broken calls
+   * public aprilTagLocation getAprilTagLocation(int id) {
+   * if (connected && april.getLatestResult().hasTargets()) {
+   * for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
+   * if (target.getFiducialId() == id) {
+   * double dist = getApriltagDistY(id).distance;
+   * double deg = getDegToApriltag(id);
+   * 
+   * return new aprilTagLocation(true, dist, deg, id);
+   * }
+   * }
+   * }
+   * return new aprilTagLocation(false, 0, 0, -1);
+   * }
+   */
 
   public aprilTagLayout getAprilTagLayout() {
     // TODO: Check to see if this variable matches the one I just added for the

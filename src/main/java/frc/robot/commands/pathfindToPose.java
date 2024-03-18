@@ -18,7 +18,7 @@ import frc.robot.subsystems.SwerveDrive;
 public class pathfindToPose extends Command implements Constants {
   private Pose2d updatedPose;
   private Command pathToFollow;
-  private SwerveDrive swerveDrive;
+  // TODO: private SwerveDrive swerveDrive;
   private boolean pathCompleted = false;
 
   /** Creates a new pathfindToPose. */
@@ -27,12 +27,12 @@ public class pathfindToPose extends Command implements Constants {
     addRequirements(camera, RobotContainer.swerve);
 
     updatedPose = updatedRobotPose;
-    swerveDrive = swerve;
+    // TODO: swerveDrive = swerve;
 
     // This will prevent Pathplanner from mirroring the generated camera path
     // once the Pathfinding command hits it's end state it will be allowed to
     // path mirror again. - TK
-    swerveDrive.setPathInverted(false);
+    // TODO: swerveDrive.setPathInverted(false);
   }
 
   // Called when the command is initially scheduled.
@@ -42,7 +42,7 @@ public class pathfindToPose extends Command implements Constants {
 
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        maxSpeed, 4.0,
+        maxChassisSpeed, 4.0,
         Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -84,7 +84,7 @@ public class pathfindToPose extends Command implements Constants {
      * targetPose
      */
     if (/* swerveDrive.getPose().equals(updatedPose) */pathCompleted) {
-      swerveDrive.setPathInverted(true);
+      // TODO: swerveDrive.setPathInverted(true);
       System.out.println(
           "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!FINISHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       return true;

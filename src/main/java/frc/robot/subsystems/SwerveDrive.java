@@ -77,8 +77,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * The numbers used
    * below are robot specific, and should be tuned.
    */
-  // TODO: See if the following boolean is neccessary
-  public boolean allowPathMirroring = false;
 
   public SwerveDrive() {
     NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").setDouble(.01);
