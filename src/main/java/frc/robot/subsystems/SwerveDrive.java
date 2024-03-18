@@ -68,7 +68,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   double odometryOffset = 0;
 
   private ChassisSpeeds botSpeeds = new ChassisSpeeds(0, 0, 0);
-  private boolean pathInverted = false;
 
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
       locations[0], locations[1], locations[2], locations[3]);
@@ -202,10 +201,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     driveRobotAtAngle(xSpeed, ySpeed, angle, fieldRelative);
   }
 
-  public void setPathInverted(Boolean inverted) {
-    pathInverted = inverted;
-  }
-
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     poseEstimator.update(
@@ -253,12 +248,20 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     return positions;
   }
 
+  public SwerveModuleState[] getModuleStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getState();
+    }
+    return states;
+  }
+
   public boolean shouldFlipPath() {
     return DriverStation.getAlliance().get().equals(Alliance.Red);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    return botSpeeds;
+    return kinematics.toChassisSpeeds(getModuleStates());
   }
 
   public Pose2d getPose() {

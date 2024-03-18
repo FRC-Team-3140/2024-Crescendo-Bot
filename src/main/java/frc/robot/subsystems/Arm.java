@@ -75,7 +75,7 @@ public class Arm extends SubsystemBase {
   private static final double kDefaultForwardParam = .331; // The default forward control parameter
   private static final double kArmEncoderOffset = -155; // The offset of the arm encoder from the zero position //
                                                         // degrees
-  private static final double maxAcceleration = 2000;
+  private static final double maxAcceleration = 720;
   private static final double maxVelocity = 360;
 
   // Create a NetworkTable instance to enable the use of NetworkTables

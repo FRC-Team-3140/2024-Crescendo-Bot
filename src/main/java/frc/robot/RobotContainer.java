@@ -23,7 +23,6 @@ import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
-import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L2Commands.SetArmToDistanceWhileMovingL2;
