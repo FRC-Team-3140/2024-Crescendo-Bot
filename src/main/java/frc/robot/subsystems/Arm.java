@@ -54,7 +54,7 @@ public class Arm extends SubsystemBase {
 
   // Constants for the PID controller
   private static final double kDefaultP = .3; // Proportional gain
-  private static final double kDefaultI = 0.0; // Integral gain
+  private static final double kDefaultI = 0.0001; // Integral gain
   private static final double kDefaultD = 0.004; // Derivative gain
 
   // Constants for the arm setpoint

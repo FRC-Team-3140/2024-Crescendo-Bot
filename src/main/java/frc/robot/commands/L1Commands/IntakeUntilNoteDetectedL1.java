@@ -14,7 +14,7 @@ import frc.robot.subsystems.Shooter;
 public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   Intake intake = Intake.getInstance();
-  Shooter shooter = Shooter.getIntance();
+  Shooter shooter = Shooter.getInstance();
   final double intakeVoltage = Constants.intakeVoltage;
 
   /** Creates a new IntakeUntilNoteDetected. */

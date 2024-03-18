@@ -11,7 +11,7 @@ import frc.robot.libs.StateSpaceShooterHelp;
 
 public class Shooter extends SubsystemBase {
 
-    public static Shooter instance = null;
+    public static Shooter instance = new Shooter();
 
     public CANSparkMax topShooter = new CANSparkMax(9, MotorType.kBrushless);
     public RelativeEncoder topEncoder = topShooter.getEncoder();

@@ -25,6 +25,7 @@ public class ShootAmpL1 extends Command implements Constants {
 
   public ShootAmpL1() {
     intake = Intake.getInstance();
+    shooter = Shooter.getInstance();
     addRequirements(intake, shooter);
   }
 

@@ -6,7 +6,7 @@ import frc.robot.subsystems.Shooter;
 //Works Well
 
 public class ShooterSpeedL1 extends Command {
-    private final Shooter shooter;
+    private final Shooter shooter = Shooter.getInstance();
     private final double speed;
     private final double kShooterSpeedTolarence = 20;
 
@@ -17,7 +17,6 @@ public class ShooterSpeedL1 extends Command {
      * @param speed         The speed to set the IntakeShooter to
      */
     public ShooterSpeedL1(double speed) {
-        this.shooter = Shooter.getInstance();
         this.speed = speed;
         addRequirements(shooter); // This command requires the IntakeShooter subsystem
     }
