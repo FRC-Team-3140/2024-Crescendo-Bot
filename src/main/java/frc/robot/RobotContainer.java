@@ -123,9 +123,6 @@ public class RobotContainer implements Constants {
    * joysticks}.
    */
   private void configureBindings() {
-    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
-
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
     new JoystickButton(controller, Button.kB.value).onTrue(new InstantCommand(() -> {

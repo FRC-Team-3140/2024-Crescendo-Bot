@@ -26,9 +26,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
-// import frc.robot.commands.pathfindToApriltag;
-// import frc.robot.commands.turnToFaceApriltag;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Camera extends SubsystemBase {
@@ -83,7 +80,6 @@ public class Camera extends SubsystemBase {
   private double attemptDelay;
 
   // TODO: Determine if we need the pathfind to apriltag code
-
   /*
    * // Global variables for updating Pathplanner poses - TK
    * private SwerveDrive swerveDrive;
@@ -92,11 +88,13 @@ public class Camera extends SubsystemBase {
    * private double currentY;
    * private double newX;
    * private double newY;
+   *
+   * 
+   * // percentage of forward distance you want to drive before stopping (to
+   * prevent
+   * // crashing). - TK
+   * private double percentTravelDist = 0.8; // Must be < 1
    */
-
-  // percentage of forward distance you want to drive before stopping (to prevent
-  // crashing). - TK
-  private double percentTravelDist = 0.8; // Must be < 1
 
   // Global fiducial ids for important landmark apriltags - TK
   private aprilTagLayout aprilTagLayout;
@@ -183,7 +181,7 @@ public class Camera extends SubsystemBase {
 
     // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
     // problems - TK
-    swerveDrive = swerve;
+    // swerveDrive = swerve;
 
     // Will also create a field layout object and set global variables for landmark
     // apriltags
@@ -195,7 +193,7 @@ public class Camera extends SubsystemBase {
 
   public static Camera getInstance() {
     if (instance == null) {
-      instance = new Camera(RobotContainer.swerve, 5, 1);
+      instance = new Camera(SwerveDrive.getInstance(), 5, 1);
     }
     return instance;
   }
@@ -238,6 +236,10 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  private boolean checkVersion() {
+    return PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString("2024.2.8"));
+  }
+
   private boolean testConnection() {
     // Gets new result from april camera and test if it's equal to the previous
     // result
@@ -275,6 +277,8 @@ public class Camera extends SubsystemBase {
   }
 
   public boolean getStatus() {
+    setNetworktableStatus();
+
     // Just returns the boolean that shows connction status - TK
     if (versionMatches && connected) {
       return true;
@@ -295,32 +299,35 @@ public class Camera extends SubsystemBase {
 
   @Override
   public void periodic() {
-    previousResult = heartbeat;
-    heartbeat = inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
+    try {
+      previousResult = heartbeat;
+      heartbeat = inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
 
-    // Was using Timer.delay() function here, but this caused issues with the other
-    // subsystems...
-    // Dividing by ideal 20 Ms roboRio loop time. - TK
-    if ((count % (delayTime / 20)) == 0 && !attemptReconnection.isAlive() && testConnection() == false) {
-      try {
-        attemptReconnection.start();
-      } catch (IllegalThreadStateException e) {
-        System.out.println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
+      // Was using Timer.delay() function here, but this caused issues with the other
+      // subsystems...
+      // Dividing by ideal 20 Ms roboRio loop time. - TK
+      if ((count % (delayTime / 20)) == 0 && !attemptReconnection.isAlive() && testConnection() == false) {
+        // Update Networktable information periodically - TK
+        setNetworktableStatus();
+
+        try {
+          attemptReconnection.start();
+        } catch (IllegalThreadStateException e) {
+          System.out
+              .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
+        }
       }
+
+      count++;
+
+      aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
+      inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
+      inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
+      inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
+      inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
+    } catch (Error e) {
+      System.out.println("An error occured in Camera: \n" + e);
     }
-
-    count++;
-
-    // TODO: Figure out why getAprilTagX(id) accasionally returns 0. - TK
-    // // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("ID:
-    // ").setInteger(tag.id);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected:
-    // ").setBoolean(tag.isDetected);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist:
-    // ").setDouble(tag.distance);
-    // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees:
-    // ").setDouble(tag.angle);
   }
 
   public int getApriltagID() {
@@ -512,22 +519,23 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  /*
-   * TODO: Broken calls
-   * public aprilTagLocation getAprilTagLocation(int id) {
-   * if (connected && april.getLatestResult().hasTargets()) {
-   * for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-   * if (target.getFiducialId() == id) {
-   * double dist = getApriltagDistY(id).distance;
-   * double deg = getDegToApriltag(id);
-   * 
-   * return new aprilTagLocation(true, dist, deg, id);
-   * }
-   * }
-   * }
-   * return new aprilTagLocation(false, 0, 0, -1);
-   * }
-   */
+  public aprilTagLocation getAprilTagLocation(int id) {
+    if (connected && april.getLatestResult().hasTargets()) {
+      for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
+        if (target.getFiducialId() == id) {
+          if (getApriltagDistY(id) != null) {
+            double dist = getApriltagDistY(id).distance;
+            double deg = getDegToApriltag(id);
+
+            return new aprilTagLocation(true, dist, deg, id);
+          } else {
+            return new aprilTagLocation(connected, 0, 0, 0);
+          }
+        }
+      }
+    }
+    return new aprilTagLocation(false, 0, 0, -1);
+  }
 
   public aprilTagLayout getAprilTagLayout() {
     // TODO: Check to see if this variable matches the one I just added for the
@@ -571,12 +579,6 @@ public class Camera extends SubsystemBase {
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
     return aprilTagPoseEstimator.update(april.getLatestResult());
-    // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-    // if (connected && april.getLatestResult().hasTargets() &&
-    // !april.getLatestResult().equals(lastResult)){
-    // } else {
-    // return null;
-    // }
   }
 
   // public SequentialCommandGroup pathfindToAprilTag() {
@@ -597,27 +599,27 @@ public class Camera extends SubsystemBase {
   // new turnToFaceApriltag(speakerAprilTag, RobotContainer.swerve,
   // Camera.getInstance()));
 
-  // // Fallback code. NOT tested!!!!! - TK
-  // // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
-  // // // new InstantCommand(() -> swerveDrive.resetPose(new Pose2d(4.5, 6.5, new
-  // //
+  // Fallback code. NOT tested!!!!! - TK
+  // SequentialCommandGroup goToAprilTag = new SequentialCommandGroup(
+  // new InstantCommand(() -> swerveDrive.resetPose(new Pose2d(4.5, 6.5, new
+  //
   // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()))))),
-  // // new InstantCommand(() -> System.out.println("X: " +
-  // // swerveDrive.getPose().getX() + " Y: " + swerveDrive.getPose().getY())),
-  // // // new Pathfinding(new Pose2d((swerveDrive.getPose().getX()/* + 0.25*/),
-  // // (swerveDrive.getPose().getY()/* + 0.25*/), new
-  // // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()
+  // new InstantCommand(() -> System.out.println("X: " +
+  // swerveDrive.getPose().getX() + " Y: " + swerveDrive.getPose().getY())),
+  // // new Pathfinding(new Pose2d((swerveDrive.getPose().getX()/* + 0.25*/),
+  // (swerveDrive.getPose().getY()/* + 0.25*/), new
+  // Rotation2d(Math.toRadians(swerveDrive.getPose().getRotation().getDegrees()
   // +
-  // // 45))), Camera.getInstance(), swerveDrive),
-  // // new InstantCommand(() -> System.out.println("DistX to Target:
-  // // "+getApriltagDistX(2))),
-  // // // new InstantCommand(() -> RobotContainer.m_robotDrive.drive(0,
-  // // Math.signum(getApriltagDistX(2)), getDegToApriltag(2), false)),
-  // // new InstantCommand(() ->
-  // // RobotContainer.swerve.drive(0,1.0*Math.signum(getApriltagDistX(2)), 0,
-  // // false)),
-  // // new InstantCommand(() -> System.out.println("DONE"))
-  // // );
+  // 45))), Camera.getInstance(), swerveDrive),
+  // new InstantCommand(() -> System.out.println("DistX to Target:
+  // "+getApriltagDistX(2))),
+  // // new InstantCommand(() -> RobotContainer.m_robotDrive.drive(0,
+  // Math.signum(getApriltagDistX(2)), getDegToApriltag(2), false)),
+  // new InstantCommand(() ->
+  // RobotContainer.swerve.drive(0,1.0*Math.signum(getApriltagDistX(2)), 0,
+  // false)),
+  // new InstantCommand(() -> System.out.println("DONE"))
+  // );
 
   // return goToAprilTag;
   // }
