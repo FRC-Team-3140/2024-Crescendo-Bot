@@ -19,6 +19,7 @@ public class pickupNote extends Command implements Constants {
   private Camera camera = null;
 
   public pickupNote(SwerveDrive swerve, Intake intake, Camera camera) {
+    // TODO: sort command into respective difficulty levels if neccessary 
     this.swerve = swerve;
     this.intake = intake;
     this.camera = camera;

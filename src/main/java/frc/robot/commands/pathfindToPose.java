@@ -23,6 +23,7 @@ public class pathfindToPose extends Command implements Constants {
 
   /** Creates a new pathfindToPose. */
   public pathfindToPose(Pose2d updatedRobotPose, Camera camera, SwerveDrive swerve) {
+    // TODO: sort command into respective difficulty levels if neccessary 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(camera, RobotContainer.swerve);
 

@@ -17,11 +17,12 @@ public class turnToTurnPIDSetPoint extends Command implements Constants {
 
   /** Creates a new turnToTurnPIDSetPoint. */
   public turnToTurnPIDSetPoint(SwerveDrive swerveDrive, double setPoint) {
-    // Use addRequirements() here to declare subsystem dependencies.
-
+    // TODO: sort command into respective difficulty levels if neccessary 
+    
     swerve = swerveDrive;
     this.setPoint = setPoint;
-
+    
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve);
   }
 
