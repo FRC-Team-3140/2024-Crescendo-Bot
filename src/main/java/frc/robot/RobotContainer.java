@@ -82,7 +82,7 @@ public class RobotContainer implements Constants {
     NamedCommands.registerCommand("SpeakerShoot1",
         new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(5)));
 
-    NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
+    NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
 
     NamedCommands.registerCommand("SpeakerShoot2",
         new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(3)));
@@ -133,7 +133,7 @@ public class RobotContainer implements Constants {
 
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
-    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
+    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
     // new JoystickButton(controller2, Button.kA.value).onTrue(new
     // SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
@@ -153,7 +153,7 @@ public class RobotContainer implements Constants {
         .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
-    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6, 5)).onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new
+    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5)).onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new
                                                                                                              // ShootSpeakerL1(0,
                                                                                                              // 0));
     BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
@@ -170,7 +170,7 @@ public class RobotContainer implements Constants {
     new Trigger(downControllerLeftC2).onTrue(new InstantCommand(climber::lowerLeft))
         .onFalse(new InstantCommand(climber::stopLeft));
 
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.6, 0)).onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(Constants.shooterVoltage, 0)).onFalse(new ShootSpeakerL1(0, 0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }

@@ -564,6 +564,13 @@ public class Camera extends SubsystemBase {
     return 0.0;
   }
 
+  public double getNoteAngle() {
+    if (notes != null) {
+      return notes.getLatestResult().getBestTarget().getYaw();
+    }
+    return 0.0;
+  }
+
   public double getTimestamp() {
     return (1.0 * heartbeat);
   }

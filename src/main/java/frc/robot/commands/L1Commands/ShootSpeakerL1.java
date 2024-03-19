@@ -23,13 +23,13 @@ public class ShootSpeakerL1 extends Command implements Constants {
     private double freeSpeed;
     private double deadband = 20;
 
-    public ShootSpeakerL1(double shooterSpeed, double intakeVoltage) {
+    public ShootSpeakerL1(double shooterVoltage, double intakeVoltage) {
         this.intake = Intake.getInstance();
         this.shooter = Shooter.getInstance();
-        this.shooterSpeed = shooterSpeed;
+        this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
-        freeSpeed = shooterSpeed - deadband;
+        freeSpeed = shooterVoltage - deadband;
         // Adjust the desiredVoltage variable to the voltage value you want to use.
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.

@@ -5,6 +5,7 @@ import edu.wpi.first.math.util.Units;
 
 public interface Constants {
     public static final double intakeVoltage = 7.5;
+    public static final double shooterVoltage = 9.6;
     public static final double gearRatio = 6.12;
     public static final int detectThreshold = 1000;
     public static final double botMass = 24.4;
