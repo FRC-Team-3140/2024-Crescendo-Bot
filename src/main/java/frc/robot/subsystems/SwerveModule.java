@@ -38,19 +38,19 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public RelativeEncoder driveEncoder;
 
     public double botMass = 24.4;
-    
+
     public double P = .01;
 
     public double driveSetpointTolerance = .5;
     public double turnSetpointTolerance;
     public double turnVelocityTolerance;
 
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706 * .712, 2.4433 * .712,
+            0.10133 * .712);
+    // realised the feedforward was off by a factor of .712, corrected it
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxChassisSpeed,
+            maxAcceleration);
 
-    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706*.712, 2.4433* .712 , 0.10133* .712); 
-    //realised the feedforward was off by a factor of .712, corrected it
-    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxChassisSpeed, maxAcceleration);
-    
-    
     // private State initialState = new TrapezoidProfile.State(0, 0);
     // private TrapezoidProfile trapezoidProfile;
 
@@ -83,7 +83,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
         // we don't use I or D since P works well enough
         turnPID.enableContinuousInput(0, 360);
         turnPID.setTolerance(turnSetpointTolerance, turnVelocityTolerance);
-        //determined from a SYSID scan
+        // determined from a SYSID scan
         drivePID = new ProfiledPIDController(.11, 0, .015, constraints);
         drivePID.setTolerance(driveSetpointTolerance);
 
@@ -113,7 +113,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
         turnMotor.set(-turnPID.calculate(turnEncoder.getAbsolutePosition()));
     }
 
-    public void setDriveSpeed(double velocity){
+    public void setDriveSpeed(double velocity) {
         drivePID.setGoal(new State(velocity, 0));
         driveMotor.setVoltage(driveFeedforward.calculate(velocity) + drivePID.calculate(driveEncoder.getVelocity()));
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Set Speed").setDouble(velocity);

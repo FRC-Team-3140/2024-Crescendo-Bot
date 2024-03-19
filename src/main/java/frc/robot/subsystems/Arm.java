@@ -135,7 +135,8 @@ public class Arm extends SubsystemBase {
     NetworkTableEntry pEntry = inst.getTable(kNTArm).getEntry(kNTP);
     NetworkTableEntry iEntry = inst.getTable(kNTArm).getEntry(kNTI);
     NetworkTableEntry dEntry = inst.getTable(kNTArm).getEntry(kNTD);
-    //TODO: UNUSED - NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
+    // TODO: UNUSED - NetworkTableEntry setpointEntry =
+    // inst.getTable(kNTArm).getEntry(kNTSetpoint);
     NetworkTableEntry fcpEntry = inst.getTable(kNTArm).getEntry(kNTForwardParam);
 
     // Set the entries to be persistent
@@ -253,10 +254,9 @@ public class Arm extends SubsystemBase {
     // setArmToAngle(interpolatedAngle);
     // double interpolatedAngle = angleInterpolator.get(distance);
 
-
-    double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance*-1.07775) + 43.0501); 
+    double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance * -1.07775) + 43.0501);
     setArmToAngle(interpolatedAngle);
-    return -149.003 * Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311);
+    return -149.003 * Math.max(16, -132.744 * Math.exp(distance * -1.06174) + 45.2311);
   }
 
   // zkzj

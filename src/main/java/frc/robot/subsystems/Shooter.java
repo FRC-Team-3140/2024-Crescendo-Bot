@@ -27,7 +27,7 @@ public class Shooter extends SubsystemBase {
     private StateSpaceShooterHelp topController = new StateSpaceShooterHelp();
     private StateSpaceShooterHelp bottomController = new StateSpaceShooterHelp();
 
-    private Shooter(){
+    private Shooter() {
         topShooter.restoreFactoryDefaults();
         topShooter.setIdleMode(IdleMode.kCoast);
         topShooter.setInverted(false);
@@ -43,44 +43,51 @@ public class Shooter extends SubsystemBase {
         bottomShooter.burnFlash();
         bottomEncoder.setVelocityConversionFactor(42);
     }
+
     @Override
     public void periodic() {
         topController.correct(VecBuilder.fill(topEncoder.getVelocity()));
         topController.predict();
-        
+
         bottomController.correct(VecBuilder.fill(topEncoder.getVelocity()));
         bottomController.predict();
-        
+
     }
 
-    public static Shooter getInstance(){
-        if(instance == null){
+    public static Shooter getInstance() {
+        if (instance == null) {
             instance = new Shooter();
         }
         return instance;
     }
 
-    public void setShooterSpeed(double speed){
+    public void setShooterSpeed(double speed) {
         topController.setSpeed(speed);
         double nextVoltage = topController.getVoltage();
         topShooter.setVoltage(nextVoltage);
     }
+
     public void setShooterVoltage(double voltage) {
         topShooter.setVoltage(voltage);
         bottomShooter.setVoltage(-voltage);
     }
+
     public void setShooterVoltageTop(double voltage) {
-        topShooter.setVoltage(voltage+.15);
+        topShooter.setVoltage(voltage + .15);
     }
+
     public void setShooterVoltageBottom(double voltage) {
         bottomShooter.setVoltage(-voltage);
     }
+
     public double getTopShooterSpeed() {
         return topEncoder.getVelocity();
     }
+
     public double getBottomShooterSpeed() {
         return bottomEncoder.getVelocity();
     }
+
     public double getShooterSpeed() {
         return Math.min(getBottomShooterSpeed(), getTopShooterSpeed());
     }

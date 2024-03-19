@@ -56,7 +56,7 @@ public class Climber extends SubsystemBase {
         // Limit Switch DIO ports
         leftLimit = new DigitalInput(4);
         rightLimit = new DigitalInput(5);
-        
+
         leftLimitSwitchPressed = () -> leftLimit.get();
         rightLimitSwitchPressed = () -> rightLimit.get();
         // set motor settings
@@ -108,8 +108,8 @@ public class Climber extends SubsystemBase {
     public void lowerLeft() {
         if (!leftLimit.get()) {
             leftSolenoid.set(true);
-            leftClimber.set(-.35); //change to an actual value later
-        }else{
+            leftClimber.set(-.35); // change to an actual value later
+        } else {
             leftClimber.set(0);
         }
     }
@@ -118,8 +118,8 @@ public class Climber extends SubsystemBase {
     public void lowerRight() {
         if (!rightLimit.get()) {
             rightSolenoid.set(true);
-            rightClimber.set(-.35); //change to an actual value later
-        }else{
+            rightClimber.set(-.35); // change to an actual value later
+        } else {
             rightClimber.set(0);
         }
     }
@@ -129,11 +129,15 @@ public class Climber extends SubsystemBase {
         leftClimber.set(0);
         leftSolenoid.set(false);
     }
-    public SequentialCommandGroup increaseLeftHeight(){
-        return new SequentialCommandGroup(new InstantCommand(this::lowerLeftForRaising), new WaitCommand(.075), new InstantCommand(this::raiseLeft));
+
+    public SequentialCommandGroup increaseLeftHeight() {
+        return new SequentialCommandGroup(new InstantCommand(this::lowerLeftForRaising), new WaitCommand(.075),
+                new InstantCommand(this::raiseLeft));
     }
-    public SequentialCommandGroup increaseRightHeight(){
-        return new SequentialCommandGroup(new InstantCommand(this::lowerRightForRaising), new WaitCommand(.075), new InstantCommand(this::raiseRight));
+
+    public SequentialCommandGroup increaseRightHeight() {
+        return new SequentialCommandGroup(new InstantCommand(this::lowerRightForRaising), new WaitCommand(.075),
+                new InstantCommand(this::raiseRight));
     }
 
     // stops the right climber
@@ -149,10 +153,11 @@ public class Climber extends SubsystemBase {
         raiseRight();
     }
 
-    public void stopBoth(){
+    public void stopBoth() {
         stopLeft();
         stopRight();
     }
+
     // lowers both left and right climbers
     public void lowerBoth() {
         lowerLeft();

@@ -156,7 +156,7 @@ public class Camera extends SubsystemBase {
 
     aprilTagPoseEstimator.setReferencePose(new Pose2d(0, 0, new Rotation2d()));
 
-    while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
+    while (!connected && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
         connected = true;
         versionMatches = checkVersion();
@@ -176,11 +176,9 @@ public class Camera extends SubsystemBase {
 
     setNetworktableStatus();
 
-    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
-    // problems - TK
     // swerveDrive = swerve;
 
-    // Will also create a field layout object and set global variables for landmark
+    // Will create a field layout object and set global variables for landmark
     // apriltags as mentioned earlier. This is not to be confused with the
     // Photonvision apriltag layout class! - TK
     configureTeam();
@@ -263,11 +261,10 @@ public class Camera extends SubsystemBase {
   }
 
   private void attemptToReconnect() {
-    System.out.println(
+    System.err.println(
         "!!!!!!!!!!!!!!!!!!!!\nPhotonvision is no longer connected properly.\nAttempting reconnection\n!!!!!!!!!!!!!!!!!!!!");
-
-    while (connected == false) {
-      if (testConnection() == true) {
+    while (!connected) {
+      if (testConnection()) {
         connected = true;
         versionMatches = checkVersion();
         aprilGetInstance();
@@ -295,13 +292,17 @@ public class Camera extends SubsystemBase {
   }
 
   private void setNetworktableStatus() {
-    // TODO: ensure this publishes properly. Especially PhotonVersion.version! - TK
-    inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
-    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
-        .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
-    inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
-        .setString(PhotonVersion.versionString);
-    inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
+    try {
+      // TODO: ensure this publishes properly. Especially PhotonVersion.version! - TK
+      inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
+      inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
+          .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
+      inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
+          .setString(PhotonVersion.versionString);
+      inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
+    } catch (Error e) {
+      System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
+    }
   }
 
   @Override
@@ -313,7 +314,7 @@ public class Camera extends SubsystemBase {
       // Was using Timer.delay() function here, but this caused issues with the other
       // subsystems...
       // Dividing by ideal 20 Ms roboRio loop time. - TK
-      if ((count % (delayTime / 20)) == 0 && !attemptReconnection.isAlive() && testConnection() == false) {
+      if ((count % (delayTime / 20)) == 0 && !attemptReconnection.isAlive() && !testConnection()) {
         // Update Networktable information periodically - TK
         setNetworktableStatus();
 

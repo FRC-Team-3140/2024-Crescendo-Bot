@@ -14,8 +14,8 @@ public interface Constants {
 
     // In meters per second, determined from the free speed of the bot via
     // SwerveDriveSpecialties
-    public static final double maxChassisSpeed = 5.05968; //* 1.4044;
-    public static final double maxModuleSpeed = maxChassisSpeed/wheelDiameter/Math.PI;
+    public static final double maxChassisSpeed = 5.05968; // * 1.4044;
+    public static final double maxModuleSpeed = maxChassisSpeed / wheelDiameter / Math.PI;
     public static final double maxTurnSpeed = Double.MAX_VALUE; // These are basically infinite for our purposes
     public static final double maxAcceleration = 4000;
     public static final double botRadius = Math.hypot(botLength, botLength);

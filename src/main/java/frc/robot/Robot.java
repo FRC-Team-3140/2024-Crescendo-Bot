@@ -30,12 +30,12 @@ public class Robot extends LoggedRobot implements Constants {
   @Override
   public void robotInit() {
     DataLogManager.start();
-    
+
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   }
- 
+
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items
    * like diagnostics
@@ -54,7 +54,7 @@ public class Robot extends LoggedRobot implements Constants {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    
+
     // System.out.println("pe" + photoElectric.get());
   }
 
@@ -104,7 +104,6 @@ public class Robot extends LoggedRobot implements Constants {
   }
 
   // IntakeAndShooter test = IntakeAndShooter.getInstance();
-  double test = NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2);
 
   @Override
   public void testInit() {
@@ -115,7 +114,8 @@ public class Robot extends LoggedRobot implements Constants {
 
     // // Ready the arm for movement.
     // Arm.getInstance().enable();
-    // new SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
+    // new
+    // SetArmToAngleL1(NetworkTableInstance.getDefault().getTable("Double").getEntry("Test").getDouble(2)).schedule();
 
     // turnToFaceApriltag test - TK
 
@@ -128,7 +128,7 @@ public class Robot extends LoggedRobot implements Constants {
     // double botRot =
     // SwerveDrive.getInstance().getPose().getRotation().getRadians();
     // double aprilTagRot = Math.toRadians(Camera.getInstance().getDegToApriltag());
- Arm.getInstance().enable();
+    Arm.getInstance().enable();
     // new pathfindToPose(
     // new Pose2d(-(dist * Math.cos(botRot + aprilTagRot)) +
     // SwerveDrive.getInstance().getPose().getX(), -(dist * Math.sin(botRot +
@@ -137,28 +137,34 @@ public class Robot extends LoggedRobot implements Constants {
     // Camera.getInstance(), SwerveDrive.getInstance()).schedule();
 
     // Camera.getInstance().pathfindToAprilTag().schedule();
-   
 
-    // Climber climber = Climber.getInstance(); 
+    // Climber climber = Climber.getInstance();
     // new SequentialCommandGroup(
-    //   new SetArmToAngleL1(80),
-    //   new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(7);}), new WaitCommand(2)),
-    //   new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setIntakeVoltage(0);}), new WaitCommand(1)),
-    //   new ParallelCommandGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(10);}), new WaitCommand(2)),
-    //   new ParallelRaceGroup(new InstantCommand(()-> {intakeShooter.setShooterVoltage(0);}), new WaitCommand(1)),
-    //   new SetArmToAngleL1(20),
-    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.raiseBoth();}), new WaitCommand(1)),
-    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
-    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.lowerBoth();}), new WaitCommand(1)),
-    //   new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new WaitCommand(1)),
+    // new SetArmToAngleL1(80),
+    // new ParallelCommandGroup(new InstantCommand(()->
+    // {intakeShooter.setIntakeVoltage(7);}), new WaitCommand(2)),
+    // new ParallelRaceGroup(new InstantCommand(()->
+    // {intakeShooter.setIntakeVoltage(0);}), new WaitCommand(1)),
+    // new ParallelCommandGroup(new InstantCommand(()->
+    // {intakeShooter.setShooterVoltage(10);}), new WaitCommand(2)),
+    // new ParallelRaceGroup(new InstantCommand(()->
+    // {intakeShooter.setShooterVoltage(0);}), new WaitCommand(1)),
+    // new SetArmToAngleL1(20),
+    // new ParallelRaceGroup(new InstantCommand(()-> {climber.raiseBoth();}), new
+    // WaitCommand(1)),
+    // new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new
+    // WaitCommand(1)),
+    // new ParallelRaceGroup(new InstantCommand(()-> {climber.lowerBoth();}), new
+    // WaitCommand(1)),
+    // new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new
+    // WaitCommand(1)),
 
-    //   AutoBuilder.buildAuto("Straight Line"),
-    //   AutoBuilder.buildAuto("Turn")
+    // AutoBuilder.buildAuto("Straight Line"),
+    // AutoBuilder.buildAuto("Turn")
     // ).schedule();
- 
-    
-    
+
   }
+
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {

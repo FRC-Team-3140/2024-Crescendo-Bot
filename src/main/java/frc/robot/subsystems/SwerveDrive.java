@@ -214,7 +214,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
 
-
     try {
       if (Camera.getInstance().isConnected()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
@@ -228,15 +227,14 @@ public class SwerveDrive extends SubsystemBase implements Constants {
           poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
               Timer.getFPGATimestamp());
           // System.out.println("Target Detected");
-        }//  else {
-        //    poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
-        // }
+        } // else {
+          // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
+          // }
       }
     } catch (Error test) {
       System.err.println(test);
     }
   }
-
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -300,7 +298,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public PIDController turnPID = new PIDController(.5, 0.0, 0);
 
   public double turnToAprilTag(int ID) {
-    // TODO: Potential null error unhandled here 
+    // TODO: Potential null error unhandled here
     // turnPID.enableContinuousInput(0, 360);
     double botAngle = getPose().getRotation().getDegrees();
     double offsetAngle = camera.getDegToApriltag(ID);
