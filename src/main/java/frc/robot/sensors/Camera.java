@@ -26,6 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Camera extends SubsystemBase {
@@ -56,7 +57,7 @@ public class Camera extends SubsystemBase {
   private boolean connected = false;
   private int connectionAttempts = 2;
 
-  private boolean versionMatches = true;
+  private static boolean versionMatches = false;
 
   // The heartbeat is a value in the Photonvision Networktable that continually
   // changes.
@@ -121,18 +122,10 @@ public class Camera extends SubsystemBase {
     public final int id;
 
     public aprilTagLocation(boolean isDetected, double dist, double angle, int id) {
-      if (isDetected != null) {
-        this.isDetected = isDetected;
-      }
-      if (dist != null) {
-        this.distance = dist;
-      }
-      if (angle != null) {
-        this.angle = angle;
-      }
-      if (id != null) {
-        this.id = id;
-      }
+      this.isDetected = isDetected;
+      this.distance = dist;
+      this.angle = angle;
+      this.id = id;
     }
   }
 
@@ -142,15 +135,9 @@ public class Camera extends SubsystemBase {
     public final double angle;
 
     public NoteLocation(boolean isDetected, double dist, double angle) {
-      if (isDetected != null) {
-        this.isDetected = isDetected;
-      }
-      if (dist != null) {
-        this.distance = dist;
-      }
-      if (angle != null) {
-        this.angle = angle;
-      }
+      this.isDetected = isDetected;
+      this.distance = dist;
+      this.angle = angle;
     }
   }
 
@@ -166,14 +153,15 @@ public class Camera extends SubsystemBase {
 
   private Camera(SwerveDrive swerve, int PhotonvisionConnectionAttempts, double delayBetweenAttempts) {
     attemptDelay = delayBetweenAttempts;
-    // TODO: Look at the following line
-    aprilTagPoseEstimator.setReferencePose(new Pose2d(0, 0, new Rotation2d()));
 
-    versionMatches = checkVersion();
+    aprilTagPoseEstimator.setReferencePose(new Pose2d(0, 0, new Rotation2d()));
 
     while (connected == false && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
         connected = true;
+        versionMatches = checkVersion();
+        aprilGetInstance();
+        notesGetInstance();
         System.out.println("PhotonVision is connected and is probably working as expected...");
         break;
       } else {
@@ -188,26 +176,19 @@ public class Camera extends SubsystemBase {
 
     setNetworktableStatus();
 
-    if (connected) {
-      aprilGetInstance();
-      notesGetInstance();
-    }
-
     // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
     // problems - TK
     // swerveDrive = swerve;
 
     // Will also create a field layout object and set global variables for landmark
-    // apriltags
-    // as mentioned earlier. This is not to be confused with the Photonvision
-    // apriltag layout
-    // class! - TK
+    // apriltags as mentioned earlier. This is not to be confused with the
+    // Photonvision apriltag layout class! - TK
     configureTeam();
   }
 
   public static Camera getInstance() {
     if (instance == null) {
-      instance = new Camera(SwerveDrive.getInstance(), 5, 1);
+      instance = new Camera(RobotContainer.swerve, 5, 1);
     }
     return instance;
   }
@@ -217,7 +198,8 @@ public class Camera extends SubsystemBase {
   // The "singleton" is just here to return the already created instance if there
   // is one - TK
   private PhotonCamera aprilGetInstance() {
-    if (april == null) {
+    checkVersion();
+    if (april == null && versionMatches) {
       april = new PhotonCamera(inst, "april");
     }
     return april;
@@ -228,7 +210,8 @@ public class Camera extends SubsystemBase {
   // The "singleton" is just here to return the already created instance if there
   // is one - TK
   private PhotonCamera notesGetInstance() {
-    if (notes == null) {
+    checkVersion();
+    if (notes == null && versionMatches) {
       notes = new PhotonCamera(inst, "notes");
     }
     return notes;
@@ -251,7 +234,17 @@ public class Camera extends SubsystemBase {
   }
 
   private boolean checkVersion() {
-    return PhotonVersion.versionMatches(inst.getTable("photonvision").getEntry("version").getString("2024.2.8"));
+    // TODO: Test this!
+    String version = "";
+
+    while (version == "") {
+      version = inst.getTable("photonvision").getEntry("version").getString("");
+      if (version == "") {
+        System.err.println("Photon version not available yet...");
+      }
+    }
+
+    return PhotonVersion.versionMatches(version);
   }
 
   private boolean testConnection() {
@@ -276,6 +269,9 @@ public class Camera extends SubsystemBase {
     while (connected == false) {
       if (testConnection() == true) {
         connected = true;
+        versionMatches = checkVersion();
+        aprilGetInstance();
+        notesGetInstance();
         System.out.println("PhotonVision is connected and is probably working as expected...");
         break;
       } else {
@@ -284,9 +280,6 @@ public class Camera extends SubsystemBase {
         System.out.println("Checking for PhotonVision connection in " + attemptDelay + " seconds.");
         Timer.delay(attemptDelay);
       }
-
-      aprilGetInstance();
-      notesGetInstance();
     }
   }
 
@@ -305,7 +298,7 @@ public class Camera extends SubsystemBase {
     // TODO: ensure this publishes properly. Especially PhotonVersion.version! - TK
     inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
     inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
-        .setString(inst.getTable("photonvision").getEntry("version").getString("2024.2.8"));
+        .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
     inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
         .setString(PhotonVersion.versionString);
     inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
@@ -347,7 +340,7 @@ public class Camera extends SubsystemBase {
   public int getApriltagID() {
     // If this function returns a 0, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getFiducialId();
     } else {
       return -1;
@@ -357,7 +350,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagYaw() {
     // If this function returns a 999, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getYaw();
     } else {
       return 999;
@@ -367,7 +360,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagYaw(int id) {
     // If this function returns a 999, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           return target.getYaw();
@@ -382,7 +375,7 @@ public class Camera extends SubsystemBase {
   public double getApriltagPitch() {
     // If this function returns a 999, that means there is not any detected targets
 
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       return april.getLatestResult().getBestTarget().getPitch();
     } else {
       return 999;
@@ -392,7 +385,7 @@ public class Camera extends SubsystemBase {
   public DistAmb getApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
       return new DistAmb(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
     } else {
@@ -403,7 +396,7 @@ public class Camera extends SubsystemBase {
   public DistAmb getApriltagDistX(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           return new DistAmb(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
@@ -418,7 +411,7 @@ public class Camera extends SubsystemBase {
   public DistAmb getApriltagDistY() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
       return new DistAmb(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
     } else {
@@ -429,7 +422,7 @@ public class Camera extends SubsystemBase {
   public DistAmb getApriltagDistY(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           return new DistAmb(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
@@ -468,7 +461,7 @@ public class Camera extends SubsystemBase {
   public double getDegToApriltag(double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       // double targetYaw = getApriltagYaw();
       double requiredTurnDegrees;
 
@@ -506,7 +499,7 @@ public class Camera extends SubsystemBase {
   public double getDegToApriltag(int id, double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           double requiredTurnDegrees;
@@ -534,7 +527,7 @@ public class Camera extends SubsystemBase {
   }
 
   public aprilTagLocation getAprilTagLocation(int id) {
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && versionMatches && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           if (getApriltagDistY(id) != null) {
@@ -581,9 +574,10 @@ public class Camera extends SubsystemBase {
   double lastResult = 0;
 
   public boolean isConnected() {
-    if (!connected) {
+    if (!connected || !versionMatches) {
       return false;
     }
+
     boolean kjasdfl = april.getLatestResult().hasTargets() && connected
         && april.getLatestResult().getTimestampSeconds() != lastResult;
     lastResult = april.getLatestResult().getTimestampSeconds();
