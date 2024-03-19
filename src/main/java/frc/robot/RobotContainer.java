@@ -56,6 +56,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 * brownouts.  Please do some serious testing and try to figure out which subsystems really 
 * need the power and trim back on these limits where possible.  Time needs to be spent on this.
 *
+* THIRD: AUTOS. SMR demonstrated we need a complete set of autos that don't depend on path planner.  
+* We don't have a lot of time to implement these so keep it simple, get it done and test.
+*
 * Don't make things too complicated.  The code is already hard to understand.  Try to make it 
 * simpler where possible.  If you keep having to add patches and fix gitch after glitch, then
 * you are probably doing something wrong and you need to simplify or find an alternative.
@@ -63,6 +66,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 * SwerveDrive: This is a very complicated subsystem.  If you want to keep path planner I think you need to totally cut
 * out the camera.  Odometry needs to be simple. It is too much to have both.  I think you need to simplify the swerve drive and make it more reliable.
 *
+* See my comments in the Shooter class.  Keep the subsystem simple and reliable.  
+* If you want to do something complicated put it in a Command.
+* 
 * If you integrate navigation with the camera it really needs to be in an isolated subsystem.  It should 
 * have a seperate odometer and protections against bad data and crashes. It needs to be non critical to 
 * the core operations of the bot.
