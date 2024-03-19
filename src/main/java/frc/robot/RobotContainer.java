@@ -20,6 +20,7 @@ import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
+import frc.robot.commands.L1Commands.SetClimberToPosition;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
@@ -162,7 +163,7 @@ public class RobotContainer implements Constants {
 
     new Trigger(upControllerLeftC2).onTrue(climber.increaseLeftHeight())
         .onFalse(new InstantCommand(climber::stopLeft));
-    new Trigger(upControllerRightC2).onTrue(climber.increaseRightHeight())
+    new Trigger(upControllerRightC2).onTrue(new SetClimberToPosition(0))
         .onFalse(new InstantCommand(climber::stopRight));
     new Trigger(downControllerRightC2).onTrue(new InstantCommand(climber::lowerRight))
         .onFalse(new InstantCommand(climber::stopRight));

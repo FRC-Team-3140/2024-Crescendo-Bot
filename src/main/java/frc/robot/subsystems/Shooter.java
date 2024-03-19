@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.libs.StateSpaceShooterHelp;
 
@@ -29,29 +30,30 @@ public class Shooter extends SubsystemBase {
 
     private Shooter() {
         topShooter.restoreFactoryDefaults();
+        topShooter.setInverted(false);
         topShooter.setIdleMode(IdleMode.kCoast);
         topShooter.setInverted(false);
         topShooter.setSmartCurrentLimit(30);
         topShooter.burnFlash();
-        topEncoder.setVelocityConversionFactor(42);
+        topEncoder.setVelocityConversionFactor(1/42);
 
         bottomShooter.restoreFactoryDefaults();
-        bottomShooter.setInverted(true);
+        // bottomShooter.setInverted(true);
         bottomShooter.setIdleMode(IdleMode.kCoast);
         bottomShooter.setInverted(true);
         bottomShooter.setSmartCurrentLimit(30);
         bottomShooter.burnFlash();
-        bottomEncoder.setVelocityConversionFactor(42);
+        bottomEncoder.setVelocityConversionFactor(1/42);
     }
 
     @Override
     public void periodic() {
         topController.correct(VecBuilder.fill(topEncoder.getVelocity()));
         topController.predict();
-
+        SmartDashboard.putNumber("Top Speed", getTopShooterSpeed());        
         bottomController.correct(VecBuilder.fill(topEncoder.getVelocity()));
         bottomController.predict();
-
+        SmartDashboard.putNumber("Bottom Speed", getBottomShooterSpeed());
     }
 
     public static Shooter getInstance() {
