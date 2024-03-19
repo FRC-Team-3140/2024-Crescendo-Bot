@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+// TODO: Save climber updates for later.  We really need to understand the new design and then code carefully to protect the fragile mechanics.
 public class Climber extends SubsystemBase {
     // Motors
     private CANSparkMax leftClimber;

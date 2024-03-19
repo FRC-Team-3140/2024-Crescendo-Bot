@@ -5,6 +5,10 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrive;
 //Works Well
 
+// TODO: There are many style issues with this class and how it pulls from RobotContainer, etc.  Alternative:
+// https://github.com/bolme/JudgeDreadBot/blob/main/src/main/java/frc/robot/commands/TeleopSwerveControl.java#L15
+
+
 /**
  * This class represents a basic swerve control command.
  * It is intended to be the default command for the drive.
@@ -13,6 +17,7 @@ public class BasicSwerveControlL2 extends Command {
     private final SwerveDrive swerveDrive; // The swerve drive subsystem
     private final double maxSpeed; // The maximum speed for the swerve drive
     private final double maxChassisTurnSpeed; // The maximum turn speed for the chassis
+    // TODO: Bad form: "public static". You are cheeting and setting this from a nebulus area somewhere else in the code.
     public static boolean fieldRelative = true;
 
     // private double speed;
@@ -42,6 +47,7 @@ public class BasicSwerveControlL2 extends Command {
         // speed = maxSpeed /2;
         // turnSpeed = maxChassisTurnSpeed/2;
         // }
+        // TODO: Bad way to reference the controller.  Better to pass a reference to the controller in the constructor.  Better to use robot container as a singleton if you want "global variables".
         final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the
                                                                              // joystick input
         final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the

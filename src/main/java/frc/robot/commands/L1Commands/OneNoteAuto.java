@@ -7,6 +7,9 @@ package frc.robot.commands.L1Commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+/**
+ * This command will set the arm to the angle and then shoot the speaker
+ */
 public class OneNoteAuto extends Command {
   private double shooterVoltage;
   private double intakeVoltage;
@@ -19,7 +22,9 @@ public class OneNoteAuto extends Command {
     this.intakeVoltage = 5;
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Initializes the command by setting the arm to the angle and then shooting the speaker
+   */
   @Override
   public void initialize() {
     new SequentialCommandGroup(
@@ -28,16 +33,22 @@ public class OneNoteAuto extends Command {
     ).schedule();
   }
   
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   */
   @Override
   public void execute() {
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called once the command ends or is interrupted.
+   */
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
+  /**
+   * Returns true when the command should end.
+   */
   @Override
   public boolean isFinished() {
     return false;

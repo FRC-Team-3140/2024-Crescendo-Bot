@@ -19,8 +19,29 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.libs.AbsoluteEncoder;
 
+/* 
+ * TODO: Apply Copilot's suggestions:
+ * 
+ * 1. Access Modifiers: Make class variables private and provide public 
+ *    getter and setter methods for controlled access.
+ *
+ * 2. Constants: Define 'botMass', 'P', 'driveSetpointTolerance', 
+ *    'turnSetpointTolerance', 'turnVelocityTolerance', and feedforward 
+ *    coefficients as constants for easier management.
+ *
+ * 3. Comments: Clarify the comment about the feedforward being off by 
+ *    a factor of .712. Explain why it was off and how the correct factor 
+ *    was determined.
+ *
+ * 4. Variable Names: Use descriptive names. For instance, rename 'P' to 
+ *    'pidProportionalCoefficient' to indicate it's the proportional 
+ *    coefficient for a PID controller.
+ */
+
+// TODO: Should not be a subsystem within a subsystem. Could be a normal class.
 public class SwerveModule extends SubsystemBase implements Constants {
 
+    // TODO: These should not all be public.  Most should only be accessable locally.
     // Zero : 0.697578
     // One : 0.701239
     // Two: 0.467096

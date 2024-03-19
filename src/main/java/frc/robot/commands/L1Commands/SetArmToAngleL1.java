@@ -3,10 +3,14 @@ package frc.robot.commands.L1Commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 
-//Working Good 
+/**
+ * This command will set the arm to the angle 
+ */
 public class SetArmToAngleL1 extends Command {
     private final Arm arm;
     private final double targetAngle;
+
+    // TODO: The only thing I can think of here is to test this value.  Does it work?  Does it make sense?  Does it terminate reliably?
     private final double kDefaultError = .5; // in degrees
 
     /**

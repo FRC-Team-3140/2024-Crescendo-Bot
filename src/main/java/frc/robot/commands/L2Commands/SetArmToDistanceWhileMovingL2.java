@@ -26,6 +26,7 @@ public class SetArmToDistanceWhileMovingL2 extends Command {
 
     @Override
     public void initialize() {
+        // TODO: delete dead code
         // distance = Math.hypot(SwerveDrive.getInstance().getPose().getX(),
         // SwerveDrive.getInstance().getPose().getY()- (216*.0254));
         // SmartDashboard.putNumber("Distance", distance);
@@ -42,6 +43,7 @@ public class SetArmToDistanceWhileMovingL2 extends Command {
 
     @Override
     public boolean isFinished() {
+        // TODO: This is confusing.  Is this ment to activly keep the arm at a shooting angle while moving or to prep for when you hit a certain position?  If the second then you could just set that angle initially.  If the first than you should not have a termination condition.
         // The command is finished when the arm is at the target angle
         return Math.abs(NetworkTableInstance.getDefault().getTable("Arm").getEntry("Setpoint").getDouble(8)
                 - arm.getAngle()) < angleTolerance;

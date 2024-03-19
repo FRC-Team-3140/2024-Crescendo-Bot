@@ -3,6 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
+// TODO should be a class.  Should not be "implemented" in other classes.  Accessing as Constants.VARIABLE is more clear and better style.
+/**
+ * This class contains all the constants used in the robot code. This is to make it easier to change
+ * constants and to make the code more readable.
+ */
 public interface Constants {
     public static final double intakeVoltage = 7.5;
     public static final double gearRatio = 6.12;
@@ -22,6 +27,7 @@ public interface Constants {
     // Max Speed divided by the circumference a circle determined by the distance of
     // the module from the center, divided by 2 pi to convert to radians
     public static final double maxChassisTurnSpeed = maxChassisSpeed / botRadius;
+    // TODO: Should be final
     public double encoderRotationToMeters = 2 * Math.PI * ((wheelDiameter / 2) / gearRatio) / 42;
 
     public static final Translation2d blueSpeakerTranslation = new Translation2d(0, 216 * .0254);

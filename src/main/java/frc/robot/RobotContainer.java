@@ -45,21 +45,69 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
+/* TODO: General notes...
+*
+* FIRST: TESTING is critical.  We need to test the robot in a variety of
+* situations and make sure it is reliable.  We need to test the autonomous modes on both sides.
+* You need to find a way to test more often, test faster, and push the bot harder.
+*
+* SECOND: BROWNOUTS. I am paying paticular attention to current limits since I think we had 2-3 matches with
+* brownouts.  Please do some serious testing and try to figure out which subsystems really 
+* need the power and trim back on these limits where possible.  Time needs to be spent on this.
+*
+* Don't make things too complicated.  The code is already hard to understand.  Try to make it 
+* simpler where possible.  If you keep having to add patches and fix gitch after glitch, then
+* you are probably doing something wrong and you need to simplify or find an alternative.
+*  
+* SwerveDrive: This is a very complicated subsystem.  If you want to keep path planner I think you need to totally cut
+* out the camera.  Odometry needs to be simple. It is too much to have both.  I think you need to simplify the swerve drive and make it more reliable.
+*
+* If you integrate navigation with the camera it really needs to be in an isolated subsystem.  It should 
+* have a seperate odometer and protections against bad data and crashes. It needs to be non critical to 
+* the core operations of the bot.
+*
+* "public static" is in general bad.  You are making global varibles.  Better to make a singleton and pass references to the objects that need them.
+* 
+* "public" members are also bad and indicate a lack of encapsulation. Better to make them private and control access with getter/setter methods.
+* 
+* COPILOT HINT: Network table updates can be put in try/catch blocks to avoid crashing the robot code if the network table is not available.
+* 
+* COPILOT HINT: Make the "catch" just print out a simple error message.  Don't create a new error with a complicated catch block.
+*/
+
+
+/* 
+ * TODO: Apply Copilot's suggestions for improvements:
+ * 
+ * 1. Singleton Pattern: Implement the Singleton pattern for the RobotContainer class. 
+ *    This ensures only one instance of RobotContainer exists, preventing issues with 
+ *    multiple instances modifying the subsystems.
+ *
+ * 2. Access Modifiers: The subsystems and controllers are currently public static, 
+ *    meaning they can be accessed and modified from anywhere. It would be better to 
+ *    make these private and provide public getter methods to control access.
+ *
+ * 3. Remove Unused Code: Remove the commented out code to keep the codebase clean 
+ *    and easy to read.
+ *
+ * 4. Spelling and Grammar: Correct the spelling and grammar in the comments. 
+ *    For example, "commppands" should be "commands".
+ */
+
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * This class is primarily for declaring the structure of the robot in a Command-based paradigm. 
+ * It should contain declarations for subsystems, commands, and trigger mappings. 
+ * Most of the robot logic should not be handled in the {@link Robot} periodic methods, 
+ * apart from the scheduler calls.
  */
 public class RobotContainer implements Constants {
+  // TODO: "public static" everywhere.  Better to make this a singleton and put more controls on who has access to these.
   public static XboxCotroller controller = new XboxCotroller(0);
   public static SwerveDrive swerve;
   public static Camera camera;
   public static Arm arm = Arm.getInstance();
-  // private final Camera camera;
+  // private final Camera camera; // TODO Clean up commented out code
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder;
   public static Climber climber = Climber.getInstance();
@@ -108,6 +156,8 @@ public class RobotContainer implements Constants {
     configureBindings();
   }
 
+
+  // TODO: Do we have a single place where controls are defined?  How do we communicate to the driver what the controls are?
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -123,7 +173,7 @@ public class RobotContainer implements Constants {
    * joysticks}.
    */
   private void configureBindings() {
-    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
+    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3; // TODO: Not used
     BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
     // Resetting Gyro

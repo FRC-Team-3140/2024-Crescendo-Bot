@@ -23,18 +23,22 @@ public class ShootAmpL1 extends Command implements Constants {
   public Intake intake;
   public Shooter shooter;
 
+  /**
+   * A command that shoots the note with increased power and speed.
+   */
   public ShootAmpL1() {
     intake = Intake.getInstance();
     shooter = Shooter.getInstance();
     addRequirements(intake, shooter);
   }
 
-  /**
-   * Initializes the AmpShootL1 command.
-   * Sets the intake and shooter voltages.
-   */
+// TODO move to head of class
   long startTime;
 
+  /**
+   * Initializes the ShootAmpL1 command.
+   * Sets the start time, intake voltage, and shooter voltage.
+   */
   @Override
   public void initialize() {
     startTime = System.currentTimeMillis();
@@ -54,6 +58,12 @@ public class ShootAmpL1 extends Command implements Constants {
     return System.currentTimeMillis() - startTime > 2000; //|| IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7; 
   }
 
+  /**
+   * This method is called when the command ends.
+   * It sets the intake voltage and shooter voltage to 0.
+   * 
+   * @param interrupted true if the command was interrupted, false otherwise
+   */
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeVoltage(0);

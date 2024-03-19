@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
+// TODO: If we are skipping LEDs delete this so we don't have to worry about it.
 public class LED {
     AddressableLED led;
     AddressableLEDBuffer ledBuffer;

@@ -10,6 +10,7 @@ import frc.robot.subsystems.Arm;
 
 //Work 
 // TODO: This needs testing - DB
+// TODO: This does not seem to be used.  Was it ever tested? Is it needed? Delete if not. -DB
 /**
  * This class represents a command to score in the speaker.
  * It extends SequentialCommandGroup to perform a sequence of commands.

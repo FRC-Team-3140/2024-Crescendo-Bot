@@ -11,6 +11,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 
+/**
+ * This command will intake until a note is detected by the intake
+ */
 public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   Intake intake = Intake.getInstance();
@@ -22,25 +25,36 @@ public class IntakeUntilNoteDetectedL1 extends Command {
     addRequirements(intake, shooter);
   }
 
+  // TODO: Move to head of class.
   long startTime; // Called when the command is initially scheduled.
   double lastVoltage;
 
+  /**
+   * Initializes the command by setting the intake voltage and shooter voltage.
+   */
   @Override
   public void initialize() {
     intake.setIntakeVoltage(intakeVoltage);
     shooter.setShooterVoltage(0);
   }
 
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   */
   @Override
   public void execute() {}
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called once the command ends or is interrupted.
+   */
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeVoltage(0);
   }
 
-  // Returns true when the command should end.
+  /**
+   * Returns true when the command should end.
+   */
   @Override
   public boolean isFinished() {
     return intake.noteDetected();

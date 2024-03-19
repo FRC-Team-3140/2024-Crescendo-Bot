@@ -46,6 +46,7 @@ public class Arm extends SubsystemBase {
   private static final int kArmEncoderID = 1;
 
   // Constants for the arm motor configuration
+  // TODO: Test this current limit with lower values to reduce brown outs
   private static final int kMotorCurrentLimit = 30; // The current limit for the arm motors
   private static final boolean kArmRightReversed = true; // Motor direction for right arm
   private static final boolean kArmLeftReversed = false; // Motor direction for left arm
@@ -62,9 +63,13 @@ public class Arm extends SubsystemBase {
   private static final double kMaxSetpoint = 94.0; // Maximum setpoint; Test again with Amp
   private static final double kMinSetpoint = 6.5; // Minimum setpoint
 
+  // TODO: These setpoints are going to need to be reviewed before RC and after the intake is replaced. 
   // Favorite setpoints
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
   public static final double kSetpoiintIntakeDown = 6.5; // The setpoint for intaking
+
+  // TODO: Intake ready... Set this high enough to get the intake off the ground but low enough it does not hit the stage.
+  // TODO: Move to this setpoint before/after an intake.
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
                                                           // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
@@ -135,7 +140,7 @@ public class Arm extends SubsystemBase {
     NetworkTableEntry pEntry = inst.getTable(kNTArm).getEntry(kNTP);
     NetworkTableEntry iEntry = inst.getTable(kNTArm).getEntry(kNTI);
     NetworkTableEntry dEntry = inst.getTable(kNTArm).getEntry(kNTD);
-    NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
+    NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint); // TODO: Remove this not used
     NetworkTableEntry fcpEntry = inst.getTable(kNTArm).getEntry(kNTForwardParam);
 
     // Set the entries to be persistent
@@ -169,6 +174,7 @@ public class Arm extends SubsystemBase {
     angleInterpolator.put(3.9116, 41.6);
 
   
+    // TODO: Clean this up
     // angleInterpolator.put()
 
     // angleInterpolator = new InterpolatingDoubleTreeMap();//Add your
@@ -185,6 +191,7 @@ public class Arm extends SubsystemBase {
   private void encoderConnected() {
     // check that ArmEncoder is connected
     if (!armEncoder.isConnected()) {
+      // TODO: Try catch around network table updates.
       inst.getTable(kNTArm).getEntry(kNTErrorCode).setString("Arm encoder not connected");
       is_disabled = true;
     }
@@ -232,6 +239,7 @@ public class Arm extends SubsystemBase {
 
     double voltage = pid_power + forward_power;
 
+    // TODO: Try catch around network table updates.
     // Update the network table with the forward and PID power
     inst.getTable(kNTArm).getEntry(kNTSetpoint).setDouble(setpoint);
     inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);
@@ -249,16 +257,42 @@ public class Arm extends SubsystemBase {
    * @return The setpoint angle for the arm
    */
   public double setArmToShootDistance(double distance) {
+    // TODO: Bad code smells here.  
     // double interpolatedAngle = angleInterpolator.get(distance);
     // setArmToAngle(interpolatedAngle);
     // double interpolatedAngle = angleInterpolator.get(distance);
 
+    /* TODO: This is a hack.  We need to fix the interpolator. Come up with a 
+    testing plan to get calibrated values after the intake is replaced. */
 
-    double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance*-1.07775) + 43.0501); 
+    /* 
+    * TODO: COPILOTS explanation of this code...  Where the hell does this function come from?
+    * The selected code is part of a Java class named Arm. This class appears to be 
+    * controlling a robotic arm, and the selected code is responsible for setting the 
+    * arm's angle based on a calculated interpolatedAngle.
+    *
+    * The interpolatedAngle is calculated using an exponential function, where distance 
+    * is the input. The Math.exp(distance*-1.07775) part calculates the exponential of 
+    * the product of distance and -1.07775. This result is then multiplied by -130.725 
+    * and added to 43.0501. The Math.max(16, ...) function ensures that the calculated 
+    * angle is never less than 16.
+    */
+
+
+    
+    double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance*-1.07775) + 43.0501);
+    
     setArmToAngle(interpolatedAngle);
+    
+    /* TODO: What the hell is this return value?
+    * More COPILOT: Finally, the selected code returns a value calculated in a similar 
+    * way to interpolatedAngle, but with different constants. This value might be used 
+    * elsewhere in the program, perhaps as a prediction of the arm's position or speed 
+    * after the movement.
+    */
     return -149.003 * Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311);
   }
-//zkzj
+//zkzj TODO: ???
   /**
    * Sets the power of the arm motors
    * 
@@ -289,6 +323,7 @@ public class Arm extends SubsystemBase {
 
     double voltage = pid_power + forward_power;
 
+    // TODO Try catch around network table updates.
     // Update the network table with the forward and PID power
     inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);
     inst.getTable(kNTArm).getEntry(kNTPidPower).setDouble(pid_power);
@@ -313,6 +348,7 @@ public class Arm extends SubsystemBase {
       point = kMinSetpoint;
     }
 
+    // TODO: Try catch around network table updates.
     // update network table
     inst.getTable(kNTArm).getEntry(kNTSetpoint).setDouble(point);
   }
@@ -328,6 +364,8 @@ public class Arm extends SubsystemBase {
   public double getAngle() {
     // This is the only place where the arm encoder is read
     double angle = 360 * (armEncoder.getAbsolutePosition()) + kArmEncoderOffset;
+
+    // TODO: Try catch around network table updates.
     inst.getTable(kNTArm).getEntry(kNTCurrentAngle).setDouble(angle);
     return angle;
   }
@@ -350,6 +388,7 @@ public class Arm extends SubsystemBase {
     armR.setIdleMode(kEnabledMotorMode);
     armL.setIdleMode(kEnabledMotorMode);
 
+    // TODO: Try catch around network table updates.
     // Clear network table error code
     inst.getTable(kNTArm).getEntry(kNTErrorCode).setString("");
     inst.getTable(kNTArm).getEntry(kNTIsEnabled).setBoolean(true);
@@ -371,6 +410,7 @@ public class Arm extends SubsystemBase {
     is_disabled = true;
     armR.setIdleMode(kDisabledMotorMode);
     armL.setIdleMode(kDisabledMotorMode);
+    //TODO: Try catch around network table updates.
     inst.getTable(kNTArm).getEntry(kNTIsEnabled).setBoolean(false);
   }
 

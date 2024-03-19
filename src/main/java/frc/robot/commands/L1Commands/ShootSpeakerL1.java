@@ -13,6 +13,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
+// TODO: Seems to be two commands that do the same thing.  Test them both and keep the best one.  Delete the other.
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
 public class ShootSpeakerL1 extends Command implements Constants {
 

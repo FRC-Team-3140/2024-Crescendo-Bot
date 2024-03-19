@@ -12,6 +12,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 
+// TODO: Way to complicated and too much code for something that can easily be done with a PID controller.
 /**
  * This is a helper class for the StateSpaceShooter class. It is used to create a state space
  * controller for the shooter. This is a helper class because the state space controller is very

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 //Works Well
-
 public class ShooterSpeedL1 extends Command {
     private final Shooter shooter = Shooter.getInstance();
     private final double speed;
