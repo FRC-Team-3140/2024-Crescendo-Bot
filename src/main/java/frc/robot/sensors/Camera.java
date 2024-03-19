@@ -121,10 +121,18 @@ public class Camera extends SubsystemBase {
     public final int id;
 
     public aprilTagLocation(boolean isDetected, double dist, double angle, int id) {
-      this.isDetected = isDetected;
-      this.distance = dist;
-      this.angle = angle;
-      this.id = id;
+      if (isDetected != null) {
+        this.isDetected = isDetected;
+      }
+      if (dist != null) {
+        this.distance = dist;
+      }
+      if (angle != null) {
+        this.angle = angle;
+      }
+      if (id != null) {
+        this.id = id;
+      }
     }
   }
 
@@ -133,10 +141,16 @@ public class Camera extends SubsystemBase {
     public final double distance;
     public final double angle;
 
-    public NoteLocation(boolean isDetected, double dist, double angle, int id) {
-      this.isDetected = isDetected;
-      this.distance = dist;
-      this.angle = angle;
+    public NoteLocation(boolean isDetected, double dist, double angle) {
+      if (isDetected != null) {
+        this.isDetected = isDetected;
+      }
+      if (dist != null) {
+        this.distance = dist;
+      }
+      if (angle != null) {
+        this.angle = angle;
+      }
     }
   }
 
