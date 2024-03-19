@@ -171,7 +171,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             .02));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxModuleSpeed);
-
+    
     for (int i = 0; i < 4; i++) {
       modules[i].setStates(swerveModuleStates[i], false);
     }
@@ -313,7 +313,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   }
 
   public void resetGyro() {
-    odometryOffset = gyro.getAngle();
+    odometryOffset += gyro.getAngle();
     gyro.reset();
   }
 

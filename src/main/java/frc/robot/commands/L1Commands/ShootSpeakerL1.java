@@ -10,6 +10,7 @@ package frc.robot.commands.L1Commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
@@ -53,6 +54,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
         if (shooter.getShooterSpeed() >= freeSpeed && !hitSpeed) {
             hitSpeed = true;
             timeSinceSpinUp = System.currentTimeMillis();
+            RobotContainer.controller2.setRumble().schedule();
         }
         if (System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed) {
             intake.setIntakeVoltage(voltage2);

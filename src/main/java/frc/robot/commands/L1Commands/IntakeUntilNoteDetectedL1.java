@@ -7,6 +7,7 @@ package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
@@ -38,6 +39,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeVoltage(0);
+    RobotContainer.controller.setRumble().schedule();
+    RobotContainer.controller2.setRumble().schedule();
   }
 
   // Returns true when the command should end.

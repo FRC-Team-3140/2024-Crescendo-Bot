@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -100,11 +101,11 @@ public class SwerveModule extends SubsystemBase implements Constants {
         }
 
     }
-
+    SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -maxAcceleration, 0);
     public void setStates(SwerveModuleState state, boolean locked) {
         state = SwerveModuleState.optimize(state, Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()));
         setAngle(state.angle.getDegrees());
-        setDriveSpeed(state.speedMetersPerSecond);
+        setDriveSpeed(accelerationLimiter.calculate(state.speedMetersPerSecond));
         NetworkTableInstance.getDefault().getTable("Speed").getEntry(moduleID).setDouble(state.speedMetersPerSecond);
     }
 
