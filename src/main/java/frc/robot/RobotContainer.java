@@ -49,8 +49,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /* TODO: General notes...
 *
 * FIRST: TESTING is critical.  We need to test the robot in a variety of
-* situations and make sure it is reliable.  We need to test the autonomous modes on both sides.
-* You need to find a way to test more often, test faster, and push the bot harder.
+* situations and make sure it is reliable.  Teleop needs to be bulletproof. We need to test the autonomous 
+* modes on both sides. You need to find a way to test more often, test faster, and push the bot harder.
 *
 * SECOND: BROWNOUTS. I am paying paticular attention to current limits since I think we had 2-3 matches with
 * brownouts.  Please do some serious testing and try to figure out which subsystems really 
@@ -72,6 +72,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 * If you integrate navigation with the camera it really needs to be in an isolated subsystem.  It should 
 * have a seperate odometer and protections against bad data and crashes. It needs to be non critical to 
 * the core operations of the bot.
+*
+* Clean out old, unneeded, or dead code.  It makes the code hard to read and understand. It is also 
+* a source of bugs.
 *
 * "public static" is in general bad.  You are making global varibles.  Better to make a singleton and pass references to the objects that need them.
 * 
