@@ -50,7 +50,8 @@ public class ShootSpeakerOverrideL1 extends Command implements Constants {
 
     @Override
     public void execute() {
-        shooter.setShooterVoltage(shooterSpeed);
+        shooter.setShooterVoltageTop(shooterSpeed);
+        shooter.setShooterVoltageBottom(shooterSpeed);
         intake.setIntakeVoltage(voltage2);
     }
 
