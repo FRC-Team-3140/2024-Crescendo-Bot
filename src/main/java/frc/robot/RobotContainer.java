@@ -20,6 +20,7 @@ import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
+import frc.robot.commands.L1Commands.SetClimberToPosition;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
@@ -152,22 +153,22 @@ public class RobotContainer implements Constants {
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(Arm.kSetpointMove)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
-    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6,5)).onFalse(new ShootSpeakerL1(0, 0));//.onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6,5)).onFalse(new ShootSpeakerOverrideL1(0, 0));//.onFalse(new ShootSpeakerL1(0, 0));
     BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
     BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
     BooleanSupplier upControllerRightC2 = () -> (controller2.getRightY() > 0.3);
     BooleanSupplier downControllerRightC2 = () -> (controller2.getRightY() < -0.3);
     
-    new Trigger(upControllerLeftC2).onTrue(climber.increaseLeftHeight())
+    new Trigger(upControllerLeftC2).onTrue(new SetClimberToPosition(topClimberPosition))
         .onFalse(new InstantCommand(climber::stopLeft));
-    new Trigger(upControllerRightC2).onTrue(climber.increaseRightHeight())
+    new Trigger(upControllerRightC2).onTrue(new SetClimberToPosition(0))
         .onFalse(new InstantCommand(climber::stopRight));
     new Trigger(downControllerRightC2).onTrue(new InstantCommand(climber::lowerRight))
         .onFalse(new InstantCommand(climber::stopRight));
     new Trigger(downControllerLeftC2).onTrue(new InstantCommand(climber::lowerLeft))
         .onFalse(new InstantCommand(climber::stopLeft));
 
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(9.6,0)).onFalse(new ShootSpeakerL1(0,0));
+    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6,0)).onFalse(new ShootSpeakerOverrideL1(0,0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }

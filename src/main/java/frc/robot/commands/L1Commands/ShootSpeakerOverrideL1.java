@@ -42,7 +42,7 @@ public class ShootSpeakerOverrideL1 extends Command implements Constants {
         startTime = System.currentTimeMillis();
         // TODO: Recommend using encoders and PID to control the shooter speed. Much
         // more consistant shots. See notes in IntakeShooter. -DB
-        shooter.setShooterSpeed(shooterSpeed);
+        // shooter.setShooterSpeed(shooterSpeed);
     }
 
     double timeSinceSpinUp = Double.MAX_VALUE;
@@ -50,6 +50,7 @@ public class ShootSpeakerOverrideL1 extends Command implements Constants {
 
     @Override
     public void execute() {
+        shooter.setShooterVoltage(shooterSpeed);
         intake.setIntakeVoltage(voltage2);
     }
 

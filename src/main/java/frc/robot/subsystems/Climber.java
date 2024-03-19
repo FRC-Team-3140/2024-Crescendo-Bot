@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.BooleanSupplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -19,7 +20,8 @@ public class Climber extends SubsystemBase {
     // Motors
     private CANSparkMax leftClimber;
     private CANSparkMax rightClimber;
-
+    private RelativeEncoder leftEncoder;
+    private RelativeEncoder rightEncoder;
     // Solenoids - runs on PCM ports 0 and 1
     Solenoid leftSolenoid;
     Solenoid rightSolenoid;
@@ -37,6 +39,9 @@ public class Climber extends SubsystemBase {
     private int leftSolenoidChannelID = 0;
     private int rightSolenoidChannelID = 5;
 
+    //Constants
+    private double raiseSpeed = .5;
+    private double lowerSpeed = .5;
     // climber
     static Climber climber = new Climber();
     BooleanSupplier leftLimitSwitchPressed;
@@ -45,7 +50,8 @@ public class Climber extends SubsystemBase {
         
         leftClimber = new CANSparkMax(leftCANID, MotorType.kBrushless);
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
-        
+        leftEncoder = leftClimber.getEncoder();
+        rightEncoder = rightClimber.getEncoder();;
         // electromagnetic push-pull solenoids running on the PCM.
         leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID);
         rightSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, rightSolenoidChannelID);
@@ -59,19 +65,25 @@ public class Climber extends SubsystemBase {
         leftLimitSwitchPressed = () -> leftLimit.get();
         rightLimitSwitchPressed = () -> rightLimit.get();
         // set motor settings
+        leftClimber.restoreFactoryDefaults();
+        leftClimber.setSmartCurrentLimit(30);
         leftClimber.setIdleMode(IdleMode.kBrake);
+        rightClimber.restoreFactoryDefaults();
+        rightClimber.setSmartCurrentLimit(30);
         rightClimber.setIdleMode(IdleMode.kBrake);
-
         leftClimber.setInverted(false);
         rightClimber.setInverted(false);
+        //quarter inch, 15:1 gear ratio
+        leftEncoder.setPositionConversionFactor(.25/15);
+        rightEncoder.setPositionConversionFactor(.25/15);
 
-        new Trigger(leftLimitSwitchPressed).onTrue(new InstantCommand(this::stopLeft));
-        new Trigger(rightLimitSwitchPressed).onTrue(new InstantCommand(this::stopRight));
+        new Trigger(leftLimitSwitchPressed).onTrue(new InstantCommand(this::stopLeft).alongWith(new InstantCommand(this::resetLeft)));
+        new Trigger(rightLimitSwitchPressed).onTrue(new InstantCommand(this::stopRight).alongWith(new InstantCommand(this::resetRight)));
 
         leftClimber.burnFlash();
         rightClimber.burnFlash();
 
-    }
+    } 
 
     public static Climber getInstance() {
         return climber;
@@ -81,15 +93,26 @@ public class Climber extends SubsystemBase {
      * Raising and lowering climbers
      */
     // raises the left climber
+    public void resetLeft(){
+        leftClimber.getEncoder().setPosition(0);
+    }
+    public void resetRight(){
+        rightClimber.getEncoder().setPosition(0);
+    }
     public void raiseLeft() {
         leftSolenoid.set(true);
-        leftClimber.set(.2); //change to an actual value later
+        leftClimber.set(raiseSpeed); //change to an actual value later
+    }
+
+    public double[] encoderValues(){
+        double[] values = {rightEncoder.getPosition(), leftEncoder.getPosition()};
+        return values;
     }
 
     // raises the right climber
     public void raiseRight() {
         rightSolenoid.set(true);
-        rightClimber.set(.2); //change to an actual value later
+        rightClimber.set(raiseSpeed); //change to an actual value later
         
     }
     public void lowerLeftForRaising(){
@@ -105,7 +128,7 @@ public class Climber extends SubsystemBase {
     public void lowerLeft() {
         if (!leftLimit.get()) {
             leftSolenoid.set(true);
-            leftClimber.set(-.35); //change to an actual value later
+            leftClimber.set(-lowerSpeed); //change to an actual value later
         }else{
             leftClimber.set(0);
         }
@@ -115,7 +138,7 @@ public class Climber extends SubsystemBase {
     public void lowerRight() {
         if (!rightLimit.get()) {
             rightSolenoid.set(true);
-            rightClimber.set(-.35); //change to an actual value later
+            rightClimber.set(-lowerSpeed); //change to an actual value later
         }else{
             rightClimber.set(0);
         }

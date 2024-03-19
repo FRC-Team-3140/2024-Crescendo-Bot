@@ -26,4 +26,6 @@ public interface Constants {
 
     public static final Translation2d blueSpeakerTranslation = new Translation2d(0, 216 * .0254);
     public static final Translation2d redSpeakerTranslation = new Translation2d(16.4846, 216 * .0254);
+
+    public static final double topClimberPosition = 8;
 }

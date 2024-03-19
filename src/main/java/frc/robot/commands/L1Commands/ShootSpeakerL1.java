@@ -44,7 +44,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
         startTime = System.currentTimeMillis();
         // TODO: Recommend using encoders and PID to control the shooter speed. Much
         // more consistant shots. See notes in IntakeShooter. -DB
-        shooter.setShooterSpeed(shooterSpeed);
+        shooter.setShooterVoltage(shooterSpeed);
     }
 
     double timeSinceSpinUp = Double.MAX_VALUE;
@@ -52,6 +52,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     @Override
     public void execute() {
+        // shooter.setShooterSpeed(shooterSpeed);
         if(shooter.getShooterSpeed() >= freeSpeed && !hitSpeed){
             hitSpeed = true;
             timeSinceSpinUp = System.currentTimeMillis();
@@ -65,6 +66,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
     public void end(boolean interrupted) {
         // intakeShooter.setIntakeVoltage(0);
         // intakeShooter.setShooterVoltage(0);
+
     }
 
     @Override
