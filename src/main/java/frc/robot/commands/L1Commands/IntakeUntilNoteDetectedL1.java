@@ -10,7 +10,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-
 public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   Intake intake = Intake.getInstance();

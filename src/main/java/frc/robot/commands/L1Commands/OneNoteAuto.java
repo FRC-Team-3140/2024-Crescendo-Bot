@@ -11,7 +11,6 @@ public class OneNoteAuto extends Command {
   private double shooterVoltage;
   private double intakeVoltage;
 
-
   /** Creates a new OneNoteAuto. */
   public OneNoteAuto() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,11 +22,10 @@ public class OneNoteAuto extends Command {
   @Override
   public void initialize() {
     new SequentialCommandGroup(
-      new SetArmToAngleL1(16),
-      new ShootSpeakerL1(shooterVoltage, intakeVoltage)
-    ).schedule();
+        new SetArmToAngleL1(16),
+        new ShootSpeakerL1(shooterVoltage, intakeVoltage)).schedule();
   }
-  
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -35,7 +33,8 @@ public class OneNoteAuto extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
