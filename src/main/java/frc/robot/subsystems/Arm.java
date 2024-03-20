@@ -160,13 +160,13 @@ public class Arm extends SubsystemBase {
     angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
     angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
     angleInterpolator.put(1.700, 21.0);
-    angleInterpolator.put(1.9685, 27.5);
-    angleInterpolator.put(2.4003, 34.0);
-    angleInterpolator.put(3.0048, 37.8);
-    angleInterpolator.put(3.2385, 38.4);
-    angleInterpolator.put(3.4163, 40.4);
-    angleInterpolator.put(3.5146, 40.7);
-    angleInterpolator.put(3.9116, 41.6);
+    angleInterpolator.put(1.9685, 24.5);
+    angleInterpolator.put(2.4003, 31.0);
+    angleInterpolator.put(3.0048, 34.8);
+    angleInterpolator.put(3.2385, 34.4);
+    angleInterpolator.put(3.4163, 37.4);
+    angleInterpolator.put(3.5146, 37.7);
+    angleInterpolator.put(3.9116, 38.6);
 
   
     // angleInterpolator.put()

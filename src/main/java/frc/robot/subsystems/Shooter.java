@@ -84,7 +84,7 @@ public class Shooter extends SubsystemBase {
         return bottomEncoder.getVelocity();
     }
     public double getShooterSpeed() {
-        return Math.min(getBottomShooterSpeed(), getTopShooterSpeed());
+        return Math.min(-getBottomShooterSpeed(), getTopShooterSpeed());
     }
 
 }
