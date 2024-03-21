@@ -20,10 +20,10 @@ public class pickupNote extends Command implements Constants {
   private Camera camera = null;
 
   // Run with SwerveDrive Controller
-  private Boolean withController = false; 
+  private Boolean withController = false;
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Intake intake, Camera camera) {
-    // TODO: sort command into respective difficulty levels if neccessary 
+    // TODO: sort command into respective difficulty levels if neccessary
     this.swerve = swerve;
     this.intake = intake;
     this.camera = camera;
@@ -47,7 +47,8 @@ public class pickupNote extends Command implements Constants {
       double ang = camera.getNoteAngle();
       int sign = (int) Math.signum(ang);
 
-      swerve.drive(RobotContainer.controller.getLeftX(), RobotContainer.controller.getLeftY(), ((ang / 3) * sign), true);
+      swerve.drive(RobotContainer.controller.getLeftX(), RobotContainer.controller.getLeftY(), ((ang / 3) * sign),
+          true);
     } else {
       swerve.drive(0, 0.25, camera.getNoteAngle(), false);
     }
@@ -61,6 +62,9 @@ public class pickupNote extends Command implements Constants {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (RobotContainer.controller.getLeftBumper()) {
+      return true;
+    }
     return intake.noteDetected();
   }
 }
