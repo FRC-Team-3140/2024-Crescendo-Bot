@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
@@ -18,11 +19,16 @@ public class pickupNote extends Command implements Constants {
   private SwerveDrive swerve = null;
   private Camera camera = null;
 
-  public pickupNote(SwerveDrive swerve, Intake intake, Camera camera) {
+  // Run with SwerveDrive Controller
+  private Boolean withController = false; 
+
+  public pickupNote(Boolean withController, SwerveDrive swerve, Intake intake, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary 
     this.swerve = swerve;
     this.intake = intake;
     this.camera = camera;
+
+    this.withController = withController;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve, intake, camera);
@@ -37,7 +43,14 @@ public class pickupNote extends Command implements Constants {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    swerve.drive(0, 0.25, camera.getNoteAngle(), false);
+    if (withController) {
+      double ang = camera.getNoteAngle();
+      int sign = (int) Math.signum(ang);
+
+      swerve.drive(RobotContainer.controller.getLeftX(), RobotContainer.controller.getLeftY(), ((ang / 3) * sign), true);
+    } else {
+      swerve.drive(0, 0.25, camera.getNoteAngle(), false);
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonVersion;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -21,11 +20,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -39,14 +38,10 @@ public class Camera extends SubsystemBase {
   private PhotonCamera april = aprilGetInstance();
   private PhotonCamera notes = notesGetInstance();
 
-  // TODO: Find the actual postition of the cameras on the bot. - TK
-  // Cam mounted facing forward, half a meter forward of center, half a meter up
-  // from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-Units.inchesToMeters(29) / 2, 0.0, 0.5),
+  // Measurements to Cameras
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-Constants.botLength / 2, 0.0, 0.5),
       new Rotation3d(0, 0, Math.PI));
 
-  // Cam mounted facing forward, half a meter forward of center, half a meter up
-  // from center. - TK
   // TODO: get measurements for note cam - TK : private Transform3d robotToNote =
   // new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
 
@@ -70,12 +65,9 @@ public class Camera extends SubsystemBase {
   // block other Subsystems.
   private Thread attemptReconnection = new Thread(this::attemptToReconnect);
 
-  // Must not start at 0 so check doesn't run early
-  private int count = 1;
-
   // Time to delay periodic method Networktable connection check. IN
-  // Mili-Seconds!!
-  private double delayTime = 5000.0;
+  // Seconds!!
+  private double delayTime = 5;
 
   // Time to delay connection attempts is in SECONDS! - TK
   private double attemptDelay;
@@ -197,7 +189,7 @@ public class Camera extends SubsystemBase {
   // is one - TK
   private PhotonCamera aprilGetInstance() {
     checkVersion();
-    if (april == null && versionMatches) {
+    if (versionMatches && april == null) {
       april = new PhotonCamera(inst, "april");
     }
     return april;
@@ -209,7 +201,7 @@ public class Camera extends SubsystemBase {
   // is one - TK
   private PhotonCamera notesGetInstance() {
     checkVersion();
-    if (notes == null && versionMatches) {
+    if (versionMatches && notes == null) {
       notes = new PhotonCamera(inst, "notes");
     }
     return notes;
@@ -233,9 +225,12 @@ public class Camera extends SubsystemBase {
 
   private boolean checkVersion() {
     // TODO: Test this!
+    Timer timeout = new Timer();
     String version = "";
+    
+    timeout.start();
 
-    while (version == "") {
+    while (version == "" && timeout.hasElapsed(delayTime)) {
       version = inst.getTable("photonvision").getEntry("version").getString("");
       if (version == "") {
         System.err.println("Photon version not available yet...");
@@ -313,8 +308,7 @@ public class Camera extends SubsystemBase {
 
       // Was using Timer.delay() function here, but this caused issues with the other
       // subsystems...
-      // Dividing by ideal 20 Ms roboRio loop time. - TK
-      if ((count % (delayTime / 20)) == 0 && !attemptReconnection.isAlive() && !testConnection()) {
+      if ((System.currentTimeMillis() * 1000) % delayTime == 0 && !attemptReconnection.isAlive() && !testConnection()) {
         // Update Networktable information periodically - TK
         setNetworktableStatus();
 
@@ -325,8 +319,6 @@ public class Camera extends SubsystemBase {
               .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
         }
       }
-
-      count++;
 
       aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
       inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
@@ -474,14 +466,6 @@ public class Camera extends SubsystemBase {
        * coordinates. - TK
        */
 
-      // if (Math.signum(targetYaw) == -1) {
-      // requiredTurnDegrees = -Math.toDegrees(Math.atan2(getApriltagDistY(),
-      // getApriltagDistX()));
-      // } else {
-      // requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistY(),
-      // getApriltagDistX()));
-      // }
-
       // Need to use the getX method that we wrote for Y in atan because it returns
       // the Photon Y. - TK
       requiredTurnDegrees = Math
@@ -551,19 +535,6 @@ public class Camera extends SubsystemBase {
     return aprilTagLayout;
   }
 
-  public double getNoteDistance() {
-    // If this function returns a 0, that means there is not any detected targets
-
-    // Need to wait until cameras are on Final Robot because calculation requires
-    // specific
-    // measurements to the camera.
-
-    notes.getLatestResult().getBestTarget();
-    PhotonUtils.calculateDistanceToTargetMeters(0, 0, 0, 0);
-
-    return 0.0;
-  }
-
   public double getNoteAngle() {
     if (notes != null) {
       return notes.getLatestResult().getBestTarget().getYaw();
@@ -572,24 +543,24 @@ public class Camera extends SubsystemBase {
   }
 
   public double getTimestamp() {
-    return (1.0 * heartbeat);
+    return (double) heartbeat;
   }
 
   public double getLatency() {
     return april.getLatestResult().getLatencyMillis();
   }
 
-  double lastResult = 0;
-
   public boolean isConnected() {
+    double lastResult = 0;
+
     if (!connected || !versionMatches) {
       return false;
     }
 
-    boolean kjasdfl = april.getLatestResult().hasTargets() && connected
+    boolean isConnectedBool = april.getLatestResult().hasTargets() && connected
         && april.getLatestResult().getTimestampSeconds() != lastResult;
     lastResult = april.getLatestResult().getTimestampSeconds();
-    return kjasdfl;
+    return isConnectedBool;
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {

@@ -52,7 +52,7 @@ public class Climber extends SubsystemBase {
         leftClimber = new CANSparkMax(leftCANID, MotorType.kBrushless);
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
         leftEncoder = leftClimber.getEncoder();
-        rightEncoder = rightClimber.getEncoder();;
+        rightEncoder = rightClimber.getEncoder();
         // electromagnetic push-pull solenoids running on the PCM.
         leftSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, leftSolenoidChannelID);
         rightSolenoid = new Solenoid(0, PneumaticsModuleType.CTREPCM, rightSolenoidChannelID);

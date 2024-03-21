@@ -23,7 +23,7 @@ public interface Constants {
     // Max Speed divided by the circumference a circle determined by the distance of
     // the module from the center, divided by 2 pi to convert to radians
     public static final double maxChassisTurnSpeed = maxChassisSpeed / botRadius;
-    public double encoderRotationToMeters = 2 * Math.PI * ((wheelDiameter / 2) / gearRatio) / 42;
+    public static final double encoderRotationToMeters = 2 * Math.PI * ((wheelDiameter / 2) / gearRatio) / 42;
 
     public static final Translation2d blueSpeakerTranslation = new Translation2d(0, 216 * .0254);
     public static final Translation2d redSpeakerTranslation = new Translation2d(16.4846, 216 * .0254);
