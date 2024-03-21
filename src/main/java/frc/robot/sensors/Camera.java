@@ -227,13 +227,16 @@ public class Camera extends SubsystemBase {
     // TODO: Test this!
     Timer timeout = new Timer();
     String version = "";
-    
+
     timeout.start();
 
-    while (version == "" && timeout.hasElapsed(delayTime)) {
+    while (version == "" && !timeout.hasElapsed(delayTime)) {
       version = inst.getTable("photonvision").getEntry("version").getString("");
       if (version == "") {
         System.err.println("Photon version not available yet...");
+      }
+      if (timeout.hasElapsed(delayTime)) {
+        System.err.println("checkVersion loop Timedout for safety!");
       }
     }
 
