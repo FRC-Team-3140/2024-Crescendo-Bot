@@ -69,13 +69,13 @@ public class Shooter extends SubsystemBase {
     }
     public void setShooterVoltage(double voltage) {
         topShooter.setVoltage(voltage);
-        bottomShooter.setVoltage(-voltage);
+        bottomShooter.setVoltage(voltage);
     }
     public void setShooterVoltageTop(double voltage) {
         topShooter.setVoltage(voltage+.15);
     }
     public void setShooterVoltageBottom(double voltage) {
-        bottomShooter.setVoltage(-voltage);
+        bottomShooter.setVoltage(voltage);
     }
     public double getTopShooterSpeed() {
         return topEncoder.getVelocity();
