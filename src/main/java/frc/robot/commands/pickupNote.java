@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -21,6 +22,8 @@ public class pickupNote extends Command implements Constants {
 
   // Run with SwerveDrive Controller
   private Boolean withController = false;
+
+  private PIDController turnController = new PIDController(2, 0, 0);
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Intake intake, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
@@ -45,9 +48,11 @@ public class pickupNote extends Command implements Constants {
   public void execute() {
     if (withController) {
       double ang = camera.getNoteAngle();
-      int sign = (int) Math.signum(ang);
 
-      swerve.drive(RobotContainer.controller.getLeftX(), RobotContainer.controller.getLeftY(), ((ang / 3) * sign),
+      turnController.setSetpoint(0);
+
+      swerve.drive(-(RobotContainer.controller.getLeftX() * maxChassisSpeed),
+          -(RobotContainer.controller.getLeftY() * maxChassisSpeed), -turnController.calculate(ang),
           true);
     } else {
       swerve.drive(0, 0.25, camera.getNoteAngle(), false);

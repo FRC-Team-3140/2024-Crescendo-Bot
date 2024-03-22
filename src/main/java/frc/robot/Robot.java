@@ -6,7 +6,6 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.pickupNote;
@@ -56,7 +55,6 @@ public class Robot extends LoggedRobot implements Constants {
     CommandScheduler.getInstance().run();
 
     // System.out.println("pe" + photoElectric.get());
-    System.out.println(System.currentTimeMillis());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -91,7 +89,6 @@ public class Robot extends LoggedRobot implements Constants {
 
   @Override
   public void teleopInit() {
-    NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").setDouble(.02);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
