@@ -277,8 +277,8 @@ public class Camera extends SubsystemBase {
       inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
           .setString(PhotonVersion.versionString);
       inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
-      inst.getTable("Vision").getSubTable("Status").getEntry("April Connection: ").setBoolean(april.isConnected());
-      inst.getTable("Vision").getSubTable("Status").getEntry("Notes Connection: ").setBoolean(notes.isConnected());
+      inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("April Connection: ").setBoolean(april.isConnected());
+      inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("Notes Connection: ").setBoolean(notes.isConnected());
     } catch (Error e) {
       System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
     }
