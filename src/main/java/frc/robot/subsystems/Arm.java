@@ -53,8 +53,8 @@ public class Arm extends SubsystemBase {
   private static final IdleMode kDisabledMotorMode = IdleMode.kBrake; // Motor mode when disabled
 
   // Constants for the PID controller
-  private static final double kDefaultP = .3; // Proportional gain
-  private static final double kDefaultI = 0.0001; // Integral gain
+  private static final double kDefaultP = .35; // Proportional gain
+  private static final double kDefaultI = 0.0000; // Integral gain
   private static final double kDefaultD = 0.004; // Derivative gain
 
   // Constants for the arm setpoint
@@ -157,16 +157,28 @@ public class Arm extends SubsystemBase {
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
     encoderConnected();
 
-    angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
-    angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
-    angleInterpolator.put(1.700, 21.0);
-    angleInterpolator.put(1.9685, 24.5);
-    angleInterpolator.put(2.4003, 31.0);
-    angleInterpolator.put(3.0048, 34.8);
-    angleInterpolator.put(3.2385, 34.4);
-    angleInterpolator.put(3.4163, 37.4);
-    angleInterpolator.put(3.5146, 37.7);
-    angleInterpolator.put(3.9116, 38.6);
+    angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interp2lator, and comparator here
+
+    angleInterpolator.put(1.3,16.0);
+    angleInterpolator.put(2.067,22.0);
+    angleInterpolator.put(2.923,30.0);
+    angleInterpolator.put(3.287,34.0);
+    angleInterpolator.put(4.266,38.0);
+    // angleInterpolator.put(5.2,23.0);
+
+
+
+
+
+    // angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
+    // angleInterpolator.put(1.700, 21.0);
+    // angleInterpolator.put(1.9685, 24.5);
+    // angleInterpolator.put(2.4003, 31.0);
+    // angleInterpolator.put(3.0048, 34.8);
+    // angleInterpolator.put(3.2385, 34.4);
+    // angleInterpolator.put(3.4163, 37.4);
+    // angleInterpolator.put(3.5146, 37.7);
+    // angleInterpolator.put(3.9116, 38.6);
 
   
     // angleInterpolator.put()

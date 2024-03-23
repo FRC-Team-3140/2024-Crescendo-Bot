@@ -35,7 +35,19 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 120.0,
+        "maxAngularAcceleration": 240.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -67,7 +79,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "Left",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

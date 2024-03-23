@@ -2,31 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 4.48
+      "x": 0.4402996483718082,
+      "y": 1.993964177501814
     },
-    "rotation": -60.0
+    "rotation": -90.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "SpeakerShoot1"
+            "pathName": "Far1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "PickupNote1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SpeakerShoot1"
+            "pathName": "Far2"
           }
         }
       ]

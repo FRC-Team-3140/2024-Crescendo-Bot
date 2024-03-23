@@ -11,7 +11,7 @@ public class SetArmToDistanceL1 extends Command {
     private final Arm arm = Arm.getInstance();
     private double distance;
     // private double setpoint;
-    private double angleTolerance = .1;
+    private double angleTolerance = .5;
 
     /**
      * This command sets the arm to a specific distance

@@ -72,7 +72,7 @@ public class Shooter extends SubsystemBase {
         bottomShooter.setVoltage(voltage);
     }
     public void setShooterVoltageTop(double voltage) {
-        topShooter.setVoltage(voltage);
+        topShooter.setVoltage(voltage+.15);
     }
     public void setShooterVoltageBottom(double voltage) {
         bottomShooter.setVoltage(voltage);

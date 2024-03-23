@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 4.48
+      "x": 1.2542914308886268,
+      "y": 5.534588312284395
     },
-    "rotation": -60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PickupNote1"
+            "pathName": "PickupNoteMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BacktoMiddle"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SpeakerShoot1"
+            "name": "SpeakerShoot2"
           }
         }
       ]

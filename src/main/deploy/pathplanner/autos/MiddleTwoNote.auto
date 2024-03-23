@@ -42,7 +42,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SpeakerShoot1"
+                  "name": "SpeakerShoot2"
                 }
               }
             ]
@@ -51,6 +51,6 @@
       ]
     }
   },
-  "folder": "Middle",
+  "folder": null,
   "choreoAuto": false
 }
