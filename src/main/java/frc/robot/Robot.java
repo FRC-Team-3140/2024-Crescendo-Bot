@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.pickupNote;
 import frc.robot.subsystems.Arm;
 
-public class Robot extends LoggedRobot implements Constants {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 

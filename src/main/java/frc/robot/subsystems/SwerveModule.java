@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.libs.AbsoluteEncoder;
 
-public class SwerveModule extends SubsystemBase implements Constants {
+public class SwerveModule extends SubsystemBase {
 
     // Zero : 0.697578
     // One : 0.701239
@@ -49,8 +49,8 @@ public class SwerveModule extends SubsystemBase implements Constants {
     private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706 * .712, 2.4433 * .712,
             0.10133 * .712);
     // realised the feedforward was off by a factor of .712, corrected it
-    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxChassisSpeed,
-            maxAcceleration);
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Constants.maxChassisSpeed,
+            Constants.maxAcceleration);
 
     // private State initialState = new TrapezoidProfile.State(0, 0);
     // private TrapezoidProfile trapezoidProfile;
@@ -96,12 +96,14 @@ public class SwerveModule extends SubsystemBase implements Constants {
     @Override
     public void periodic() {
         if (!encoderSets) {
-            driveEncoder.setVelocityConversionFactor(encoderRotationToMeters);
-            driveEncoder.setPositionConversionFactor(42 * encoderRotationToMeters);
+            driveEncoder.setVelocityConversionFactor(Constants.encoderRotationToMeters);
+            driveEncoder.setPositionConversionFactor(42 * Constants.encoderRotationToMeters);
         }
 
     }
-    SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -maxAcceleration, 0);
+
+    SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -Constants.maxAcceleration, 0);
+
     public void setStates(SwerveModuleState state, boolean locked) {
         state = SwerveModuleState.optimize(state, Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()));
         setAngle(state.angle.getDegrees());
@@ -125,7 +127,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
     }
 
     public void setTurnSpeed(double speed) {
-        speed = Math.max(Math.min(speed, maxTurnSpeed), -maxTurnSpeed);
+        speed = Math.max(Math.min(speed, Constants.maxTurnSpeed), -Constants.maxTurnSpeed);
         turnMotor.set(speed);
     }
 

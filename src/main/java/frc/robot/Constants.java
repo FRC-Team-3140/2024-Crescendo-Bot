@@ -29,4 +29,6 @@ public interface Constants {
     public static final Translation2d redSpeakerTranslation = new Translation2d(16.4846, 216 * .0254);
 
     public static final double topClimberPosition = 8;
+
+    public static final double maxAmbiguity = 0.1; 
 }

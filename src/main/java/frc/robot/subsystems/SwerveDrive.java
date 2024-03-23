@@ -42,7 +42,7 @@ import frc.robot.sensors.Camera;
 import frc.robot.sensors.Camera.DistAmb;
 
 /** Represents a swerve drive style drivetrain. */
-public class SwerveDrive extends SubsystemBase implements Constants {
+public class SwerveDrive extends SubsystemBase {
 
   private static SwerveDrive instance = new SwerveDrive();
   ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, .1, new Constraints(360, 720));
@@ -52,10 +52,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public static AHRS gyro;
 
   private final Translation2d[] locations = {
-      new Translation2d(botLength, botLength),
-      new Translation2d(botLength, -botLength),
-      new Translation2d(-botLength, botLength),
-      new Translation2d(-botLength, -botLength)
+      new Translation2d(Constants.botLength, Constants.botLength),
+      new Translation2d(Constants.botLength, -Constants.botLength),
+      new Translation2d(-Constants.botLength, Constants.botLength),
+      new Translation2d(-Constants.botLength, -Constants.botLength)
   };
 
   SwerveModule[] modules = {
@@ -95,8 +95,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                                          // Constants class
             new PIDConstants(4, 0.0, 0), // Translation PID constants
             new PIDConstants(4, 0.0, 0), // Rotation PID constants
-            maxChassisSpeed, // Max module speed, in m/s
-            botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+            Constants.maxChassisSpeed, // Max module speed, in m/s
+            Constants.botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         this::shouldFlipPath,
@@ -170,8 +170,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             .02));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxModuleSpeed);
-    
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.maxModuleSpeed);
+
     for (int i = 0; i < 4; i++) {
       modules[i].setStates(swerveModuleStates[i], false);
     }
@@ -190,9 +190,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public void driveRobotFacingSpeaker(double xSpeed, double ySpeed, boolean fieldRelative) {
     Translation2d distanceFromSpeaker;
     if (shouldFlipPath()) {
-      distanceFromSpeaker = getExpectedPose().getTranslation().minus(redSpeakerTranslation);
+      distanceFromSpeaker = getExpectedPose().getTranslation().minus(Constants.redSpeakerTranslation);
     } else {
-      distanceFromSpeaker = getExpectedPose().getTranslation().minus(blueSpeakerTranslation);
+      distanceFromSpeaker = getExpectedPose().getTranslation().minus(Constants.blueSpeakerTranslation);
     }
     double angle = Math.atan2(distanceFromSpeaker.getY(), distanceFromSpeaker.getX());
 
@@ -218,7 +218,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
       if (Camera.getInstance().isConnected()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
         DistAmb reading = Camera.getInstance().getApriltagDistX();
-        if (pose.isPresent() && reading != null && reading.ambiguity < 0.3
+        if (pose.isPresent() && reading != null && reading.ambiguity < Constants.maxAmbiguity
         /*
          * && getPose().getTranslation().getDistance(Camera.getInstance().
          * getEstimatedGlobalPose().get().estimatedPose
@@ -272,16 +272,16 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public double getExpectedDistanceFromSpeaker() {
     // .05 is a placeholder timesteo, may be changed in the future
     if (shouldFlipPath()) {
-      return redSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
+      return Constants.redSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
     }
-    return blueSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
+    return Constants.blueSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
   }
 
   public double getDistanceFromSpeaker() {
     if (shouldFlipPath()) {
-      return redSpeakerTranslation.getDistance(getPose().getTranslation());
+      return Constants.redSpeakerTranslation.getDistance(getPose().getTranslation());
     }
-    return blueSpeakerTranslation.getDistance(getPose().getTranslation());
+    return Constants.blueSpeakerTranslation.getDistance(getPose().getTranslation());
   }
 
   public static SwerveDrive getInstance() {

@@ -7,7 +7,6 @@
 package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 //Check to make sure this works
 import frc.robot.subsystems.Shooter;
@@ -18,7 +17,7 @@ import frc.robot.subsystems.Shooter;
  * It sets the intake and shooter voltages to a specific value when initialized,
  * and sets them back to zero when the command ends.
  */
-public class ShootAmpL1 extends Command implements Constants {
+public class ShootAmpL1 extends Command {
 
   public Intake intake;
   public Shooter shooter;

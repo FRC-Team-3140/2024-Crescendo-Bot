@@ -431,6 +431,13 @@ public class Camera extends SubsystemBase {
   }
 
   public double getAprilTagDist(double forwardScalePercent) {
+    DistAmb distX = getApriltagDistX();
+    DistAmb distY = getApriltagDistY();
+
+    if ((distX.ambiguity + distY.ambiguity) / 2 > Constants.maxAmbiguity) {
+
+    }
+
     return Math.sqrt(
         (Math.pow(getApriltagDistX().distance, 2) + Math.pow((forwardScalePercent * getApriltagDistY().distance), 2)));
   }

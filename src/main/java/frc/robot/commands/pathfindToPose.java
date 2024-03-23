@@ -15,25 +15,26 @@ import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 
-public class pathfindToPose extends Command implements Constants {
+public class pathfindToPose extends Command {
   private Pose2d updatedPose;
   private Command pathToFollow;
-  // TODO: private SwerveDrive swerveDrive;
+  // TODO: determine if we still need to not allow path mirroring for this command.
+  // private SwerveDrive swerveDrive;
   private boolean pathCompleted = false;
 
   /** Creates a new pathfindToPose. */
   public pathfindToPose(Pose2d updatedRobotPose, Camera camera, SwerveDrive swerve) {
-    // TODO: sort command into respective difficulty levels if neccessary 
+    // TODO: sort command into respective difficulty levels if neccessary
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(camera, RobotContainer.swerve);
 
     updatedPose = updatedRobotPose;
-    // TODO: swerveDrive = swerve;
+    // swerveDrive = swerve;
 
     // This will prevent Pathplanner from mirroring the generated camera path
     // once the Pathfinding command hits it's end state it will be allowed to
     // path mirror again. - TK
-    // TODO: swerveDrive.setPathInverted(false);
+    // swerveDrive.setPathInverted(false);
   }
 
   // Called when the command is initially scheduled.
@@ -43,7 +44,7 @@ public class pathfindToPose extends Command implements Constants {
 
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        maxChassisSpeed, 4.0,
+        Constants.maxChassisSpeed, 4.0,
         Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -85,7 +86,7 @@ public class pathfindToPose extends Command implements Constants {
      * targetPose
      */
     if (/* swerveDrive.getPose().equals(updatedPose) */pathCompleted) {
-      // TODO: swerveDrive.setPathInverted(true);
+      // swerveDrive.setPathInverted(true);
       System.out.println(
           "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!FINISHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       return true;

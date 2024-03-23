@@ -14,7 +14,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 
-public class pickupNote extends Command implements Constants {
+public class pickupNote extends Command {
   /** Creates a new pickupNote. */
   private Intake intake = null;
   private SwerveDrive swerve = null;
@@ -51,8 +51,8 @@ public class pickupNote extends Command implements Constants {
 
       turnController.setSetpoint(0);
 
-      swerve.drive(-(RobotContainer.controller.getLeftX() * maxChassisSpeed),
-          -(RobotContainer.controller.getLeftY() * maxChassisSpeed), -turnController.calculate(ang),
+      swerve.drive(-(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
+          -(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed), -turnController.calculate(ang),
           true);
     } else {
       swerve.drive(0, 0.25, camera.getNoteAngle(), false);

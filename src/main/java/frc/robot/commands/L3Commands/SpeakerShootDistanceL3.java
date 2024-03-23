@@ -9,7 +9,6 @@ package frc.robot.commands.L3Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 
@@ -18,7 +17,7 @@ import frc.robot.commands.L1Commands.ShootSpeakerL1;
  * speaker mechanism.
  * It extends the Command class and implements the Constants interface.
  */
-public class SpeakerShootDistanceL3 extends SequentialCommandGroup implements Constants {
+public class SpeakerShootDistanceL3 extends SequentialCommandGroup {
 
     public boolean finished;
 
