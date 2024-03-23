@@ -5,10 +5,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.libs.StateSpaceShooterHelp;
 
 public class Shooter extends SubsystemBase {
 
@@ -25,8 +23,6 @@ public class Shooter extends SubsystemBase {
      * Relative Encoder from flywheel 2's neo.
      */
     public RelativeEncoder bottomEncoder = bottomShooter.getEncoder();
-    private StateSpaceShooterHelp topController = new StateSpaceShooterHelp();
-    private StateSpaceShooterHelp bottomController = new StateSpaceShooterHelp();
 
     private Shooter() {
         topShooter.restoreFactoryDefaults();
@@ -48,11 +44,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        topController.correct(VecBuilder.fill(topEncoder.getVelocity()));
-        topController.predict();
         SmartDashboard.putNumber("Top Speed", getTopShooterSpeed());        
-        bottomController.correct(VecBuilder.fill(topEncoder.getVelocity()));
-        bottomController.predict();
         SmartDashboard.putNumber("Bottom Speed", getBottomShooterSpeed());
     }
 
@@ -64,9 +56,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterSpeed(double speed) {
-        topController.setSpeed(speed);
-        double nextVoltage = topController.getVoltage();
-        topShooter.setVoltage(nextVoltage);
+        topShooter.set(speed);
     }
 
     public void setShooterVoltage(double voltage) {
