@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.L1Commands.DetectAprilTagL1;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
@@ -27,6 +28,7 @@ import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.TurnBotToAngleL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L2Commands.DetectTagAndTurnL2;
 import frc.robot.commands.L2Commands.SetArmToDistanceWhileMovingL2;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 // import frc.robot.commands.L3Commands.DriveFacingApril;
@@ -153,7 +155,9 @@ public class RobotContainer implements Constants {
     }));
 
     // TODO: Testing distance shoot.  Delete after testing.
-    new JoystickButton(controller2, Button.kBack.value).onTrue(new TurnBotToAngleL1(45.0).withTimeout(5));
+    //new JoystickButton(controller2, Button.kBack.value).whileTrue(new TurnBotToAngleL1(45.0).withTimeout(5));
+    //new JoystickButton(controller2, Button.kBack.value).whileTrue(new DetectAprilTagL1(10).withTimeout(5));
+    new JoystickButton(controller2, Button.kBack.value).whileTrue(new DetectTagAndTurnL2().withTimeout(5));
     
 
     //Optimal angle for shooting from against the speaker.  
@@ -179,7 +183,7 @@ public class RobotContainer implements Constants {
         .onFalse(new InstantCommand(climber::stopLeft));
 
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6,0)).onFalse(new ShootSpeakerOverrideL1(0,0));
-    new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
+    //new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }
 
