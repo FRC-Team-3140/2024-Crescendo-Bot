@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
         bottomShooter.restoreFactoryDefaults();
         // bottomShooter.setInverted(true);
         bottomShooter.setIdleMode(IdleMode.kCoast);
-        bottomShooter.setInverted(true);
+        bottomShooter.setInverted(false);
         bottomShooter.setSmartCurrentLimit(30);
         bottomShooter.burnFlash();
         bottomEncoder.setVelocityConversionFactor(1/42);
@@ -61,7 +61,7 @@ public class Shooter extends SubsystemBase {
 
     public void setShooterVoltage(double voltage) {
         topShooter.setVoltage(voltage);
-        bottomShooter.setVoltage(-voltage);
+        bottomShooter.setVoltage(voltage);
     }
 
     public void setShooterVoltageTop(double voltage) {
@@ -69,7 +69,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterVoltageBottom(double voltage) {
-        bottomShooter.setVoltage(-voltage);
+        bottomShooter.setVoltage(voltage);
     }
 
     public double getTopShooterSpeed() {

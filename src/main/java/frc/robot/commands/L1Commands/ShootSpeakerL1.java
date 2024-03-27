@@ -29,7 +29,7 @@ public class ShootSpeakerL1 extends Command {
         this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
-        freeSpeed = shooterVoltage - deadband;
+        freeSpeed = (475*shooterSpeed) - deadband;
         // Adjust the desiredVoltage variable to the voltage value you want to use.
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.
@@ -42,7 +42,10 @@ public class ShootSpeakerL1 extends Command {
     @Override
     public void initialize() {
         startTime = System.currentTimeMillis();
-        shooter.setShooterSpeed(shooterSpeed);
+        // TODO: Recommend using encoders and PID to control the shooter speed. Much
+        // more consistant shots. See notes in IntakeShooter. -DB
+        shooter.setShooterVoltageTop(shooterSpeed);
+        shooter.setShooterVoltageBottom(shooterSpeed);
     }
 
     double timeSinceSpinUp = Double.MAX_VALUE;

@@ -16,12 +16,28 @@
     },
     {
       "anchor": {
-        "x": 1.91,
-        "y": 6.995390431883621
+        "x": 2.424537171349224,
+        "y": 7.051824530189345
       },
       "prevControl": {
-        "x": 1.2354054776124723,
-        "y": 6.943498545546118
+        "x": 2.3289983062072275,
+        "y": 7.077770473358097
+      },
+      "nextControl": {
+        "x": 2.5200760364912207,
+        "y": 7.025878587020593
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.134582951630359,
+        "y": 7.051824530189345
+      },
+      "prevControl": {
+        "x": 2.9343226938291807,
+        "y": 7.02912490408057
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +46,18 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.0,
       "rotationDegrees": 60.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 30.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
@@ -53,6 +79,23 @@
           ]
         }
       }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeUntilNoteDetected"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -63,7 +106,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 14.62460853805131,
+    "rotation": 20.0,
     "rotateFast": false
   },
   "reversed": false,

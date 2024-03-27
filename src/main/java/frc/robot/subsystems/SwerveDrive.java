@@ -152,6 +152,14 @@ public class SwerveDrive extends SubsystemBase {
     odometryStruct.set(getPose());
 
   }
+  /*  TODO: For Camera Translation Camera offset from center of the bot; take it to the wall and add any offsets
+      Average 3 camera values for pose
+      Add back in distance rejection
+        Make sure it does not kill the codebase this time
+      Merge main into dev 
+      Merge camera into dev (then into main)
+
+      */
 
   /**
    * Method to drive the robot using joystick info.
@@ -215,17 +223,16 @@ public class SwerveDrive extends SubsystemBase {
     // a real robot, this must be calculated based either on latency or timestamps.
 
     try {
-      if (Camera.getInstance().isConnected()) {
+      if (Camera.getInstance().getStatus()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
         DistAmb reading = Camera.getInstance().getApriltagDistX();
-        if (pose.isPresent() && reading != null && reading.ambiguity < Constants.maxAmbiguity
-        /*
-         * && getPose().getTranslation().getDistance(Camera.getInstance().
-         * getEstimatedGlobalPose().get().estimatedPose
-         * .getTranslation().toTranslation2d()) < .58
-         */) {
+        if (pose.isPresent() && reading != null 
+        && reading.ambiguity < 0.1 
+        // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
+         ) {
+
           poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
-              Timer.getFPGATimestamp());
+              Timer.getFPGATimestamp()-.1);
           // System.out.println("Target Detected");
         } // else {
           // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
@@ -235,6 +242,33 @@ public class SwerveDrive extends SubsystemBase {
       System.err.println(test);
     }
   }
+
+  // public Pose2d getPoseFromCamera(){
+  //     Optional<Pose2d> position = null;
+  //     if (Camera.getInstance().isConnected()) {
+  //       Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
+  //       DistAmb reading = Camera.getInstance().getApriltagDistX();
+  //       if (pose.isPresent() && reading != null 
+  //       && reading.ambiguity < 0.1 && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5) {
+  //         position = pose.
+  //       }
+  //     }
+  //     return position;
+    
+  // }
+  // public Pose2d averageCameraPose(){
+  //  Optional<Translation2d> pose1 = getPoseFromCamera().getTranslation();
+  //  new WaitCommand(.05);
+  //  Translation2d pose2 = getPoseFromCamera().getTranslation();
+  //  new WaitCommand(.05);
+  //  Translation2d pose3 = getPoseFromCamera().getTranslation();
+
+  //  Translation2d avgPose = pose1.plus(pose2.plus(pose3));
+  //  avgPose = avgPose.div(3);
+  //   return new Pose2d(avgPose, getPoseFromCamera().getRotation());
+    
+  // }
+
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];

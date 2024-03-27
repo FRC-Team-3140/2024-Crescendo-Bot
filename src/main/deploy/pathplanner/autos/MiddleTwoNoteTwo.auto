@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7418259386281802,
-      "y": 6.6822116582621796
+      "x": 1.2542914308886268,
+      "y": 5.534588312284395
     },
-    "rotation": 60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -20,19 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAndPickup"
+            "pathName": "PickupNoteMiddle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAndPickup2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootEndLeft"
+            "pathName": "BacktoMiddle"
           }
         },
         {
@@ -44,6 +38,6 @@
       ]
     }
   },
-  "folder": "Left",
+  "folder": "Middle",
   "choreoAuto": false
 }

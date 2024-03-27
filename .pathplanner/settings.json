@@ -14,7 +14,7 @@
     "Test",
     "Right"
   ],
-  "defaultMaxVel": 5.0,
+  "defaultMaxVel": 7.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 120.0,
   "defaultMaxAngAccel": 240.0,

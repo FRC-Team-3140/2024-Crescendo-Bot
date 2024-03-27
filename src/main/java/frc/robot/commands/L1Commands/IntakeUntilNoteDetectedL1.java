@@ -9,26 +9,25 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 
 public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
   Intake intake = Intake.getInstance();
-  Shooter shooter = Shooter.getInstance();
   final double intakeVoltage = Constants.intakeVoltage;
 
   /** Creates a new IntakeUntilNoteDetected. */
   public IntakeUntilNoteDetectedL1() {
-    addRequirements(intake, shooter);
+    addRequirements(intake);
   }
 
+  // tyler you need to go program the entire bot because itll probably be better
+  // than pragya and channing.
   long startTime; // Called when the command is initially scheduled.
   double lastVoltage;
 
   @Override
   public void initialize() {
     intake.setIntakeVoltage(intakeVoltage);
-    shooter.setShooterVoltage(0);
   }
 
   @Override

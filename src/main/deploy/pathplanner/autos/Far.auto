@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7418259386281802,
-      "y": 6.6822116582621796
+      "x": 0.8585457929209694,
+      "y": 4.571527626467575
     },
-    "rotation": 60.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -20,30 +20,18 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAndPickup"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootAndPickup2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootEndLeft"
+            "pathName": "Far1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SpeakerShoot2"
+            "name": "SpeakerShoot1"
           }
         }
       ]
     }
   },
-  "folder": "Left",
+  "folder": "Right",
   "choreoAuto": false
 }
