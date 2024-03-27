@@ -10,10 +10,9 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
 
 public class StateSpaceShooterHelp {
-    private static final double spinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500.0);
+    // private static final double spinupRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(500.0);
 
     private static final double flywheelMomentOfInertia = 0.012958; // kg * m^2
     private static final double flywheelGearing = 1;

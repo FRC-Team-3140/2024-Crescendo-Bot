@@ -28,9 +28,7 @@ import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
-import frc.robot.commands.L2Commands.SetArmToDistanceWhileMovingL2;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
-// import frc.robot.commands.L3Commands.DriveFacingApril;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.ControllerHelper;
 import frc.robot.sensors.Camera;
@@ -129,7 +127,7 @@ public class RobotContainer implements Constants {
    */
   private void configureBindings() {
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+    // BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
@@ -160,8 +158,8 @@ public class RobotContainer implements Constants {
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6,5)).onFalse(new ShootSpeakerOverrideL1(0, 0));//.onFalse(new ShootSpeakerL1(0, 0));
     BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
     BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
-    BooleanSupplier upControllerRightC2 = () -> (controller2.getRightY() > 0.3);
-    BooleanSupplier downControllerRightC2 = () -> (controller2.getRightY() < -0.3);
+    // BooleanSupplier upControllerRightC2 = () -> (controller2.getRightY() > 0.3);
+    // BooleanSupplier downControllerRightC2 = () -> (controller2.getRightY() < -0.3);
     
     new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
         // .onFalse(new InstantCommand(climber::stopBoth));

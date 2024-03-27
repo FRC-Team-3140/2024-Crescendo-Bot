@@ -136,7 +136,7 @@ public class Arm extends SubsystemBase {
     NetworkTableEntry pEntry = inst.getTable(kNTArm).getEntry(kNTP);
     NetworkTableEntry iEntry = inst.getTable(kNTArm).getEntry(kNTI);
     NetworkTableEntry dEntry = inst.getTable(kNTArm).getEntry(kNTD);
-    NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
+    // NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
     NetworkTableEntry fcpEntry = inst.getTable(kNTArm).getEntry(kNTForwardParam);
     inst.getTable(kNTArm).getEntry(kNTP).setDouble(kDefaultP);
     inst.getTable(kNTArm).getEntry(kNTI).setDouble(kDefaultI);
