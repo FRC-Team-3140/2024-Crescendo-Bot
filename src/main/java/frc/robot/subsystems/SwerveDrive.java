@@ -226,7 +226,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
 
 
     try {
-      if (Camera.getInstance().isConnected()) {
+      if (Camera.getInstance().getStatus()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
         DistAmb reading = Camera.getInstance().getApriltagDistX();
         if (pose.isPresent() && reading != null 

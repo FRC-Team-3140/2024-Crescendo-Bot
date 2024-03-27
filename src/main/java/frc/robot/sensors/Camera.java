@@ -85,7 +85,7 @@ public class Camera extends SubsystemBase {
    */
 
   // Global fiducial ids for important landmark apriltags - TK
-  private aprilTagLayout aprilTagLayout;
+  public aprilTagLayout aprilTagLayout;
   private int speakerAprilTag;
   private int ampAprilTag;
   private int sourceAprilTag;
@@ -105,12 +105,14 @@ public class Camera extends SubsystemBase {
   public class aprilTagLocation {
     public final boolean isDetected;
     public final double distance;
+    public final double ambiguity;    
     public final double angle;
     public final int id;
 
-    public aprilTagLocation(boolean isDetected, double dist, double angle, int id) {
+    public aprilTagLocation(boolean isDetected, double dist, double ambiguity, double angle, int id) {
       this.isDetected = isDetected;
       this.distance = dist;
+      this.ambiguity = ambiguity;
       this.angle = angle;
       this.id = id;
     }
@@ -219,7 +221,6 @@ public class Camera extends SubsystemBase {
   }
 
   private boolean checkVersion() {
-    // TODO: Test this!
     Timer timeout = new Timer();
     String version = "";
 
@@ -239,7 +240,8 @@ public class Camera extends SubsystemBase {
   }
 
   private boolean testConnection() {
-    if (april.isConnected() && notes.isConnected()) {
+    // If either camera is working connected == true
+    if (april.isConnected() || notes.isConnected()) {
       connected = true;
     } else {
       connected = false;
@@ -310,6 +312,7 @@ public class Camera extends SubsystemBase {
       inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
       inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
       inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
+      inst.getTable("Vision").getSubTable("Camera").getEntry("Ambiguity").setDouble(tag.ambiguity);
       inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
@@ -372,6 +375,21 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  public double getApriltagPitch(int id) {
+    // If this function returns a 999, that means there is not any detected targets
+
+    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+      for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
+        if (target.getFiducialId() == id) {
+          return target.getPitch();
+        }
+      }
+      return 0;
+    } else {
+      return 999;
+    }
+  }
+
   public DistAmb getApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
@@ -427,35 +445,22 @@ public class Camera extends SubsystemBase {
   /**************************************************************************************/
 
   public double getAprilTagDist() {
-    return getAprilTagDist(1);
-  }
-
-  public double getAprilTagDist(double forwardScalePercent) {
     DistAmb distX = getApriltagDistX();
     DistAmb distY = getApriltagDistY();
 
-    if ((distX.ambiguity + distY.ambiguity) / 2 > Constants.maxAmbiguity) {
-
-    }
-
     return Math.sqrt(
-        (Math.pow(getApriltagDistX().distance, 2) + Math.pow((forwardScalePercent * getApriltagDistY().distance), 2)));
+        (Math.pow(distX.distance, 2) + Math.pow(distY.distance, 2)));
   }
 
   public double getAprilTagDist(int id) {
-    return getAprilTagDist(id, 1);
-  }
+    DistAmb distX = getApriltagDistX(id);
+    DistAmb distY = getApriltagDistY(id);
 
-  public double getAprilTagDist(int id, double forwardScalePercent) {
-    return Math.sqrt((Math.pow(getApriltagDistX(id).distance, 2)
-        + Math.pow((forwardScalePercent * getApriltagDistY(id).distance), 2)));
+    return Math.sqrt((Math.pow(distX.distance, 2)
+        + Math.pow(distY.distance, 2)));
   }
 
   public double getDegToApriltag() {
-    return getAprilTagDist(1);
-  }
-
-  public double getDegToApriltag(double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -473,7 +478,7 @@ public class Camera extends SubsystemBase {
       // Need to use the getX method that we wrote for Y in atan because it returns
       // the Photon Y. - TK
       requiredTurnDegrees = Math
-          .toDegrees(Math.atan2(getApriltagDistX().distance, (forwardScalePercent * getApriltagDistY().distance)));
+          .toDegrees(Math.atan2(getApriltagDistX().distance, getApriltagDistY().distance));
 
       return requiredTurnDegrees;
     } else {
@@ -482,10 +487,6 @@ public class Camera extends SubsystemBase {
   }
 
   public double getDegToApriltag(int id) {
-    return getAprilTagDist(id, 1);
-  }
-
-  public double getDegToApriltag(int id, double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -520,17 +521,17 @@ public class Camera extends SubsystemBase {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
           if (getApriltagDistY(id) != null) {
-            double dist = getApriltagDistY(id).distance;
+            DistAmb measurement = getApriltagDistY(id);
             double deg = getDegToApriltag(id);
 
-            return new aprilTagLocation(true, dist, deg, id);
+            return new aprilTagLocation(true, measurement.distance, measurement.ambiguity, deg, id);
           } else {
-            return new aprilTagLocation(connected, 0, 0, 0);
+            return new aprilTagLocation(false, 0, 0, 0, 0);
           }
         }
       }
     }
-    return new aprilTagLocation(false, 0, 0, -1);
+    return new aprilTagLocation(false, 0, 0, 0, -1);
   }
 
   public aprilTagLayout getAprilTagLayout() {
@@ -540,6 +541,7 @@ public class Camera extends SubsystemBase {
   }
 
   public double getNoteAngle() {
+    // Robot relative angle
     if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
       return notes.getLatestResult().getBestTarget().getYaw();
     }
@@ -550,26 +552,13 @@ public class Camera extends SubsystemBase {
     return inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
   }
 
-  public double getProgramStartTime() {
+  public double getCurrentTime() {
     // Shouldn't need to typecast here, but JIC :) - TK
     return (double) (System.currentTimeMillis() - programStartTime);
   }
 
   public double getLatency() {
     return april.getLatestResult().getLatencyMillis();
-  }
-
-  public boolean isConnected() {
-    double lastResult = 0;
-
-    if (!connected || !versionMatches) {
-      return false;
-    }
-
-    boolean isConnectedBool = april.getLatestResult().hasTargets() && connected
-        && april.getLatestResult().getTimestampSeconds() != lastResult;
-    lastResult = april.getLatestResult().getTimestampSeconds();
-    return isConnectedBool;
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
