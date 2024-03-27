@@ -186,7 +186,7 @@ public class Camera extends SubsystemBase {
   // is one - TK
   private PhotonCamera aprilGetInstance() {
     checkVersion();
-    if (versionMatches && versionMatches && april == null) {
+    if (versionMatches && april == null) {
       april = new PhotonCamera(inst, "april");
     }
     return april;
@@ -461,10 +461,6 @@ public class Camera extends SubsystemBase {
   }
 
   public double getDegToApriltag() {
-    return getAprilTagDist(1);
-  }
-
-  public double getDegToApriltag(double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -481,9 +477,8 @@ public class Camera extends SubsystemBase {
 
       // Need to use the getX method that we wrote for Y in atan because it returns
       // the Photon Y. - TK
-      requiredTurnDegrees = Math.toDegrees(Math.atan2(getApriltagDistX().distance, getApriltagDistY().distance));
-
-      System.out.println(requiredTurnDegrees);
+      requiredTurnDegrees = Math
+          .toDegrees(Math.atan2(getApriltagDistX().distance, getApriltagDistY().distance));
 
       return requiredTurnDegrees;
     } else {
@@ -492,10 +487,6 @@ public class Camera extends SubsystemBase {
   }
 
   public double getDegToApriltag(int id) {
-    return getAprilTagDist(id, 1);
-  }
-
-  public double getDegToApriltag(int id, double forwardScalePercent) {
     // Usable range of values with best consistancy: -50 - 50 With respect to
     // camera. - TK
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -533,12 +524,15 @@ public class Camera extends SubsystemBase {
             DistAmb measurement = getApriltagDistY(id);
             double deg = getDegToApriltag(id);
 
-          return new aprilTagLocation(true, dist, deg, id);
+            return new aprilTagLocation(true, measurement.distance, measurement.ambiguity, deg, id);
+          } else {
+            return new aprilTagLocation(false, 0, 0, 0, 0);
+          }
         }
       }
     }
-    return new aprilTagLocation(false, 0, 0, -1);
-  }*/
+    return new aprilTagLocation(false, 0, 0, 0, -1);
+  }
 
   public aprilTagLayout getAprilTagLayout() {
     // TODO: Check to see if this variable matches the one I just added for the
@@ -555,7 +549,12 @@ public class Camera extends SubsystemBase {
   }
 
   public double getTimestamp() {
-    return (1.0 * heartbeat);
+    return inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
+  }
+
+  public double getCurrentTime() {
+    // Shouldn't need to typecast here, but JIC :) - TK
+    return (double) (System.currentTimeMillis() - programStartTime);
   }
 
   public double getLatency() {
