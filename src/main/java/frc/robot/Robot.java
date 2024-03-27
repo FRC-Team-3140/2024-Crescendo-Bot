@@ -16,7 +16,7 @@ public class Robot extends LoggedRobot implements Constants {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
-  // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
+  // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1..
   @Override
   public void autonomousPeriodic() {
 
