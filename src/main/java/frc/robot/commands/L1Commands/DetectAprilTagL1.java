@@ -36,7 +36,12 @@ public class DetectAprilTagL1 extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        System.out.print("INIT DETECT APRIL TAG");
         m_end_time = System.currentTimeMillis() / 1000.0 + m_timeout;
+
+        m_distance_sum = 0;
+        m_angle_sum = 0;
+        m_count = 0;
     }
     
     // Called every time the scheduler runs while the command is scheduled.
@@ -48,7 +53,7 @@ public class DetectAprilTagL1 extends Command {
 
         if (target != null) {
             double ambiguity = target.getPoseAmbiguity();
-            if(ambiguity > 0.5) {
+            if(ambiguity > 0.1) {
                 // Skip this measurement if the pose is ambiguous
                 return;
             }

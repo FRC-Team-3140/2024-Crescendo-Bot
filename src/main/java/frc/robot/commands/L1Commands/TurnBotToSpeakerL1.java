@@ -30,6 +30,8 @@ public class TurnBotToSpeakerL1 extends Command {
     private double m_start_angle = 0.0;
     private double m_setpoint_angle = 0.0;
 
+    private boolean m_first_execute = true;
+
     // My network table
     NetworkTable m_table = NetworkTableInstance.getDefault().getTable("TurnBotToAngleL1");
 
@@ -65,15 +67,22 @@ public class TurnBotToSpeakerL1 extends Command {
 
     @Override
     public void initialize() {
+        System.out.println("INIT TURN TO SPEAKER");
         // Not needed for this command
+        m_start_angle = 0;
+        m_first_execute = true;
     }
 
     @Override
     public void execute() {
         // compute this the first time through the execute loop
-        if (m_setpoint_angle == 0) { // THIS HAS TO HAPPEN AFTER m_detect_april_tag IS COMPLETE
+        if ( m_first_execute ) { // THIS HAS TO HAPPEN AFTER m_detect_april_tag IS COMPLETE
+            m_first_execute = false;
             m_start_angle = m_swerveDrive.getGyroAngle();
-            m_setpoint_angle = m_detect_april_tag.getYawAngle() + m_start_angle;
+            double target_angle = m_detect_april_tag.getYawAngle();
+            m_setpoint_angle = target_angle + m_start_angle;
+            System.out.println("FIRST EXECUTE");
+            System.out.println("TARGET_ANGLE: " + target_angle);
             m_turnController.setSetpoint(m_setpoint_angle);
         }
 
@@ -81,7 +90,7 @@ public class TurnBotToSpeakerL1 extends Command {
         double current_angle = m_swerveDrive.getGyroAngle();
 
         // Calculate the speed to turn at based on the current angle
-        double turn_speed = m_turnController.calculate(current_angle);
+        double turn_speed = m_turnController.calculate(current_angle,m_setpoint_angle);
 
         // Print the useful information for debugging
         System.out.println("============== TURNING ==============");
