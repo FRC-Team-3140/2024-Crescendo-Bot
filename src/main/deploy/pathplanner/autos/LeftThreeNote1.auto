@@ -2,24 +2,30 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 7.0
+      "x": 0.58,
+      "y": 6.68
     },
-    "rotation": 0
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot3"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Straight Line"
+            "pathName": "Copy of ShootAndPickup"
           }
         }
       ]
     }
   },
-  "folder": "Test",
+  "folder": "Left",
   "choreoAuto": false
 }

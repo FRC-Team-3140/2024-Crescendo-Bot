@@ -3,41 +3,89 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4402996483718082,
-        "y": 1.993964177501814
+        "x": 0.8585457929209694,
+        "y": 4.571527626467575
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4402996483718078,
-        "y": 1.993964177501814
+        "x": 1.276791937470131,
+        "y": 3.7253086828448536
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.1716394109479955,
-        "y": 0.8435617873742007
+        "x": 3.251302805923148,
+        "y": 1.8091577415382316
       },
       "prevControl": {
-        "x": 5.179555938260503,
-        "y": 0.9691419737903377
+        "x": 2.2494573899100403,
+        "y": 2.3246704313313837
       },
       "nextControl": {
-        "x": 6.984339181710945,
-        "y": 0.740688398670031
+        "x": 4.364242378187148,
+        "y": 1.2364800975577273
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.930774357789317,
-        "y": 0.740688398670031
+        "x": 6.208205781340473,
+        "y": 0.9726654524399082
       },
       "prevControl": {
-        "x": 7.774895560849573,
-        "y": 0.7696977191813958
+        "x": 5.21612230865298,
+        "y": 1.0982456388560453
+      },
+      "nextControl": {
+        "x": 7.0209055521034225,
+        "y": 0.8697920637357385
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.0951767590739,
+        "y": 0.8170389800495238
+      },
+      "prevControl": {
+        "x": 7.939297962134155,
+        "y": 0.8460483005608888
+      },
+      "nextControl": {
+        "x": 8.251055556013643,
+        "y": 0.788029659538159
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.321234803607048,
+        "y": 1.3909115969890689
+      },
+      "prevControl": {
+        "x": 4.788114220778205,
+        "y": 1.254738433647483
+      },
+      "nextControl": {
+        "x": 3.7132151018357766,
+        "y": 1.5682506766723545
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8409378998852783,
+        "y": 4.182461445491611
+      },
+      "prevControl": {
+        "x": 3.027589751861969,
+        "y": 2.6261967215877546
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,16 +94,32 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3.15,
+      "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "Slow for Intake",
-      "minWaypointRelativePos": 1.4,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 2.4,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 120.0,
+        "maxAngularAcceleration": 240.0
+      }
+    },
+    {
+      "name": "Approach Speaker Slowly",
+      "minWaypointRelativePos": 4.65,
+      "maxWaypointRelativePos": 5.0,
       "constraints": {
         "maxVelocity": 3.0,
         "maxAcceleration": 1.0,
@@ -67,7 +131,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 1.1,
+      "waypointRelativePos": 2.1,
       "command": {
         "type": "parallel",
         "data": {
@@ -101,20 +165,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
+    "maxVelocity": 5.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 240.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -45.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right",
   "previewStartingState": {
-    "rotation": -90.0,
+    "rotation": -60.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

@@ -53,9 +53,9 @@ public class Arm extends SubsystemBase {
   private static final IdleMode kDisabledMotorMode = IdleMode.kBrake; // Motor mode when disabled
 
   // Constants for the PID controller
-  private static final double kDefaultP = .35; // Proportional gain
-  private static final double kDefaultI = 0.0000; // Integral gain
-  private static final double kDefaultD = 0.004; // Derivative gain
+  private static final double kDefaultP = .37; // Proportional gain
+  private static final double kDefaultI = 0.0; // Integral gain
+  private static final double kDefaultD = 0.015; // Derivative gain
 
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
@@ -63,6 +63,7 @@ public class Arm extends SubsystemBase {
   private static final double kMinSetpoint = 6.5; // Minimum setpoint
 
   // Favorite setpoints
+
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
   public static final double kSetpoiintIntakeDown = 6.5; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
@@ -72,10 +73,10 @@ public class Arm extends SubsystemBase {
                                                    // protection
 
   // Constants for the arm control
-  private static final double kDefaultForwardParam = .331; // The default forward control parameter
+  private static final double kDefaultForwardParam = .36; // The default forward control parameter
   private static final double kArmEncoderOffset = -155; // The offset of the arm encoder from the zero position //
                                                         // degrees
-  private static final double maxAcceleration = 720;
+  private static final double maxAcceleration = 480;
   private static final double maxVelocity = 360;
 
   // Create a NetworkTable instance to enable the use of NetworkTables
@@ -137,6 +138,9 @@ public class Arm extends SubsystemBase {
     NetworkTableEntry dEntry = inst.getTable(kNTArm).getEntry(kNTD);
     NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
     NetworkTableEntry fcpEntry = inst.getTable(kNTArm).getEntry(kNTForwardParam);
+    inst.getTable(kNTArm).getEntry(kNTP).setDouble(kDefaultP);
+    inst.getTable(kNTArm).getEntry(kNTI).setDouble(kDefaultI);
+    inst.getTable(kNTArm).getEntry(kNTD).setDouble(kDefaultD);
 
     // Set the entries to be persistent
     pEntry.setPersistent();
@@ -153,6 +157,8 @@ public class Arm extends SubsystemBase {
 
     pid = new ProfiledPIDController(p, i, d, new Constraints(maxVelocity, maxAcceleration));
     pid.setGoal(setpoint);
+    pid.setTolerance(.1);
+    pid.setIntegratorRange(-.125, .25);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
     encoderConnected();
@@ -212,7 +218,7 @@ public class Arm extends SubsystemBase {
     // make sure pid values are updated from the network table
     pid.setP(inst.getTable(kNTArm).getEntry(kNTP).getDouble(kDefaultP));
     pid.setI(inst.getTable(kNTArm).getEntry(kNTI).getDouble(kDefaultI));
-    pid.setD(inst.getTable(kNTArm).getEntry(kNTI).getDouble(kDefaultD));
+    pid.setD(inst.getTable(kNTArm).getEntry(kNTD).getDouble(kDefaultD));
 
     // Get the current setpoint in the network table. Check the limits and then
     // update the PID controller with the current setpoint
@@ -295,11 +301,16 @@ public class Arm extends SubsystemBase {
 
     // The forward controll needed is proportional to the cosine of the angle
     double forward_power = fcp * Math.cos(Math.toRadians(angle));
-
+    double voltage = forward_power;
     pid.setGoal(setpoint);
     double pid_power = pid.calculate(angle);
-
-    double voltage = pid_power + forward_power;
+    if(Math.abs(angle - setpoint) < 3 &&  setpoint - angle < 0){
+      voltage += Math.signum(setpoint-angle) * .5;
+      //  voltage = pid_power + forward_power;  
+    }else{
+      voltage += pid_power ;
+    }
+      
 
     // Update the network table with the forward and PID power
     inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);

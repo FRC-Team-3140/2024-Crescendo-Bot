@@ -8,7 +8,7 @@ public interface Constants {
     public static final double gearRatio = 6.12;
     public static final int detectThreshold = 1000;
     public static final double botMass = 24.4;
-    public static final double wheelDiameter = .093;//.1016;
+    public static final double wheelDiameter = .094;//.1016;
     public static final double maxShootingDistance = 3.768725;
     public static final double botLength = Units.inchesToMeters(29);
 
@@ -27,5 +27,5 @@ public interface Constants {
     public static final Translation2d blueSpeakerTranslation = new Translation2d(0, 216 * .0254);
     public static final Translation2d redSpeakerTranslation = new Translation2d(16.4846, 216 * .0254);
 
-    public static final double topClimberPosition = 8;
+    public static final double topClimberPosition = 27.87;
 }

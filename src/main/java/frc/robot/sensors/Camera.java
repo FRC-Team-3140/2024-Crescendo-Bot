@@ -13,6 +13,8 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.google.flatbuffers.Constants;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,7 +32,7 @@ import frc.robot.RobotContainer;
 // import frc.robot.commands.turnToFaceApriltag;
 import frc.robot.subsystems.SwerveDrive;
 
-public class Camera extends SubsystemBase {
+public class Camera extends SubsystemBase{
 
   private static Camera instance = null;
 
@@ -43,8 +45,8 @@ public class Camera extends SubsystemBase {
   // TODO: Find the actual postition of the cameras on the bot. - TK
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-Units.inchesToMeters(29) / 2, 0.0, 0.5),
-      new Rotation3d(0, 0, Math.PI));
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-Units.inchesToMeters(29) / 2, 0.0, 0.45),
+      new Rotation3d(0, .09, Math.PI));
 
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
