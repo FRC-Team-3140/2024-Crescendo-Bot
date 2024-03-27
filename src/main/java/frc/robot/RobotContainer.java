@@ -26,10 +26,10 @@ import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
-import frc.robot.commands.L1Commands.TurnBotToAngleL1;
+import frc.robot.commands.L1Commands.TurnBotToSpeakerL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
-import frc.robot.commands.L2Commands.DetectTagAndTurnL2;
 import frc.robot.commands.L2Commands.SetArmToDistanceWhileMovingL2;
+import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 // import frc.robot.commands.L3Commands.DriveFacingApril;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
@@ -157,7 +157,7 @@ public class RobotContainer implements Constants {
     // TODO: Testing distance shoot.  Delete after testing.
     //new JoystickButton(controller2, Button.kBack.value).whileTrue(new TurnBotToAngleL1(45.0).withTimeout(5));
     //new JoystickButton(controller2, Button.kBack.value).whileTrue(new DetectAprilTagL1(10).withTimeout(5));
-    new JoystickButton(controller2, Button.kBack.value).whileTrue(new DetectTagAndTurnL2().withTimeout(5));
+    new JoystickButton(controller2, Button.kBack.value).whileTrue(new CameraShootDistanceL3().withTimeout(5));
     
 
     //Optimal angle for shooting from against the speaker.  

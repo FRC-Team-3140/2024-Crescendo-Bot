@@ -61,19 +61,20 @@ public class DetectAprilTagL1 extends Command {
 
             // Update the running sum
             m_distance_sum += distance;
-            m_angle_sum += angle;
+            m_angle_sum += yaw;
             m_count++;
 
+            // TODO: Remove this print statement
             System.out.println("AprilTag detected: " + tag_id + " at distance " + distance + " and angle " + angle + " and Yaw " + yaw);
         }
 
     }
 
-    public double averageDistance() {
+    public double getDistance() {
         return m_distance_sum / m_count;
     }   
 
-    public double averageAngle() {
+    public double getYawAngle() {
         return m_angle_sum / m_count;
     }   
 
@@ -92,11 +93,13 @@ public class DetectAprilTagL1 extends Command {
         if (m_count > 2 ) {
             double avg_distance = m_distance_sum / m_count;
             double avg_angle = m_angle_sum / m_count;
+            // TODO: Remove this print statement
             System.out.println("AprilTag average distance: " + avg_distance + " and angle " + avg_angle);
             return true;
         }
 
         if (System.currentTimeMillis() / 1000.0 > m_end_time) {
+            // TODO: Remove this print statement
             System.out.println("AprilTag timed out");
             return true;
         }
