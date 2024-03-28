@@ -283,10 +283,12 @@ public class Arm extends SubsystemBase {
    * @return the estimated angle
    */
   public double estimateAngleForDistance(double distance) {
-    double interpolatedAngle = angleInterpolator.get(distance);    
+    double interpolatedAngle = angleInterpolator.get(distance);  
+    
+    System.out.println("   Interp Angle: " + interpolatedAngle);
 
     // The trim for the shooting distance makes small adjustments to the angle
-    return (1.0*kDistanceShootLinearTrim) * interpolatedAngle + kDistanceShootAdditiveTrim;
+    return (1.0+kDistanceShootLinearTrim) * interpolatedAngle + kDistanceShootAdditiveTrim;
   }
 
   /**
