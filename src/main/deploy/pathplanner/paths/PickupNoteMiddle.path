@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.332333882712879,
-        "y": 5.534588312284395
+        "x": 2.8694036335441093,
+        "y": 5.54487565115481
       },
       "prevControl": {
-        "x": 2.332333882712879,
-        "y": 5.534588312284395
+        "x": 1.9284777906048702,
+        "y": 5.534466424383086
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.5,
+      "name": "Intake",
+      "waypointRelativePos": 0.25,
       "command": {
         "type": "sequential",
         "data": {
@@ -47,10 +47,27 @@
           ]
         }
       }
+    },
+    {
+      "name": "Arm",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetArmToIntake"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 7.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 240.0
@@ -61,7 +78,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Middle",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

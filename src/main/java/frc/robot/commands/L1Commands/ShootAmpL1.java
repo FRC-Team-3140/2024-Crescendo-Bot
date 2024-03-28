@@ -8,8 +8,9 @@ package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Intake;
 //Check to make sure this works
+import frc.robot.subsystems.Shooter;
 
 /**
  * The AmpShoot class represents a command that runs the intake and shooter at
@@ -19,11 +20,13 @@ import frc.robot.subsystems.IntakeShooter;
  */
 public class ShootAmpL1 extends Command implements Constants {
 
-  public IntakeShooter intakeShooter;
+  public Intake intake;
+  public Shooter shooter;
 
   public ShootAmpL1() {
-    intakeShooter = IntakeShooter.getInstance();
-    addRequirements(intakeShooter);
+    intake = Intake.getInstance();
+    shooter = Shooter.getInstance();
+    addRequirements(intake, shooter);
   }
 
   /**
@@ -35,8 +38,8 @@ public class ShootAmpL1 extends Command implements Constants {
   @Override
   public void initialize() {
     startTime = System.currentTimeMillis();
-    intakeShooter.setIntakeVoltage(3);
-    intakeShooter.setShooterVoltage(3);
+    intake.setIntakeVoltage(3);
+    shooter.setShooterVoltage(3);
   }
 
   /**
@@ -47,15 +50,14 @@ public class ShootAmpL1 extends Command implements Constants {
   @Override
   public boolean isFinished() {
     // TODO This should automatically terminate after a certain amount of time - DB
-    // TODO: I dont think the channel or the current it is greater than is correct.
-    // Please check that
-    return System.currentTimeMillis() - startTime > 2000;
+    // TODO: I dont think the channel or the current it is greater than is correct. Please check that
+    return System.currentTimeMillis() - startTime > 2000; //|| IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7; 
   }
 
   @Override
   public void end(boolean interrupted) {
-    intakeShooter.setIntakeVoltage(0);
-    intakeShooter.setShooterVoltage(0);
+    intake.setIntakeVoltage(0);
+    shooter.setShooterVoltage(0);
   }
 
 }

@@ -16,43 +16,43 @@
     },
     {
       "anchor": {
-        "x": 5.791007872742562,
-        "y": 6.460448810621932
+        "x": 5.400088995666714,
+        "y": 6.779356315604862
       },
       "prevControl": {
-        "x": 4.791007872742562,
-        "y": 6.460448810621932
+        "x": 4.400088995666714,
+        "y": 6.779356315604862
       },
       "nextControl": {
-        "x": 6.791007872742563,
-        "y": 6.460448810621932
+        "x": 6.400088995666715,
+        "y": 6.779356315604862
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.827900969085148,
-        "y": 5.781484445174405
+        "x": 7.066637892674281,
+        "y": 5.853495817267323
       },
       "prevControl": {
-        "x": 6.191049898590984,
-        "y": 5.781484445174405
+        "x": 6.706581032209684,
+        "y": 6.120966627898167
       },
       "nextControl": {
-        "x": 9.464752039579311,
-        "y": 5.781484445174405
+        "x": 7.277178906656414,
+        "y": 5.69709392116631
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.80519816177477,
-        "y": 5.781484445174405
+        "x": 8.043935085363906,
+        "y": 5.791771784044822
       },
       "prevControl": {
-        "x": 8.218458997932618,
+        "x": 7.529568141843051,
         "y": 5.781484445174405
       },
       "nextControl": null,
@@ -61,11 +61,23 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.7999999999999998,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 120.0,
+        "maxAngularAcceleration": 240.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "IntakeNote",
-      "waypointRelativePos": 1.85,
+      "waypointRelativePos": 1.3,
       "command": {
         "type": "sequential",
         "data": {
@@ -99,7 +111,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 7.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 240.0
@@ -110,7 +122,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Right Paths",
+  "folder": "Middle",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

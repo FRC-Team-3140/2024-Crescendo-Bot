@@ -1,4 +1,4 @@
-This is the repository for our competition bot, yet to be named, for 2024 Crescendo.
+This is the repository for our competition bot, Steambot Willie, for 2024 Crescendo.
 
 # Reference
 
@@ -51,8 +51,10 @@ The robot will grab onto the chain using a two-piece cranberry elevator with a s
 |---|---|---|---|
 | Climer Motor Left | CANSparkMax | CAN ID: 14 | A **motor** for controlling the left climber |
 | Climer Motor Right | CANSparkMax | CAN ID: 15 | A **motor** for controlling the right climber |
-| Solenoid Left | Relay | Relay Port: 0 | A solenoid that is powered by a **relay** that locks the position of the left climber |
-| Solenoid Right | Relay | Relay Port: 1 | A solenoid that is powered by a **relay** that locks the position of the right climber |
+| Solenoid Left | PCM | PCM Channel: 0 | A solenoid that is powered by a **PCM** that locks the position of the left climber |
+| Solenoid Right | PCM | PCM Channel: 5 | A solenoid that is powered by a **PCM** that locks the position of the right climber |
+| Limit Switch Left | DIO | DIO Port 4 | A limit switch located at the lower end of the climber to prevent it from getting too low/stuck. |
+| Limit Switch Right | DIO | DIO Port 5 | A limit switch located at the lower end of the climber to prevent it from getting too low/stuck. |
 
 ## Swerve Drive
 
@@ -133,4 +135,22 @@ In the context of FRC robot programming, we categorize our commands into differe
 | L2 | Complex Command | Involves multiple subsystems or commands working together to execute more complex tasks quickly or to simplify driver controls. |
 | L3 | Intelligent Command | Completes complex tasks that integrate sensing and control, and may be composed of multiple simpler commands. Can complete complex objectives autonomously or with minimal driver control. | 
 | L4 | Skynet | Wins the game autonomously. No human intervention needed. |
+
+# Todo Before RC
+## Auto 
+- [ ] The start of all autos against the speaker should be as close to the field wall as possible
+- [ ] Figure out if theres a solution to it spinning at the end of a path
+- [ ] Create a pick-up-from-the-centerline-only auto
+## Climber
+- [ ] Add upper limit onto Climber
+## Camera
+- [ ] Add more error checking in Camera class
+- [ ] Take out unused methods/classes
+- [ ] Create a god tier calibration on 960 x 720
+## Intake Shooter
+- [ ] Seperate Intake and Shooter
+## Drivetrain 
+- [ ] Disconnect Gyro from Odometry
+## Arm
+- [ ] Redo the tree map for Distance Shooting (maybe)
 

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -38,18 +39,19 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public RelativeEncoder driveEncoder;
 
     public double botMass = 24.4;
-
-    public double P = .011;
+    
+    public double P = .01;
 
     public double driveSetpointTolerance = .5;
     public double turnSetpointTolerance;
     public double turnVelocityTolerance;
 
-    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706 * .712, 2.4433 * .712,
-            0.10133 * .712);
-    // realised the feedforward was off by a factor of .712, corrected it
-    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706*.712, 2.4433* .712 , 0.10133* .712); 
+    //realised the feedforward was off by a factor of .712, corrected it
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxChassisSpeed, maxAcceleration);
+    
+    
     // private State initialState = new TrapezoidProfile.State(0, 0);
     // private TrapezoidProfile trapezoidProfile;
 
@@ -65,13 +67,13 @@ public class SwerveModule extends SubsystemBase implements Constants {
         driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
         driveMotor.setIdleMode(IdleMode.kBrake);
         driveMotor.setInverted(false);
-        driveMotor.setSmartCurrentLimit(60);
+        driveMotor.setSmartCurrentLimit(40);
         driveMotor.burnFlash();
 
         turnMotor = new CANSparkMax(turnMotorID, MotorType.kBrushless);
         turnMotor.setIdleMode(IdleMode.kBrake);
         turnMotor.setInverted(false);
-        turnMotor.setSmartCurrentLimit(60);
+        turnMotor.setSmartCurrentLimit(30);
         turnMotor.burnFlash();
 
         turnEncoder = new AbsoluteEncoder(analogID);
@@ -79,11 +81,11 @@ public class SwerveModule extends SubsystemBase implements Constants {
         driveEncoder = driveMotor.getEncoder();
 
         turnPID = new PIDController(P, 0, 0);
-        // we don't use I or D
-        turnPID.enableContinuousInput(-180, 180);
+        // we don't use I or D since P works well enough
+        turnPID.enableContinuousInput(0, 360);
         turnPID.setTolerance(turnSetpointTolerance, turnVelocityTolerance);
         //determined from a SYSID scan
-        drivePID = new ProfiledPIDController(.6, 0, .015, constraints);
+        drivePID = new ProfiledPIDController(.11, 0, .015, constraints);
         drivePID.setTolerance(driveSetpointTolerance);
 
     }
@@ -99,11 +101,11 @@ public class SwerveModule extends SubsystemBase implements Constants {
         }
 
     }
-
+    SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -maxAcceleration, 0);
     public void setStates(SwerveModuleState state, boolean locked) {
         state = SwerveModuleState.optimize(state, Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()));
         setAngle(state.angle.getDegrees());
-        setDriveSpeed(state.speedMetersPerSecond);
+        setDriveSpeed(accelerationLimiter.calculate(state.speedMetersPerSecond));
         NetworkTableInstance.getDefault().getTable("Speed").getEntry(moduleID).setDouble(state.speedMetersPerSecond);
     }
 
@@ -112,10 +114,9 @@ public class SwerveModule extends SubsystemBase implements Constants {
         turnMotor.set(-turnPID.calculate(turnEncoder.getAbsolutePosition()));
     }
 
-    public void setDriveSpeed(double velocity) {
+    public void setDriveSpeed(double velocity){
         drivePID.setGoal(new State(velocity, 0));
-        double voltage = Math.min(12, driveFeedforward.calculate(velocity) + drivePID.calculate(driveEncoder.getVelocity()));
-        driveMotor.setVoltage(voltage);
+        driveMotor.setVoltage(driveFeedforward.calculate(velocity) + drivePID.calculate(driveEncoder.getVelocity()));
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Set Speed").setDouble(velocity);
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Actual Speed")
                 .setDouble(driveEncoder.getVelocity());

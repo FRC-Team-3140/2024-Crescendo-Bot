@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.L1Commands.SetArmToDistanceL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
-import frc.robot.subsystems.IntakeShooter;
-import frc.robot.subsystems.SwerveDrive;
 
 /**
  * This class represents a command for shooting at a specific distance using the
@@ -22,8 +20,6 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class SpeakerShootDistanceL3 extends SequentialCommandGroup implements Constants {
 
-    public IntakeShooter intakeShooter;
-    public SwerveDrive swerve;
     public boolean finished;
 
     // private InterpolatingDoubleTreeMap angleInterpolator;
@@ -32,8 +28,8 @@ public class SpeakerShootDistanceL3 extends SequentialCommandGroup implements Co
         super(
                 new ParallelCommandGroup(
                         new SetArmToDistanceL1(), // TODO: Refactored. Test that this still works. -DB
-                        new ShootSpeakerL1(10, 3),
-                        new PrintCommand("Command ended")));
+                        new ShootSpeakerL1(10, 0),
+                        new PrintCommand("Command ended")), new ShootSpeakerL1(10, 5));
     }
 }
 // intakeShooter = IntakeShooter.getInstance();
@@ -82,8 +78,7 @@ public class SpeakerShootDistanceL3 extends SequentialCommandGroup implements Co
 // }
 // @Override
 // public void end(boolean interrupted) {
-// System.out.println("At teh stripped club rn. Straight up jorking it. And by
-// it, haha, lets just say my peantis");
+
 
 // }
 // @Override

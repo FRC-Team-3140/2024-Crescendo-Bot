@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -47,25 +46,26 @@ public class Arm extends SubsystemBase {
   private static final int kArmEncoderID = 1;
 
   // Constants for the arm motor configuration
-  private static final int kMotorCurrentLimit = 40; // The current limit for the arm motors
+  private static final int kMotorCurrentLimit = 30; // The current limit for the arm motors
   private static final boolean kArmRightReversed = true; // Motor direction for right arm
   private static final boolean kArmLeftReversed = false; // Motor direction for left arm
   private static final IdleMode kEnabledMotorMode = IdleMode.kBrake; // Motor mode when enabled
   private static final IdleMode kDisabledMotorMode = IdleMode.kBrake; // Motor mode when disabled
 
   // Constants for the PID controller
-  private static final double kDefaultP = .3; // Proportional gain
+  private static final double kDefaultP = .37; // Proportional gain
   private static final double kDefaultI = 0.0; // Integral gain
-  private static final double kDefaultD = 0.004; // Derivative gain
+  private static final double kDefaultD = 0.015; // Derivative gain
 
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
   private static final double kMaxSetpoint = 94.0; // Maximum setpoint; Test again with Amp
-  private static final double kMinSetpoint = 8.0; // Minimum setpoint
+  private static final double kMinSetpoint = 6.5; // Minimum setpoint
 
   // Favorite setpoints
+
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
-  public static final double kSetpoiintIntakeDown = 6.0; // The setpoint for intaking
+  public static final double kSetpoiintIntakeDown = 6.5; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
                                                           // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
@@ -73,10 +73,10 @@ public class Arm extends SubsystemBase {
                                                    // protection
 
   // Constants for the arm control
-  private static final double kDefaultForwardParam = .331; // The default forward control parameter
-  private static final double kArmEncoderOffset = -152; // The offset of the arm encoder from the zero position //
+  private static final double kDefaultForwardParam = .36; // The default forward control parameter
+  private static final double kArmEncoderOffset = -155; // The offset of the arm encoder from the zero position //
                                                         // degrees
-  private static final double maxAcceleration = 2000;
+  private static final double maxAcceleration = 480;
   private static final double maxVelocity = 360;
 
   // Create a NetworkTable instance to enable the use of NetworkTables
@@ -129,21 +129,24 @@ public class Arm extends SubsystemBase {
     armL.restoreFactoryDefaults();
     armL.setIdleMode(kDisabledMotorMode);
     armL.setInverted(kArmLeftReversed);
-    armR.setSmartCurrentLimit(kMotorCurrentLimit);
+    armL.setSmartCurrentLimit(kMotorCurrentLimit);
     armL.burnFlash();
 
     // Create entries for P, I, and D values
     NetworkTableEntry pEntry = inst.getTable(kNTArm).getEntry(kNTP);
     NetworkTableEntry iEntry = inst.getTable(kNTArm).getEntry(kNTI);
     NetworkTableEntry dEntry = inst.getTable(kNTArm).getEntry(kNTD);
-    NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
+    // NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
     NetworkTableEntry fcpEntry = inst.getTable(kNTArm).getEntry(kNTForwardParam);
+    inst.getTable(kNTArm).getEntry(kNTP).setDouble(kDefaultP);
+    inst.getTable(kNTArm).getEntry(kNTI).setDouble(kDefaultI);
+    inst.getTable(kNTArm).getEntry(kNTD).setDouble(kDefaultD);
 
     // Set the entries to be persistent
     pEntry.setPersistent();
     iEntry.setPersistent();
     dEntry.setPersistent();
-    setpointEntry.setPersistent();
+    // setpointEntry.setPersistent();
     fcpEntry.setPersistent();
 
     double p = inst.getTable(kNTArm).getEntry(kNTP).getDouble(kDefaultP);
@@ -154,20 +157,34 @@ public class Arm extends SubsystemBase {
 
     pid = new ProfiledPIDController(p, i, d, new Constraints(maxVelocity, maxAcceleration));
     pid.setGoal(setpoint);
+    pid.setTolerance(.1);
+    pid.setIntegratorRange(-.125, .25);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
     encoderConnected();
 
-    angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interpolator, and comparator here
-    angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
-    angleInterpolator.put(1.700, 21.0);
-    angleInterpolator.put(1.9685, 27.5);
-    angleInterpolator.put(2.4003, 34.0);
-    angleInterpolator.put(3.0048, 37.8);
-    angleInterpolator.put(3.2385, 38.4);
-    angleInterpolator.put(3.4163, 40.4);
-    angleInterpolator.put(3.5146, 40.7);
-    angleInterpolator.put(3.9116, 41.6);
+    angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interp2lator, and comparator here
+
+    angleInterpolator.put(1.3,16.0);
+    angleInterpolator.put(2.067,22.0);
+    angleInterpolator.put(2.923,30.0);
+    angleInterpolator.put(3.287,34.0);
+    angleInterpolator.put(4.266,38.0);
+    // angleInterpolator.put(5.2,23.0);
+
+
+
+
+
+    // angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
+    // angleInterpolator.put(1.700, 21.0);
+    // angleInterpolator.put(1.9685, 24.5);
+    // angleInterpolator.put(2.4003, 31.0);
+    // angleInterpolator.put(3.0048, 34.8);
+    // angleInterpolator.put(3.2385, 34.4);
+    // angleInterpolator.put(3.4163, 37.4);
+    // angleInterpolator.put(3.5146, 37.7);
+    // angleInterpolator.put(3.9116, 38.6);
 
   
     // angleInterpolator.put()
@@ -201,7 +218,7 @@ public class Arm extends SubsystemBase {
     // make sure pid values are updated from the network table
     pid.setP(inst.getTable(kNTArm).getEntry(kNTP).getDouble(kDefaultP));
     pid.setI(inst.getTable(kNTArm).getEntry(kNTI).getDouble(kDefaultI));
-    pid.setD(inst.getTable(kNTArm).getEntry(kNTI).getDouble(kDefaultD));
+    pid.setD(inst.getTable(kNTArm).getEntry(kNTD).getDouble(kDefaultD));
 
     // Get the current setpoint in the network table. Check the limits and then
     // update the PID controller with the current setpoint
@@ -214,7 +231,6 @@ public class Arm extends SubsystemBase {
     }
 
     // Update the setpoint incase it has changed
-    inst.getTable(kNTArm).getEntry(kNTSetpoint).setDouble(setpoint);
 
     // set the arm motor power
     updatePower(pid.calculate(getAngle()));
@@ -251,11 +267,14 @@ public class Arm extends SubsystemBase {
    * @return The setpoint angle for the arm
    */
   public double setArmToShootDistance(double distance) {
-    // double interpolatedAngle = angleInterpolator.get(distance);
+    double interpolatedAngle = angleInterpolator.get(distance);    
     // setArmToAngle(interpolatedAngle);
-    double interpolatedAngle = Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311); 
+    // double interpolatedAngle = angleInterpolator.get(distance);
+
+
+    // double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance*-1.07775) + 43.0501); 
     setArmToAngle(interpolatedAngle);
-    return -149.003 * Math.exp(distance*-1.11568) + 45.3496;
+    return -149.003 * Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311);
   }
 //zkzj
   /**
@@ -282,11 +301,16 @@ public class Arm extends SubsystemBase {
 
     // The forward controll needed is proportional to the cosine of the angle
     double forward_power = fcp * Math.cos(Math.toRadians(angle));
-
+    double voltage = forward_power;
     pid.setGoal(setpoint);
     double pid_power = pid.calculate(angle);
-
-    double voltage = pid_power + forward_power;
+    if(Math.abs(angle - setpoint) < 3 &&  setpoint - angle < 0){
+      voltage += Math.signum(setpoint-angle) * .5;
+      //  voltage = pid_power + forward_power;  
+    }else{
+      voltage += pid_power ;
+    }
+      
 
     // Update the network table with the forward and PID power
     inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);

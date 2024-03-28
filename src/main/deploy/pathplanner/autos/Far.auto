@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.8585457929209694,
+      "y": 4.571527626467575
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerShoot1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Right",
+  "choreoAuto": false
+}

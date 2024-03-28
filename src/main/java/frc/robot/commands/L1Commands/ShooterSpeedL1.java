@@ -1,12 +1,12 @@
 package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Shooter;
 
 //Works Well
 
 public class ShooterSpeedL1 extends Command {
-    private final IntakeShooter intakeShooter;
+    private final Shooter shooter = Shooter.getInstance();
     private final double speed;
     private final double kShooterSpeedTolarence = 20;
 
@@ -17,9 +17,8 @@ public class ShooterSpeedL1 extends Command {
      * @param speed         The speed to set the IntakeShooter to
      */
     public ShooterSpeedL1(double speed) {
-        this.intakeShooter = IntakeShooter.getInstance();
         this.speed = speed;
-        addRequirements(intakeShooter); // This command requires the IntakeShooter subsystem
+        addRequirements(shooter); // This command requires the IntakeShooter subsystem
     }
 
     /**
@@ -28,7 +27,7 @@ public class ShooterSpeedL1 extends Command {
      */
     @Override
     public void execute() {
-        intakeShooter.setShooterSpeed(speed);
+        shooter.setShooterSpeed(speed);
     }
 
     /**
@@ -42,6 +41,6 @@ public class ShooterSpeedL1 extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(intakeShooter.getShooterSpeed() - speed) < kShooterSpeedTolarence;
+        return Math.abs(shooter.getShooterSpeed() - speed) < kShooterSpeedTolarence;
     }
 }

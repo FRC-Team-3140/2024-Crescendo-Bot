@@ -5,45 +5,47 @@
 package frc.robot.commands.L1Commands;
 // Working Good
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.IntakeShooter;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Intake;
 
 public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
-  IntakeShooter intakeShooter = IntakeShooter.getInstance();
+  Intake intake = Intake.getInstance();
   final double intakeVoltage = Constants.intakeVoltage;
 
   /** Creates a new IntakeUntilNoteDetected. */
   public IntakeUntilNoteDetectedL1() {
-    addRequirements(intakeShooter);
+    addRequirements(intake);
   }
 
+  // tyler you need to go program the entire bot because itll probably be better
+  // than pragya and channing.
   long startTime; // Called when the command is initially scheduled.
   double lastVoltage;
 
   @Override
   public void initialize() {
-    intakeShooter.setIntakeVoltage(intakeVoltage);
+    intake.setIntakeVoltage(intakeVoltage);
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeShooter.setHoldingPiece(true);
-
-    intakeShooter.setIntakeVoltage(0);
+    intake.setIntakeVoltage(0);
+    RobotContainer.controller.setRumble().schedule();
+    RobotContainer.controller2.setRumble().schedule();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intakeShooter.noteDetected();
+    return intake.noteDetected();
     // return false;
   }
 
