@@ -17,25 +17,46 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class pickupNote extends Command {
   /** Creates a new pickupNote. */
-  private Intake intake = null;
   private SwerveDrive swerve = null;
   private Camera camera = null;
+
+  private double driveSpeed = 0.25;
 
   // Run with SwerveDrive Controller
   private Boolean withController = false;
 
-  private PIDController turnController = new PIDController(0.05, 0, 0);
+  private PIDController turnController = new PIDController(0.05, 0, 0.0025);
+
+  private double deadzone = 5;
+
+  /********************************************************************
+   *                                                                  *
+   * This class has the provides the option to pass in a drive speed. *
+   *     - Default is 0.25                                            *
+   *     - Set in driveSpeed variable                                 *
+   *                                                                  *
+   ********************************************************************/
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Intake intake, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
     this.swerve = swerve;
-    this.intake = intake;
     this.camera = camera;
 
     this.withController = withController;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve, intake, camera);
+    addRequirements(swerve, camera);
+  }
+
+  public pickupNote(Boolean withController, SwerveDrive swerve, double driveSpeed, Intake intake, Camera camera) {
+    this.swerve = swerve;
+    this.driveSpeed = driveSpeed;
+    this.camera = camera;
+
+    this.withController = withController;
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(swerve, camera);
   }
 
   // Called when the command is initially scheduled.
@@ -48,19 +69,24 @@ public class pickupNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double ang = camera.getNoteAngle();
+
+    turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
+
+    double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
+
+    if (Math.abs(ang) < deadzone) {
+      driveAng = 0;
+    }
+
     if (withController) {
-      double ang = camera.getNoteAngle();
-
-      turnController.setSetpoint(0);
-
       swerve.drive(-(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-          -(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed), -turnController.calculate(swerve.getPose().getRotation().getDegrees() + ang),
+          -(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
+          (1 - (camera.getNoteArea() / 100)) * driveAng,
           true);
-
-      System.out.println(turnController.getSetpoint());
     } else {
       // TODO: Fix angle so it uses PID controller - TK
-      swerve.drive(0, 0.25, camera.getNoteAngle(), false);
+      swerve.drive(0, driveSpeed, (1 - (camera.getNoteArea() / 100)) * driveAng, false);
     }
   }
 
@@ -75,6 +101,6 @@ public class pickupNote extends Command {
     if (RobotContainer.controller.getLeftBumper()) {
       return true;
     }
-    return intake.noteDetected();
+    return Intake.getInstance().noteDetected();
   }
 }

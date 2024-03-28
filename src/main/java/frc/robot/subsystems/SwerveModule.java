@@ -95,11 +95,6 @@ public class SwerveModule extends SubsystemBase {
     // runs while the bot is running
     @Override
     public void periodic() {
-        if (!encoderSets) {
-            driveEncoder.setVelocityConversionFactor(Constants.encoderRotationToMeters);
-            driveEncoder.setPositionConversionFactor(42 * Constants.encoderRotationToMeters);
-        }
-
     }
 
     SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -Constants.maxAcceleration, 0);

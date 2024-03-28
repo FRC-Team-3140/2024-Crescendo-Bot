@@ -548,6 +548,13 @@ public class Camera extends SubsystemBase {
     return 0.0;
   }
 
+  public double getNoteArea() {
+    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
+      return notes.getLatestResult().getBestTarget().getArea();
+    }
+    return 0.0;
+  }
+
   public double getTimestamp() {
     return inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
   }

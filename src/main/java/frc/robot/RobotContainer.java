@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.pickupNote;
 import frc.robot.commands.Autos.LeftThreeNote;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
@@ -68,6 +69,8 @@ public class RobotContainer {
   public static Intake intake;
   public static Shooter shooter;
 
+  private boolean pickupNote = false;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commppands.
    */
@@ -82,18 +85,22 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
     NamedCommands.registerCommand("SpeakerShoot1",
-        new SequentialCommandGroup(new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2.5)), new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
+        new SequentialCommandGroup(new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2.5)),
+            new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
 
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
 
     NamedCommands.registerCommand("SpeakerShoot2",
-        new SequentialCommandGroup(new SetArmToDistanceL1(), new ParallelRaceGroup( new ShootSpeakerL1(10, 5), new WaitCommand(2.5)),new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
+        new SequentialCommandGroup(new SetArmToDistanceL1(),
+            new ParallelRaceGroup(new ShootSpeakerL1(10, 5), new WaitCommand(2.5)),
+            new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
 
     NamedCommands.registerCommand("SpeakerShoot3",
-        new ParallelCommandGroup(new SetArmToAngleL1(16), new ShootSpeakerL1(6.5
-        , 5)));
+        new ParallelCommandGroup(new SetArmToAngleL1(16), new ShootSpeakerL1(6.5, 5)));
 
-    NamedCommands.registerCommand("StopMoving", new InstantCommand(()-> {swerve.drive(0, 0,0, false);}));
+    NamedCommands.registerCommand("StopMoving", new InstantCommand(() -> {
+      swerve.drive(0, 0, 0, false);
+    }));
     NamedCommands.registerCommand("Turn To Speaker", new DriveFacingSpeaker(swerve, Constants.maxChassisSpeed));
     NamedCommands.registerCommand("Wait", new WaitCommand(2));
 
@@ -129,28 +136,43 @@ public class RobotContainer {
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(() -> {
+      if (pickupNote) {
+        pickupNote = false;
+      } else {
+        pickupNote = true;
+        new pickupNote(true, swerve, intake, camera).schedule();
+      }
+    }));
+
     new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
       BasicSwerveControlL2.fieldRelative = false;
     })).onFalse(new InstantCommand(() -> {
       BasicSwerveControlL2.fieldRelative = true;
     }));
-    // new JoystickButton(controller, Button.kA.value).whileTrue(new DriveFacingSpeaker(swerve, maxChassisSpeed));
+    // new JoystickButton(controller, Button.kA.value).whileTrue(new
+    // DriveFacingSpeaker(swerve, maxChassisSpeed));
     // controller.setRumble();
     // Arm Controls
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
     new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(35.5));
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new
+    // SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
     new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(()-> {if(DriverStation.getAlliance().get().equals(Alliance.Blue)){swerve.resetPose(new Pose2d(1.3,5.5, new Rotation2d()));}
-    else{
-      swerve.resetPose(new Pose2d(15.28,5.58,new Rotation2d()));
-    }
-  })); //Optimal angle for shooting from against the speaker.  
-    //Intake/Shooter Controls     
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0, 0));//.onFalse(new ShootSpeakerL1(0,0));
-    new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
+    new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
+      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+        swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
+      } else {
+        swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
+      }
+    })); // Optimal angle for shooting from against the speaker.
+    // Intake/Shooter Controls
+    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
+        .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new ShootSpeakerL1(0,0));
+    new JoystickButton(controller2, Button.kLeftBumper.value)
+        .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
     new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
@@ -160,16 +182,18 @@ public class RobotContainer {
     BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
     BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
     // BooleanSupplier upControllerRightC2 = () -> (controller2.getRightY() > 0.3);
-    // BooleanSupplier downControllerRightC2 = () -> (controller2.getRightY() < -0.3);
-    
+    // BooleanSupplier downControllerRightC2 = () -> (controller2.getRightY() <
+    // -0.3);
+
     new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
-        // .onFalse(new InstantCommand(climber::stopBoth));
+    // .onFalse(new InstantCommand(climber::stopBoth));
     // new Trigger(upControllerRightC2).onTrue(climber.increaseRightHeight())
-        // .onFalse(new InstantCommand(climber::stopRight));
-    // new Trigger(downControllerRightC2).onTrue(new InstantCommand(climber::lowerRight))
-        // .onFalse(new InstantCommand(climber::stopRight));
+    // .onFalse(new InstantCommand(climber::stopRight));
+    // new Trigger(downControllerRightC2).onTrue(new
+    // InstantCommand(climber::lowerRight))
+    // .onFalse(new InstantCommand(climber::stopRight));
     new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
-        // .onFalse(new InstantCommand(climber::stopBoth));
+    // .onFalse(new InstantCommand(climber::stopBoth));
 
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(Constants.shooterVoltage, 0))
         .onFalse(new ShootSpeakerL1(0, 0));
