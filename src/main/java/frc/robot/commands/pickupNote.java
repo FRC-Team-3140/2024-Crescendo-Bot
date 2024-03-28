@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
@@ -23,7 +24,7 @@ public class pickupNote extends Command {
   // Run with SwerveDrive Controller
   private Boolean withController = false;
 
-  private PIDController turnController = new PIDController(2, 0, 0);
+  private PIDController turnController = new PIDController(0.05, 0, 0);
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Intake intake, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
@@ -41,6 +42,7 @@ public class pickupNote extends Command {
   @Override
   public void initialize() {
     new SetArmToAngleL1(Arm.kSetpointIntakeDown).schedule();
+    new IntakeUntilNoteDetectedL1().schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,9 +54,12 @@ public class pickupNote extends Command {
       turnController.setSetpoint(0);
 
       swerve.drive(-(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-          -(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed), -turnController.calculate(ang),
+          -(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed), -turnController.calculate(swerve.getPose().getRotation().getDegrees() + ang),
           true);
+
+      System.out.println(turnController.getSetpoint());
     } else {
+      // TODO: Fix angle so it uses PID controller - TK
       swerve.drive(0, 0.25, camera.getNoteAngle(), false);
     }
   }
