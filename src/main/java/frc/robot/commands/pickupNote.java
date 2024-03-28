@@ -30,11 +30,11 @@ public class pickupNote extends Command {
   private double deadzone = 5;
 
   /********************************************************************
-   *                                                                  *
+   * *
    * This class has the provides the option to pass in a drive speed. *
-   *     - Default is 0.25                                            *
-   *     - Set in driveSpeed variable                                 *
-   *                                                                  *
+   * - Default is 0.25 *
+   * - Set in driveSpeed variable *
+   * *
    ********************************************************************/
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Intake intake, Camera camera) {
@@ -82,11 +82,11 @@ public class pickupNote extends Command {
     if (withController) {
       swerve.drive(-(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
           -(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
-          (1 - (camera.getNoteArea() / 100)) * driveAng,
+          Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
           true);
     } else {
       // TODO: Fix angle so it uses PID controller - TK
-      swerve.drive(0, driveSpeed, (1 - (camera.getNoteArea() / 100)) * driveAng, false);
+      swerve.drive(0, driveSpeed, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
     }
   }
 

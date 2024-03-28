@@ -162,7 +162,7 @@ public class Robot extends LoggedRobot {
     // AutoBuilder.buildAuto("Turn")
     // ).schedule();
 
-    new pickupNote(true, RobotContainer.swerve, RobotContainer.intake, RobotContainer.camera).schedule();
+    new pickupNote(false, RobotContainer.swerve, RobotContainer.intake, RobotContainer.camera).schedule();
   }
 
   /** This function is called periodically during test mode. */

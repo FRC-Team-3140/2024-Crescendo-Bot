@@ -136,14 +136,16 @@ public class RobotContainer {
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(() -> {
-      if (pickupNote) {
-        pickupNote = false;
-      } else {
-        pickupNote = true;
-        new pickupNote(true, swerve, intake, camera).schedule();
-      }
-    }));
+    // new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(() -> {
+    //   if (pickupNote) {
+    //     pickupNote = false;
+    //   } else {
+    //     pickupNote = true;
+    //     new pickupNote(true, swerve, intake, camera).schedule();
+    //   }
+    // }));
+
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new pickupNote(true, swerve, intake, camera));
 
     new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
       BasicSwerveControlL2.fieldRelative = false;
