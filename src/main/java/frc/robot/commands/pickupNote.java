@@ -25,7 +25,7 @@ public class pickupNote extends Command {
   // Run with SwerveDrive Controller
   private Boolean withController = false;
 
-  private PIDController turnController = new PIDController(0.05, 0, 0.0025);
+  private PIDController turnController = new PIDController(0.025, 0, 0.0025);
 
   private double deadzone = 5;
 

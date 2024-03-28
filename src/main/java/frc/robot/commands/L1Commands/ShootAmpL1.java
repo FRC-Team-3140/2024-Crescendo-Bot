@@ -48,7 +48,7 @@ public class ShootAmpL1 extends Command {
    */
   @Override
   public boolean isFinished() {
-    return System.currentTimeMillis() - startTime > 2000; // || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7;
+    return System.currentTimeMillis() - startTime > 5000; // || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7;
   }
 
   @Override
