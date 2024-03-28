@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
@@ -47,6 +48,7 @@ public class Robot extends LoggedRobot implements Constants {
    * and
    * SmartDashboard integrated updating.
    */
+  Tracer tracer = new Tracer();
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -55,7 +57,6 @@ public class Robot extends LoggedRobot implements Constants {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    
     // System.out.println("pe" + photoElectric.get());
   }
 

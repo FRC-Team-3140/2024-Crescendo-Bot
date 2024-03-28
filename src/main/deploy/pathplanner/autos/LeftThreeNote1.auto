@@ -20,7 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of ShootAndPickup"
+            "pathName": "ShootAndPickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootAndPickup2"
           }
         }
       ]

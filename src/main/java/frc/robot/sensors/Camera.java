@@ -510,8 +510,8 @@ public class Camera extends SubsystemBase{
     return (1.0 * heartbeat);
   }
 
-  public double getLatency() {
-    return april.getLatestResult().getLatencyMillis();
+  public double getLatencySeconds() {
+    return april.getLatestResult().getLatencyMillis()/1000;
   }
 
   double lastResult = 0;
@@ -525,7 +525,7 @@ public class Camera extends SubsystemBase{
     lastResult = april.getLatestResult().getTimestampSeconds();
     return kjasdfl;
   }
-
+  
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
     return aprilTagPoseEstimator.update(april.getLatestResult());
