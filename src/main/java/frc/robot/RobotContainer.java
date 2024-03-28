@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.L1Commands.DetectAprilTagL1;
 import frc.robot.commands.Autos.LeftThreeNote;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
@@ -26,8 +27,10 @@ import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
+import frc.robot.commands.L1Commands.TurnBotToSpeakerL1;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.ControllerHelper;
@@ -171,7 +174,7 @@ public class RobotContainer implements Constants {
         // .onFalse(new InstantCommand(climber::stopBoth));
 
     new Trigger(rightTriggerC2).onTrue(new ShootSpeakerOverrideL1(9.6,0)).onFalse(new ShootSpeakerOverrideL1(0,0));
-    new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
+    //new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }
 
