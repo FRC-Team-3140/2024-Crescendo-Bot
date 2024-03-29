@@ -225,9 +225,9 @@ public class SwerveDrive extends SubsystemBase {
     try {
       if (Camera.getInstance().getStatus()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-        DistAmb reading = Camera.getInstance().getApriltagDistX();
-        if (pose.isPresent() && reading != null 
-        && reading.ambiguity < 0.1 
+        // DistAmb reading = Camera.getInstance().getApriltagDistX();
+        if (pose.isPresent() 
+        // && reading != null && reading.ambiguity < 0.1 
         // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
          ) {
 

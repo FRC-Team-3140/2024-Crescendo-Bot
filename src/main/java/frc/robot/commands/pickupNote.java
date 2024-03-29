@@ -20,7 +20,7 @@ public class pickupNote extends Command {
   private SwerveDrive swerve = null;
   private Camera camera = null;
 
-  private double driveSpeed = 0.25;
+  private double driveSpeed = 3;
 
   // Run with SwerveDrive Controller
   private Boolean withController = false;
@@ -37,7 +37,7 @@ public class pickupNote extends Command {
    * *
    ********************************************************************/
 
-  public pickupNote(Boolean withController, SwerveDrive swerve, Intake intake, Camera camera) {
+  public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
     this.swerve = swerve;
     this.camera = camera;
@@ -48,7 +48,7 @@ public class pickupNote extends Command {
     addRequirements(swerve, camera);
   }
 
-  public pickupNote(Boolean withController, SwerveDrive swerve, double driveSpeed, Intake intake, Camera camera) {
+  public pickupNote(Boolean withController, SwerveDrive swerve, double driveSpeed, Camera camera) {
     this.swerve = swerve;
     this.driveSpeed = driveSpeed;
     this.camera = camera;
@@ -58,12 +58,14 @@ public class pickupNote extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve, camera);
   }
-
+  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    new SetArmToAngleL1(Arm.kSetpointIntakeDown).schedule();
-    new IntakeUntilNoteDetectedL1().schedule();
+    if (!withController) {
+      new SetArmToAngleL1(Arm.kSetpointIntakeDown).schedule();
+      new IntakeUntilNoteDetectedL1().schedule();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -79,14 +81,19 @@ public class pickupNote extends Command {
       driveAng = 0;
     }
 
+    // double turnSpeed = 0.025 * camera.getNoteAngle();
+    // turnSpeed = Math.min(Math.max(turnSpeed, -0.3 * Constants.maxChassisSpeed),
+    // 0.3 * Constants.maxChassisSpeed);
+
     if (withController) {
-      swerve.drive(-(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-          -(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
+      swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
+          -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
           Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
-          true);
+          false);
     } else {
       // TODO: Fix angle so it uses PID controller - TK
-      swerve.drive(0, driveSpeed, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
+      swerve.drive(driveSpeed
+      , 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
     }
   }
 
@@ -98,9 +105,7 @@ public class pickupNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (RobotContainer.controller.getLeftBumper()) {
-      return true;
-    }
+
     return Intake.getInstance().noteDetected();
   }
 }

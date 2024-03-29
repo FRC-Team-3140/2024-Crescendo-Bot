@@ -56,6 +56,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  int leftBumperPresses = 0;
+  pickupNote PickUpNoteCommand;
+
   public static ControllerHelper controller = new ControllerHelper(0);
   public static SwerveDrive swerve;
   public static Camera camera;
@@ -64,12 +68,9 @@ public class RobotContainer {
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder;
   public static Climber climber = Climber.getInstance();
-
   public static ControllerHelper controller2 = new ControllerHelper(1);
   public static Intake intake;
   public static Shooter shooter;
-
-  private boolean pickupNote = false;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commppands.
@@ -81,7 +82,7 @@ public class RobotContainer {
     camera = Camera.getInstance();
     swerve
         .setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
-
+    PickUpNoteCommand = new pickupNote(true, swerve, camera);
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
     NamedCommands.registerCommand("SpeakerShoot1",
@@ -144,8 +145,7 @@ public class RobotContainer {
     //     new pickupNote(true, swerve, intake, camera).schedule();
     //   }
     // }));
-
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new pickupNote(true, swerve, intake, camera));
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
 
     new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
       BasicSwerveControlL2.fieldRelative = false;
@@ -214,6 +214,15 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return autobuilder.getSelected();
 
+  }
+
+  private void togglePickUpNote(){
+    leftBumperPresses++;
+    if(leftBumperPresses % 2 == 1){
+      PickUpNoteCommand.schedule();
+    }else{
+      PickUpNoteCommand.cancel();
+    }
   }
 
 }
