@@ -535,8 +535,8 @@ public class Camera extends SubsystemBase {
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
-          if (getApriltagDistY(id) != null) {
-            DistAmb measurement = getApriltagDistY(id);
+          DistAmb measurement = getApriltagDistY(id);
+          if (measurement != null) {
             double deg = getDegToApriltag(id);
 
             return new aprilTagLocation(true, measurement.distance, measurement.ambiguity, deg, id);
@@ -559,6 +559,13 @@ public class Camera extends SubsystemBase {
     // Robot relative angle
     if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
       return notes.getLatestResult().getBestTarget().getYaw();
+    }
+    return 0.0;
+  }
+
+  public double getNoteArea() {
+    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
+      return notes.getLatestResult().getBestTarget().getArea();
     }
     return 0.0;
   }

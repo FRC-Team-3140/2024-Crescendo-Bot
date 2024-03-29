@@ -9,13 +9,12 @@ package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
-public class ShootSpeakerL1 extends Command implements Constants {
+public class ShootSpeakerL1 extends Command {
 
     private final Shooter shooter;
     private final Intake intake;
@@ -24,10 +23,10 @@ public class ShootSpeakerL1 extends Command implements Constants {
     private double freeSpeed;
     private double deadband = 20;
 
-    public ShootSpeakerL1(double shooterSpeed, double intakeVoltage) {
+    public ShootSpeakerL1(double shooterVoltage, double intakeVoltage) {
         this.intake = Intake.getInstance();
         this.shooter = Shooter.getInstance();
-        this.shooterSpeed = shooterSpeed;
+        this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
         freeSpeed = (475*shooterSpeed) - deadband;
@@ -54,13 +53,12 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     @Override
     public void execute() {
-        // shooter.setShooterSpeed(shooterSpeed);
-        if(shooter.getShooterSpeed() >= freeSpeed && !hitSpeed){
+        if (shooter.getShooterSpeed() >= freeSpeed && !hitSpeed) {
             hitSpeed = true;
             timeSinceSpinUp = System.currentTimeMillis();
             RobotContainer.controller2.setRumble().schedule();
         }
-        if(System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed){
+        if (System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed) {
             intake.setIntakeVoltage(voltage2);
         }
     }
@@ -74,7 +72,7 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     @Override
     public boolean isFinished() {
-        
+
         return System.currentTimeMillis() - timeSinceSpinUp > 600 && shooter.getShooterSpeed() >= freeSpeed;
         // return System.currentTimeMillis() - startTime > 3000 ;//||
         // IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel

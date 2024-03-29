@@ -65,7 +65,7 @@ public class Arm extends SubsystemBase {
   // Favorite setpoints
 
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
-  public static final double kSetpoiintIntakeDown = 6.5; // The setpoint for intaking
+  public static final double kSetpointIntakeDown = 6.5; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
                                                           // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
@@ -93,7 +93,7 @@ public class Arm extends SubsystemBase {
   private ProfiledPIDController pid;
 
   private DutyCycleEncoder armEncoder;
-  
+
   private InterpolatingDoubleTreeMap angleInterpolator;
 
   private double fcp = kDefaultForwardParam;

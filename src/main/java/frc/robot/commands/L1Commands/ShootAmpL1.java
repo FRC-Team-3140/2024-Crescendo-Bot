@@ -7,7 +7,6 @@
 package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 //Check to make sure this works
 import frc.robot.subsystems.Shooter;
@@ -18,7 +17,7 @@ import frc.robot.subsystems.Shooter;
  * It sets the intake and shooter voltages to a specific value when initialized,
  * and sets them back to zero when the command ends.
  */
-public class ShootAmpL1 extends Command implements Constants {
+public class ShootAmpL1 extends Command {
 
   public Intake intake;
   public Shooter shooter;
@@ -49,9 +48,7 @@ public class ShootAmpL1 extends Command implements Constants {
    */
   @Override
   public boolean isFinished() {
-    // TODO This should automatically terminate after a certain amount of time - DB
-    // TODO: I dont think the channel or the current it is greater than is correct. Please check that
-    return System.currentTimeMillis() - startTime > 2000; //|| IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7; 
+    return System.currentTimeMillis() - startTime > 5000; // || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7;
   }
 
   @Override

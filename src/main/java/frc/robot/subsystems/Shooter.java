@@ -5,10 +5,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.libs.StateSpaceShooterHelp;
 
 public class Shooter extends SubsystemBase {
 
@@ -25,10 +23,8 @@ public class Shooter extends SubsystemBase {
      * Relative Encoder from flywheel 2's neo.
      */
     public RelativeEncoder bottomEncoder = bottomShooter.getEncoder();
-    private StateSpaceShooterHelp topController = new StateSpaceShooterHelp();
-    private StateSpaceShooterHelp bottomController = new StateSpaceShooterHelp();
 
-    private Shooter(){
+    private Shooter() {
         topShooter.restoreFactoryDefaults();
         topShooter.setInverted(false);
         topShooter.setIdleMode(IdleMode.kCoast);
@@ -45,44 +41,45 @@ public class Shooter extends SubsystemBase {
         bottomShooter.burnFlash();
         bottomEncoder.setVelocityConversionFactor(1/42);
     }
+
     @Override
     public void periodic() {
-        topController.correct(VecBuilder.fill(topEncoder.getVelocity()));
-        topController.predict();
         SmartDashboard.putNumber("Top Speed", getTopShooterSpeed());        
-        bottomController.correct(VecBuilder.fill(topEncoder.getVelocity()));
-        bottomController.predict();
         SmartDashboard.putNumber("Bottom Speed", getBottomShooterSpeed());
     }
 
-    public static Shooter getInstance(){
-        if(instance == null){
+    public static Shooter getInstance() {
+        if (instance == null) {
             instance = new Shooter();
         }
         return instance;
     }
 
-    public void setShooterSpeed(double speed){
-        topController.setSpeed(speed);
-        double nextVoltage = topController.getVoltage();
-        topShooter.setVoltage(nextVoltage);
+    public void setShooterSpeed(double speed) {
+        topShooter.set(speed);
     }
+
     public void setShooterVoltage(double voltage) {
         topShooter.setVoltage(voltage);
         bottomShooter.setVoltage(voltage);
     }
+
     public void setShooterVoltageTop(double voltage) {
-        topShooter.setVoltage(voltage+.15);
+        topShooter.setVoltage(voltage + .15);
     }
+
     public void setShooterVoltageBottom(double voltage) {
         bottomShooter.setVoltage(voltage);
     }
+
     public double getTopShooterSpeed() {
         return topEncoder.getVelocity();
     }
+
     public double getBottomShooterSpeed() {
         return bottomEncoder.getVelocity();
     }
+
     public double getShooterSpeed() {
         return Math.min(getBottomShooterSpeed(), getTopShooterSpeed());
     }

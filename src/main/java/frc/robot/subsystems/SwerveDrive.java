@@ -42,7 +42,7 @@ import frc.robot.sensors.Camera;
 import frc.robot.sensors.Camera.DistAmb;
 
 /** Represents a swerve drive style drivetrain. */
-public class SwerveDrive extends SubsystemBase implements Constants {
+public class SwerveDrive extends SubsystemBase {
 
   private static SwerveDrive instance = new SwerveDrive();
   ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, .1, new Constraints(360, 720));
@@ -52,10 +52,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public static AHRS gyro;
 
   private final Translation2d[] locations = {
-      new Translation2d(botLength, botLength),
-      new Translation2d(botLength, -botLength),
-      new Translation2d(-botLength, botLength),
-      new Translation2d(-botLength, -botLength)
+      new Translation2d(Constants.botLength, Constants.botLength),
+      new Translation2d(Constants.botLength, -Constants.botLength),
+      new Translation2d(-Constants.botLength, Constants.botLength),
+      new Translation2d(-Constants.botLength, -Constants.botLength)
   };
 
   SwerveModule[] modules = {
@@ -77,8 +77,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
    * The numbers used
    * below are robot specific, and should be tuned.
    */
-  // TODO: See if the following boolean is neccessary
-  public boolean allowPathMirroring = false;
 
   public SwerveDrive() {
     NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").setDouble(.01);
@@ -96,9 +94,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
             new PIDConstants(4, 0.0, 0), // Translation PID constants
-            new PIDConstants(2, 0.0, 0), // Rotation PID constants    
-            maxChassisSpeed, // Max module speed, in m/s
-            botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+            new PIDConstants(4, 0.0, 0), // Rotation PID constants
+            Constants.maxChassisSpeed, // Max module speed, in m/s
+            Constants.botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         this::shouldFlipPath,
@@ -180,8 +178,8 @@ public class SwerveDrive extends SubsystemBase implements Constants {
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             .02));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxModuleSpeed);
-    
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.maxModuleSpeed);
+
     for (int i = 0; i < 4; i++) {
       modules[i].setStates(swerveModuleStates[i], false);
     }
@@ -200,9 +198,9 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public void driveRobotFacingSpeaker(double xSpeed, double ySpeed, boolean fieldRelative) {
     Translation2d distanceFromSpeaker;
     if (shouldFlipPath()) {
-      distanceFromSpeaker = getExpectedPose().getTranslation().minus(redSpeakerTranslation);
+      distanceFromSpeaker = getExpectedPose().getTranslation().minus(Constants.redSpeakerTranslation);
     } else {
-      distanceFromSpeaker = getExpectedPose().getTranslation().minus(blueSpeakerTranslation);
+      distanceFromSpeaker = getExpectedPose().getTranslation().minus(Constants.blueSpeakerTranslation);
     }
     double angle = Math.atan2(distanceFromSpeaker.getY(), distanceFromSpeaker.getX());
 
@@ -224,22 +222,21 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
 
-
     try {
       if (Camera.getInstance().getStatus()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-        DistAmb reading = Camera.getInstance().getApriltagDistX();
-        if (pose.isPresent() && reading != null 
-        && reading.ambiguity < 0.1 
+        // DistAmb reading = Camera.getInstance().getApriltagDistX();
+        if (pose.isPresent() 
+        // && reading != null && reading.ambiguity < 0.1 
         // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
          ) {
 
           poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
               Timer.getFPGATimestamp()-.1);
           // System.out.println("Target Detected");
-        }//  else {
-        //    poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
-        // }
+        } // else {
+          // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
+          // }
       }
     } catch (Error test) {
       System.err.println(test);
@@ -309,16 +306,16 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public double getExpectedDistanceFromSpeaker() {
     // .05 is a placeholder timesteo, may be changed in the future
     if (shouldFlipPath()) {
-      return redSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
+      return Constants.redSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
     }
-    return blueSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
+    return Constants.blueSpeakerTranslation.getDistance(getExpectedPose().getTranslation());
   }
 
   public double getDistanceFromSpeaker() {
     if (shouldFlipPath()) {
-      return redSpeakerTranslation.getDistance(getPose().getTranslation());
+      return Constants.redSpeakerTranslation.getDistance(getPose().getTranslation());
     }
-    return blueSpeakerTranslation.getDistance(getPose().getTranslation());
+    return Constants.blueSpeakerTranslation.getDistance(getPose().getTranslation());
   }
 
   public static SwerveDrive getInstance() {
@@ -335,7 +332,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   public PIDController turnPID = new PIDController(.5, 0.0, 0);
 
   public double turnToAprilTag(int ID) {
-    // TODO: Potential null error unhandled here 
+    // TODO: Potential null error unhandled here
     // turnPID.enableContinuousInput(0, 360);
     double botAngle = getPose().getRotation().getDegrees();
     double offsetAngle = camera.getDegToApriltag(ID);

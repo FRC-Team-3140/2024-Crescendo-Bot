@@ -52,7 +52,7 @@ public class Climber extends SubsystemBase {
     BooleanSupplier leftReachedTop;
     BooleanSupplier rightReachedTop;
     public Climber() {
-        
+
         leftClimber = new CANSparkMax(leftCANID, MotorType.kBrushless);
         rightClimber = new CANSparkMax(rightCANID, MotorType.kBrushless);
         leftEncoder = leftClimber.getEncoder();
@@ -63,10 +63,10 @@ public class Climber extends SubsystemBase {
         // .set(true) will pull the solenoids in. .set(false) will release the solenoids
         // to lock the climbers.
 
-        //Limit Switch DIO ports
+        // Limit Switch DIO ports
         leftLimit = new DigitalInput(4);
         rightLimit = new DigitalInput(5);
-        
+
         leftLimitSwitchPressed = () -> leftLimit.get();
         rightLimitSwitchPressed = () -> rightLimit.get();
         leftReachedTop = () -> encoderValues()[1] > Constants.topClimberPosition+1.3;
@@ -115,11 +115,13 @@ public class Climber extends SubsystemBase {
         rightClimber.set(raiseSpeed); //change to an actual value later
         
     }
-    public void lowerLeftForRaising(){
+
+    public void lowerLeftForRaising() {
         leftSolenoid.set(true);
         leftClimber.set(-.1); 
     }
-    public void lowerRightForRaising(){
+
+    public void lowerRightForRaising() {
         rightSolenoid.set(true);
         rightClimber.set(-.1); 
     }
@@ -175,10 +177,11 @@ public class Climber extends SubsystemBase {
         raiseRight();
     }
 
-    public void stopBoth(){
+    public void stopBoth() {
         stopLeft();
         stopRight();
     }
+
     // lowers both left and right climbers
     public void lowerBoth() {
         lowerLeft();

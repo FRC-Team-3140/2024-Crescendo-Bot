@@ -7,8 +7,6 @@ import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.subsystems.Arm;
 
-//Work on this 
-// TODO: This needs testing - DB
 /**
  * This class represents a command to score in the amp.
  * It extends SequentialCommandGroup to perform a sequence of commands.
