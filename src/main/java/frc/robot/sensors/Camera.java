@@ -308,12 +308,12 @@ public class Camera extends SubsystemBase {
         }
       }
 
-      aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Ambiguity").setDouble(tag.ambiguity);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
+      // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Ambiguity").setDouble(tag.ambiguity);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
     }
@@ -548,6 +548,7 @@ public class Camera extends SubsystemBase {
     }
     return new aprilTagLocation(false, 0, 0, 0, -1);
   }
+
 
   public aprilTagLayout getAprilTagLayout() {
     // TODO: Check to see if this variable matches the one I just added for the

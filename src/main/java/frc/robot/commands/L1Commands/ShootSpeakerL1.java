@@ -50,30 +50,31 @@ public class ShootSpeakerL1 extends Command {
 
     double timeSinceSpinUp = Double.MAX_VALUE;
     boolean hitSpeed = false;
-
+    double timeSinceIntakeSpinUp = Double.MAX_VALUE;
     @Override
     public void execute() {
         if (shooter.getShooterSpeed() >= freeSpeed && !hitSpeed) {
             hitSpeed = true;
             timeSinceSpinUp = System.currentTimeMillis();
-            RobotContainer.controller2.setRumble().schedule();
+            // RobotContainer.controller2.setRumble().schedule();
         }
         if (System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed) {
+            timeSinceIntakeSpinUp = System.currentTimeMillis();
             intake.setIntakeVoltage(voltage2);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        // intakeShooter.setIntakeVoltage(0);
-        // intakeShooter.setShooterVoltage(0);
+        intake.setIntakeVoltage(0);
+        shooter.setShooterVoltage(0);
 
     }
 
     @Override
     public boolean isFinished() {
 
-        return System.currentTimeMillis() - timeSinceSpinUp > 600 && shooter.getShooterSpeed() >= freeSpeed;
+        return System.currentTimeMillis() - timeSinceIntakeSpinUp > 600 && shooter.getShooterSpeed() >= freeSpeed;
         // return System.currentTimeMillis() - startTime > 3000 ;//||
         // IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel
         // or the current it is greater than is correct. Please check that

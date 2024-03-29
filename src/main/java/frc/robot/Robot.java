@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -78,6 +79,7 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
+    SwerveDrive.getInstance().setVisionStdDeviations(1000);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
 

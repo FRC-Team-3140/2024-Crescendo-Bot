@@ -39,16 +39,7 @@ public class turnToFaceApriltag extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (ID != -1) {
-      degrees = camera.getDegToApriltag(ID);
-    } else {
-      degrees = camera.getDegToApriltag();
-    }
-
-    degrees = swerve.getPose().getRotation().getDegrees() + degrees;
-
-    command = new turnToTurnPIDSetPoint(swerve, degrees);
-    command.schedule();
+    swerve.turnToAprilTag(7);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -64,6 +55,6 @@ public class turnToFaceApriltag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return command.isFinished();
+    return Math.abs(Camera.getInstance().getApriltagYaw(7) - 5) < 0;
   }
 }

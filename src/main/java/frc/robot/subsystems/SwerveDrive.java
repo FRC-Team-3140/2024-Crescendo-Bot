@@ -114,7 +114,7 @@ public class SwerveDrive extends SubsystemBase {
         },
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
-        VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(30)));
+        VecBuilder.fill(.8, 0.8, Units.degreesToRadians(30)));
 
     Logger.recordOutput("Actual States", states);
     Logger.recordOutput("Set States", swerveModuleStates);
@@ -144,9 +144,6 @@ public class SwerveDrive extends SubsystemBase {
     updateOdometry();
     actualStates.set(swerveModuleStates);
     setStates.set(states);
-    double visionStdDev = NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev")
-        .getDouble(.02);
-    poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Units.degreesToRadians(30)));
     // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(),
     // camera.getTimestamp());
     odometryStruct.set(getPose());
@@ -329,22 +326,27 @@ public class SwerveDrive extends SubsystemBase {
     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(deviation, deviation, Units.degreesToRadians(30)));
   }
 
-  public PIDController turnPID = new PIDController(.5, 0.0, 0);
+    private PIDController turnController = new PIDController(0.025, 0, 0.0025);
 
-  public double turnToAprilTag(int ID) {
-    // TODO: Potential null error unhandled here
-    // turnPID.enableContinuousInput(0, 360);
-    double botAngle = getPose().getRotation().getDegrees();
-    double offsetAngle = camera.getDegToApriltag(ID);
-    double setpoint = 0;
-    if (botAngle - offsetAngle <= 0)
-      setpoint = botAngle + offsetAngle;
-    else
-      setpoint = botAngle - offsetAngle;
+    public void turnToAprilTag(int ID) {
+      // TODO: Potential null error unhandled here
+      // turnPID.enableContinuousInput(0, 360);
+      try {
+        double botAngle = getPose().getRotation().getDegrees();
+        double offsetAngle = camera.getDegToApriltag(ID);
+        double setpoint = 0;
+      if (botAngle - offsetAngle <= 0)
+        setpoint = botAngle + offsetAngle;
+      else
+        setpoint = botAngle - offsetAngle;
 
-    turnPID.setSetpoint(setpoint);
-    return turnPID.calculate(botAngle);
-  }
+    turnController.setSetpoint(setpoint);
+    drive(0, 0, turnController.calculate(botAngle), false);
+  
+    } catch (Exception e) {
+      System.err.println(e.getLocalizedMessage());
+    }
+      }
 
   public void resetGyro() {
     odometryOffset += gyro.getAngle();

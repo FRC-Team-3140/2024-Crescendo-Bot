@@ -28,6 +28,7 @@ import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
+import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.TurnBotToSpeakerL1;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
@@ -83,8 +84,8 @@ public class RobotContainer {
     intake = Intake.getInstance();
     shooter = Shooter.getInstance();
     camera = Camera.getInstance();
-    swerve
-        .setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
+    swerve.setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
+    shooter.setDefaultCommand(new StopSpinningShooter());
     PickUpNoteCommand = new pickupNote(true, swerve, camera);
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
@@ -136,7 +137,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    // BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
@@ -165,7 +166,7 @@ public class RobotContainer {
     new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(35.5));
     // new JoystickButton(controller2, Button.kA.value).onTrue(new
     // SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-    new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
+    new JoystickButton(controller2, Button.kStart.value).whileTrue(new CameraShootDistanceL3());
     new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
       if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
         swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
@@ -174,13 +175,13 @@ public class RobotContainer {
       }
     })); // Optimal angle for shooting from against the speaker.
     // Intake/Shooter Controls
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
+    new JoystickButton(controller2, Button.kRightBumper.value).whileTrue(new ShootAmpL1())
         .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value)
         .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
-    new Trigger(lefttTriggerC2).onTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
+    new Trigger(lefttTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
         .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new
     // ShootSpeakerL1(0,
     // 0));
@@ -200,8 +201,8 @@ public class RobotContainer {
     new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
     // .onFalse(new InstantCommand(climber::stopBoth));
 
-    new Trigger(rightTriggerC2).onTrue(new ShootSpeakerL1(Constants.shooterVoltage, 0))
-        .onFalse(new ShootSpeakerL1(0, 0));
+    new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 0));
+        // .onFalse(new ShootSpeakerL1(0, 0));
     new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }
