@@ -147,6 +147,7 @@ public class Camera extends SubsystemBase {
 
     while (!connected && connectionAttempts <= PhotonvisionConnectionAttempts) {
       if (inst.getTable("photonvision").getSubTables().contains("april")) {
+        versionMatches = checkVersion();
         connected = true;
         versionMatches = checkVersion();
         aprilGetInstance();
@@ -163,9 +164,14 @@ public class Camera extends SubsystemBase {
       }
     }
 
-    setNetworktableStatus();
-
-    // swerveDrive = swerve;
+    if (connected) {
+      aprilGetInstance();
+      notesGetInstance();
+    }
+    
+    // TODO: Change back to SwerveDrive.getInstance() as long as it doesn't cause
+    // problems - TK
+    swerveDrive = swerve;
 
     // Will create a field layout object and set global variables for landmark
     // apriltags as mentioned earlier. This is not to be confused with the
@@ -240,10 +246,11 @@ public class Camera extends SubsystemBase {
   }
 
   private boolean testConnection() {
-    // If either camera is working connected == true
-    if (april.isConnected() || notes.isConnected()) {
-      connected = true;
-    } else {
+    // Gets new result from april camera and test if it's equal to the previous
+    // result
+    heartbeat = inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
+
+    if (heartbeat == previousResult) {
       connected = false;
     }
 

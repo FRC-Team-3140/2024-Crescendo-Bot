@@ -72,14 +72,6 @@ public class SwerveDrive extends SubsystemBase implements Constants {
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
       locations[0], locations[1], locations[2], locations[3]);
 
-  /*
-   * Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings.
-   * The numbers used
-   * below are robot specific, and should be tuned.
-   */
-  // TODO: See if the following boolean is neccessary
-  public boolean allowPathMirroring = false;
-
   public SwerveDrive() {
     NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev").setDouble(.01);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
