@@ -32,6 +32,7 @@ import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
+import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.TurnBotToSpeakerL1;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
