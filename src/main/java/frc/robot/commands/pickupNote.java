@@ -18,6 +18,8 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class pickupNote extends Command {
   /** Creates a new pickupNote. */
+  private boolean run = true; 
+
   private SwerveDrive swerve = null;
   private Camera camera = null;
 
@@ -133,6 +135,8 @@ public class pickupNote extends Command {
       }
 
       if (!timeout.hasElapsed(exploreTimeout)) {
+        run = false; 
+      } else { 
         swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
       }
     }
@@ -146,7 +150,10 @@ public class pickupNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    return Intake.getInstance().noteDetected();
+    if (run) {
+      return Intake.getInstance().noteDetected();
+    } else { 
+      return true; 
+    }
   }
 }
