@@ -12,6 +12,6 @@ public class CameraLeftTwoNote extends SequentialCommandGroup{
     static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
     static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
     public CameraLeftTwoNote(){
-        super(AutoBuilder.buildAuto("CameraLeftTwoNote1"), intake, shoot);
+        super(AutoBuilder.buildAuto("CameraLeftTwoNote"), intake, shoot);
     }
 }

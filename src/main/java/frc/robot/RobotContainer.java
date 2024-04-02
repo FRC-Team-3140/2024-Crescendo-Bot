@@ -74,7 +74,7 @@ public class RobotContainer {
   public static Arm arm = Arm.getInstance();
   // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
-  SendableChooser<Command> autobuilder;
+  SendableChooser<Command> autobuilder =  new SendableChooser<>();
   public static Climber climber = Climber.getInstance();
   public static ControllerHelper controller2 = new ControllerHelper(1);
   public static Intake intake;
