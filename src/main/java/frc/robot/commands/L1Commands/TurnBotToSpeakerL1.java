@@ -67,7 +67,7 @@ public class TurnBotToSpeakerL1 extends Command {
 
     @Override
     public void initialize() {
-        System.out.println("INIT TURN TO SPEAKER");
+        //System.out.println("INIT TURN TO SPEAKER");
         // Not needed for this command
         m_start_angle = 0;
         m_first_execute = true;
@@ -81,8 +81,8 @@ public class TurnBotToSpeakerL1 extends Command {
             m_start_angle = m_swerveDrive.getGyroAngle();
             double target_angle = m_detect_april_tag.getYawAngle();
             m_setpoint_angle = target_angle + m_start_angle;
-            System.out.println("FIRST EXECUTE");
-            System.out.println("TARGET_ANGLE: " + target_angle);
+            // TODO System.out.println("FIRST EXECUTE");
+            //System.out.println("TARGET_ANGLE: " + target_angle);
             m_turnController.setSetpoint(m_setpoint_angle);
         }
 
@@ -93,13 +93,13 @@ public class TurnBotToSpeakerL1 extends Command {
         double turn_speed = m_turnController.calculate(current_angle,m_setpoint_angle);
 
         // Print the useful information for debugging
-        System.out.println("============== TURNING ==============");
-        System.out.println("   Current Angle: " + current_angle);
-        System.out.println("   Setpoint Angle: " + m_setpoint_angle);
-        System.out.println("   Turn Speed: " + turn_speed);
-        System.out.println("   Start Angle: " + m_start_angle);
-        System.out.println("   At Setpoint: " + m_turnController.atSetpoint());
-        System.out.println("===================================");
+        //TODO System.out.println("============== TURNING ==============");
+        //System.out.println("   Current Angle: " + current_angle);
+        //System.out.println("   Setpoint Angle: " + m_setpoint_angle);
+        //System.out.println("   Turn Speed: " + turn_speed);
+        //System.out.println("   Start Angle: " + m_start_angle);
+        //System.out.println("   At Setpoint: " + m_turnController.atSetpoint());
+        //System.out.println("===================================");
 
         // Drive the robot with the calculated turn speed
         m_swerveDrive.drive(0, 0, -turn_speed, true);

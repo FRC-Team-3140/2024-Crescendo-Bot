@@ -31,7 +31,7 @@ public class SetArmToDistanceWhileMovingL2 extends Command {
         // SmartDashboard.putNumber("Distance", distance);
         // Code to initialize the command arm.setArmToShootDistance(distance);
     }
-    
+
     @Override
     public void execute() {
         // Code to initialize the command

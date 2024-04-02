@@ -3,7 +3,10 @@ package frc.robot.commands.L1Commands;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 
 /**
@@ -25,7 +28,9 @@ public class DetectAprilTagL1 extends Command {
     // start time
     private double m_end_time;
     private double m_timeout;
-
+    private int tag_id = 0;
+    PhotonTrackedTarget target;
+    
     public DetectAprilTagL1(double timeout) {
 
         m_timeout = timeout;
@@ -36,20 +41,23 @@ public class DetectAprilTagL1 extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        System.out.print("INIT DETECT APRIL TAG");
+        // TODO System.out.print("INIT DETECT APRIL TAG");
         m_end_time = System.currentTimeMillis() / 1000.0 + m_timeout;
 
         m_distance_sum = 0;
         m_angle_sum = 0;
         m_count = 0;
+        if(DriverStation.getAlliance().get().equals(Alliance.Blue)){
+            tag_id = 7; // TODO: Don't hardcode this.  Change it based on team assignment.
+        }else{
+            tag_id = 4;
+        }
     }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        int tag_id = 7; // TODO: Don't hardcode this.  Change it based on team assignment.
-
-        PhotonTrackedTarget target = m_camera.latestAprilTagDetection(tag_id);
+        target = m_camera.latestAprilTagDetection(tag_id);
 
         if (target != null) {
             double ambiguity = target.getPoseAmbiguity();
@@ -70,9 +78,15 @@ public class DetectAprilTagL1 extends Command {
             m_count++;
 
             // TODO: Remove this print statement
-            System.out.println("AprilTag detected: " + tag_id + " at distance " + distance + " and angle " + angle + " and Yaw " + yaw);
+            //System.out.println("AprilTag detected: " + tag_id + " at distance " + distance + " and angle " + angle + " and Yaw " + yaw);
+        }else{
+            RobotContainer.controller.setRumble().schedule();
+            RobotContainer.controller2.setRumble().schedule();
         }
 
+    }
+    public PhotonTrackedTarget getTarget(){
+        return target;
     }
 
     public double getDistance() {
@@ -99,13 +113,13 @@ public class DetectAprilTagL1 extends Command {
             double avg_distance = m_distance_sum / m_count;
             double avg_angle = m_angle_sum / m_count;
             // TODO: Remove this print statement
-            System.out.println("AprilTag average distance: " + avg_distance + " and angle " + avg_angle);
+            //System.out.println("AprilTag average distance: " + avg_distance + " and angle " + avg_angle);
             return true;
         }
 
         if (System.currentTimeMillis() / 1000.0 > m_end_time) {
             // TODO: Remove this print statement
-            System.out.println("AprilTag timed out");
+            //System.out.println("AprilTag timed out");
             return true;
         }
 

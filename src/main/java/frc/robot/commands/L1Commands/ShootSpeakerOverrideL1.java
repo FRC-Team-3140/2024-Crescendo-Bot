@@ -9,12 +9,11 @@ package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
-public class ShootSpeakerOverrideL1 extends Command implements Constants {
+public class ShootSpeakerOverrideL1 extends Command {
 
     private final Shooter shooter;
     private final Intake intake;
@@ -40,9 +39,7 @@ public class ShootSpeakerOverrideL1 extends Command implements Constants {
     @Override
     public void initialize() {
         startTime = System.currentTimeMillis();
-        // TODO: Recommend using encoders and PID to control the shooter speed. Much
-        // more consistant shots. See notes in IntakeShooter. -DB
-        // shooter.setShooterSpeed(shooterSpeed);
+        shooter.setShooterSpeed(shooterSpeed);
     }
 
     double timeSinceSpinUp = Double.MAX_VALUE;
@@ -63,7 +60,7 @@ public class ShootSpeakerOverrideL1 extends Command implements Constants {
 
     @Override
     public boolean isFinished() {
-        return System.currentTimeMillis() - timeSinceSpinUp > 600;
+        return false;
         // return System.currentTimeMillis() - startTime > 3000 ;//||
         // IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel
         // or the current it is greater than is correct. Please check that

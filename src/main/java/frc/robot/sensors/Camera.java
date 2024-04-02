@@ -308,12 +308,12 @@ public class Camera extends SubsystemBase {
         }
       }
 
-      aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Ambiguity").setDouble(tag.ambiguity);
-      inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
+      // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Ambiguity").setDouble(tag.ambiguity);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
     }
@@ -535,8 +535,8 @@ public class Camera extends SubsystemBase {
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
-          if (getApriltagDistY(id) != null) {
-            DistAmb measurement = getApriltagDistY(id);
+          DistAmb measurement = getApriltagDistY(id);
+          if (measurement != null) {
             double deg = getDegToApriltag(id);
 
             return new aprilTagLocation(true, measurement.distance, measurement.ambiguity, deg, id);
@@ -548,6 +548,7 @@ public class Camera extends SubsystemBase {
     }
     return new aprilTagLocation(false, 0, 0, 0, -1);
   }
+
 
   public aprilTagLayout getAprilTagLayout() {
     // TODO: Check to see if this variable matches the one I just added for the
@@ -563,6 +564,13 @@ public class Camera extends SubsystemBase {
     return 0.0;
   }
 
+  public double getNoteArea() {
+    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
+      return notes.getLatestResult().getBestTarget().getArea();
+    }
+    return 0.0;
+  }
+
   public double getTimestamp() {
     return inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
   }
@@ -572,8 +580,8 @@ public class Camera extends SubsystemBase {
     return (double) (System.currentTimeMillis() - programStartTime);
   }
 
-  public double getLatency() {
-    return april.getLatestResult().getLatencyMillis();
+  public double getLatencySeconds() {
+    return april.getLatestResult().getLatencyMillis()/1000;
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {

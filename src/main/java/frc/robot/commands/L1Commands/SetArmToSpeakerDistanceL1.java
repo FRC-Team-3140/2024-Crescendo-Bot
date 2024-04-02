@@ -17,11 +17,15 @@ public class SetArmToSpeakerDistanceL1 extends Command{
 
     @Override
     public void initialize() {
+        System.out.println("************ SetArmToSpeakerDistanceL1 ***********");
+        System.out.println("   INIT SET ARM TO SPEAKER DISTANCE SetArmToSpeakerDistanceL1");
         // Assuming you have a method to set the arm to a distance
         if(m_detect_april_tag.count() >= 3) { // THIS HAS TO HAPPEN AFTER m_detect_april_tag IS COMPLETE
             double distance = m_detect_april_tag.getDistance();
             m_angle_setpoint = m_arm.estimateAngleForDistance(distance);
-            m_arm.setAngle(m_angle_setpoint);
+            System.out.println("   Distance: " + distance);
+            System.out.println("   Angle:    " + m_angle_setpoint);
+            m_arm.setArmToAngle(m_angle_setpoint);
         }
         else {
             // Do something else
