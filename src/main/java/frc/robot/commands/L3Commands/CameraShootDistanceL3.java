@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.L1Commands.DetectAprilTagL1;
 import frc.robot.commands.L1Commands.SetArmToSpeakerDistanceL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
-import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
-import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.commands.L1Commands.TurnBotToSpeakerL1;
 
 public class CameraShootDistanceL3 extends SequentialCommandGroup {

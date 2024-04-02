@@ -10,30 +10,30 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class turnToFaceApriltag extends Command {
   private SwerveDrive swerve;
-  private Camera camera;
-  private int ID = -1;
+  // private Camera camera;
+  // private int ID = -1;
 
-  private double degrees = 0;
+  // private double degrees = 0;
 
-  private turnToTurnPIDSetPoint command;
+  // private turnToTurnPIDSetPoint command;
 
   /** Creates a new turnToFaceApriltag. */
   public turnToFaceApriltag(SwerveDrive swerveDrive, Camera cam) {
     // TODO: sort command into respective difficulty levels if neccessary 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerveDrive, cam);
+    // addRequirements(swerveDrive, cam);
 
-    swerve = swerveDrive;
-    camera = cam;
+    // swerve = swerveDrive;
+    // camera = cam;
   }
 
   /** Creates a new turnToFaceApriltag. */
   public turnToFaceApriltag(int id, SwerveDrive swerveDrive, Camera cam) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerveDrive, cam);
-    swerve = swerveDrive;
-    camera = cam;
-    ID = id;
+    // addRequirements(swerveDrive, cam);
+    // swerve = swerveDrive;
+    // camera = cam;
+    // ID = id;
   }
 
   // Called when the command is initially scheduled.
@@ -55,6 +55,7 @@ public class turnToFaceApriltag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(Camera.getInstance().getApriltagYaw(7) - 5) < 0;
+    return true;
+    // return Math.abs(Camera.getInstance().getApriltagYaw(7) - 5) < 0;
   }
 }

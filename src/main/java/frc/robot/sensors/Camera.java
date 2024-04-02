@@ -345,6 +345,13 @@ public class Camera extends SubsystemBase {
     return null;
   }
 
+  public boolean getAprilTagDetected() {
+    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+      return notes.getLatestResult().hasTargets();
+    }
+    return false;
+  }
+
   public int getApriltagID() {
     // If this function returns a 0, that means there is not any detected targets
 
@@ -554,6 +561,13 @@ public class Camera extends SubsystemBase {
     // TODO: Check to see if this variable matches the one I just added for the
     // photonvision pose estimator - TK
     return aprilTagLayout;
+  }
+
+  public boolean getNoteDetected() {
+    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
+      return notes.getLatestResult().hasTargets();
+    }
+    return false;
   }
 
   public double getNoteAngle() {

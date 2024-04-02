@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.L1Commands.DetectAprilTagL1;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.Autos.LeftThreeNote;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
@@ -29,7 +28,6 @@ import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
-import frc.robot.commands.L1Commands.TurnBotToSpeakerL1;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L3Commands.CameraShootDistanceL3;
@@ -137,7 +135,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+    // BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));

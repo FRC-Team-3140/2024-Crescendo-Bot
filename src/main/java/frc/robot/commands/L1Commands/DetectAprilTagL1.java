@@ -69,7 +69,7 @@ public class DetectAprilTagL1 extends Command {
             double x = pose.getX();
             double y = pose.getY();
             double distance = Math.sqrt(x * x + y * y);
-            double angle = Math.atan2(y, x);
+            // double angle = Math.atan2(y, x);
             double yaw = target.getYaw();
 
             // Update the running sum
@@ -110,8 +110,8 @@ public class DetectAprilTagL1 extends Command {
     @Override
     public boolean isFinished() {
         if (m_count > 2 ) {
-            double avg_distance = m_distance_sum / m_count;
-            double avg_angle = m_angle_sum / m_count;
+            // double avg_distance = m_distance_sum / m_count;
+            // double avg_angle = m_angle_sum / m_count;
             // TODO: Remove this print statement
             //System.out.println("AprilTag average distance: " + avg_distance + " and angle " + avg_angle);
             return true;

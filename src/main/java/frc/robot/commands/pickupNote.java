@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -29,13 +30,20 @@ public class pickupNote extends Command {
 
   private double deadzone = 5;
 
-  /********************************************************************
-   * *
-   * This class has the provides the option to pass in a drive speed. *
-   * - Default is 0.25 *
-   * - Set in driveSpeed variable *
-   * *
-   ********************************************************************/
+  private double exploreTimeout = 2;
+
+  /***********************************************************************
+   *                                                                     *
+   * This class has the provides the option to pass in a drive speed and *
+   * exploration timeout duration.                                       *
+   * - Default drive speed is 3                                          *
+   * - Set in driveSpeed variable                                        *
+   *                                                                     *
+   * - Default timeout is 2 SECONDS!                                     *
+   * - Set in exploreTimeout                                             *
+   *    * This timeout is only used when no notes are in frame!          *
+   *                                                                     *
+   ***********************************************************************/
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
@@ -43,6 +51,17 @@ public class pickupNote extends Command {
     this.camera = camera;
 
     this.withController = withController;
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(swerve, camera);
+  }
+
+  public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, Camera camera) {
+    this.swerve = swerve;
+    this.camera = camera;
+
+    this.withController = withController;
+    this.exploreTimeout = exploreTimeout;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve, camera);
@@ -58,7 +77,20 @@ public class pickupNote extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve, camera);
   }
-  
+
+  public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, double driveSpeed,
+      Camera camera) {
+    this.swerve = swerve;
+    this.driveSpeed = driveSpeed;
+    this.camera = camera;
+
+    this.withController = withController;
+    this.exploreTimeout = exploreTimeout;
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(swerve, camera);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -91,9 +123,18 @@ public class pickupNote extends Command {
           Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
           false);
     } else {
-      // TODO: Fix angle so it uses PID controller - TK
-      swerve.drive(driveSpeed
-      , 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
+      Timer timeout = new Timer();
+
+      if (!camera.getNoteDetected()) {
+        timeout.start();
+      } else {
+        timeout.stop();
+        timeout.reset();
+      }
+
+      if (!timeout.hasElapsed(exploreTimeout)) {
+        swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
+      }
     }
   }
 
