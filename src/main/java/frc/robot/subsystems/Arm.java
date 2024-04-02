@@ -72,6 +72,9 @@ public class Arm extends SubsystemBase {
   public static final double kSetpointMove = 65.0; // The ready for intake but off the ground for movement and
                                                    // protection
 
+  public static final double kDistanceShootLinearTrim = 0.0; // The linear trim for the shooting distance
+  public static final double kDistanceShootAdditiveTrim = 0.0; // The additive trim for the shooting distance
+
   // Constants for the arm control
   private static final double kDefaultForwardParam = .36; // The default forward control parameter
   private static final double kArmEncoderOffset = -155; // The offset of the arm encoder from the zero position //
@@ -237,6 +240,7 @@ public class Arm extends SubsystemBase {
 
   }
 
+  // TODO: I think this function is wrong and needs to be removed.  It seems to be a dublicate of setAngle.
   public void setArmToAngle(double setPoint) {
     double angle = getAngle();
     double setpoint = setPoint;
@@ -274,9 +278,23 @@ public class Arm extends SubsystemBase {
 
     // double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance*-1.07775) + 43.0501); 
     setArmToAngle(interpolatedAngle);
-    return -149.003 * Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311);
+    return -149.003 * Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311); // TODO: BAD! Fix this.
   }
-//zkzj
+
+
+  /**
+   * Estimates the angle for a given distance.
+   * 
+   * @param distance the distance for which to estimate the angle
+   * @return the estimated angle
+   */
+  public double estimateAngleForDistance(double distance) {
+    double interpolatedAngle = angleInterpolator.get(distance);    
+
+    // The trim for the shooting distance makes small adjustments to the angle
+    return (1.0*kDistanceShootLinearTrim) * interpolatedAngle + kDistanceShootAdditiveTrim;
+  }
+
   /**
    * Sets the power of the arm motors
    * 

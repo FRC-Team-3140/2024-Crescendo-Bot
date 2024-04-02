@@ -330,6 +330,21 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  public PhotonTrackedTarget latestAprilTagDetection(int tag_id){
+    // Check if hasTargets is true, then check if the tag_id is equal to the
+
+    if (april.getLatestResult().hasTargets()){
+      for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
+        if (target.getFiducialId() == tag_id) {
+          System.out.println("Tag ID: " + target.getFiducialId() + " X: " + target.getBestCameraToTarget().getX() + " Y: " + target.getBestCameraToTarget().getY());
+          return target;
+        }
+      }
+    }
+
+    return null;
+  }
+
   public int getApriltagID() {
     // If this function returns a 0, that means there is not any detected targets
 

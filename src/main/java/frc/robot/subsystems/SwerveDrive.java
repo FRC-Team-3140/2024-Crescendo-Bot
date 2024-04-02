@@ -354,6 +354,10 @@ public class SwerveDrive extends SubsystemBase implements Constants {
     gyro.reset();
   }
 
+  public double getGyroAngle() {
+    return gyro.getAngle();
+  }
+
   public void resetPose(Pose2d pose) {
     poseEstimator.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
   }
