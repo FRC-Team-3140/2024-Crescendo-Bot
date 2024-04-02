@@ -102,7 +102,7 @@ public class SwerveDrive extends SubsystemBase {
         this::shouldFlipPath,
         this // Reference to this subsystem to set requirements
     );
-
+    //std deviation taken from examples
     poseEstimator = new SwerveDrivePoseEstimator(
         kinematics,
         gyro.getRotation2d(),
@@ -113,8 +113,9 @@ public class SwerveDrive extends SubsystemBase {
             modules[3].getSwerveModulePosition()
         },
         new Pose2d(),
-        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2)),
-        VecBuilder.fill(.8, 0.8, Units.degreesToRadians(30)));
+        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(2)),
+        VecBuilder.fill(1, 1, Units.degreesToRadians(30
+        )));
 
     Logger.recordOutput("Actual States", states);
     Logger.recordOutput("Set States", swerveModuleStates);
@@ -142,8 +143,11 @@ public class SwerveDrive extends SubsystemBase {
       states[i] = modules[i].getState();
     }
     updateOdometry();
-    actualStates.set(swerveModuleStates);
-    setStates.set(states);
+    // actualStates.set(swerveModuleStates);
+    // setStates.set(states);
+    // double visionStdDev = NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev")
+        // .getDouble(.02);
+    // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Units.degreesToRadians(30)));
     // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(),
     // camera.getTimestamp());
     odometryStruct.set(getPose());
@@ -222,14 +226,13 @@ public class SwerveDrive extends SubsystemBase {
     try {
       if (Camera.getInstance().getStatus()) {
         Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-        // DistAmb reading = Camera.getInstance().getApriltagDistX();
-        if (pose.isPresent() 
-        // && reading != null && reading.ambiguity < 0.1 
+        DistAmb reading = Camera.getInstance().getApriltagDistX();
+        if (pose.isPresent() && reading != null  
         // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
          ) {
 
           poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
-              Timer.getFPGATimestamp()-.1);
+              Timer.getFPGATimestamp()-.04);
           // System.out.println("Target Detected");
         } // else {
           // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
@@ -239,33 +242,6 @@ public class SwerveDrive extends SubsystemBase {
       System.err.println(test);
     }
   }
-
-  // public Pose2d getPoseFromCamera(){
-  //     Optional<Pose2d> position = null;
-  //     if (Camera.getInstance().isConnected()) {
-  //       Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-  //       DistAmb reading = Camera.getInstance().getApriltagDistX();
-  //       if (pose.isPresent() && reading != null 
-  //       && reading.ambiguity < 0.1 && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5) {
-  //         position = pose.
-  //       }
-  //     }
-  //     return position;
-    
-  // }
-  // public Pose2d averageCameraPose(){
-  //  Optional<Translation2d> pose1 = getPoseFromCamera().getTranslation();
-  //  new WaitCommand(.05);
-  //  Translation2d pose2 = getPoseFromCamera().getTranslation();
-  //  new WaitCommand(.05);
-  //  Translation2d pose3 = getPoseFromCamera().getTranslation();
-
-  //  Translation2d avgPose = pose1.plus(pose2.plus(pose3));
-  //  avgPose = avgPose.div(3);
-  //   return new Pose2d(avgPose, getPoseFromCamera().getRotation());
-    
-  // }
-
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];

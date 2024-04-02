@@ -54,13 +54,13 @@ public class Arm extends SubsystemBase {
 
   // Constants for the PID controller
   private static final double kDefaultP = .37; // Proportional gain
-  private static final double kDefaultI = 0.0; // Integral gain
+  private static final double kDefaultI = 0.02; // Integral gain
   private static final double kDefaultD = 0.015; // Derivative gain
 
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
   private static final double kMaxSetpoint = 94.0; // Maximum setpoint; Test again with Amp
-  private static final double kMinSetpoint = 6.5; // Minimum setpoint
+  private static final double kMinSetpoint = 7.5; // Minimum setpoint
 
   // Favorite setpoints
 
@@ -160,7 +160,7 @@ public class Arm extends SubsystemBase {
 
     pid = new ProfiledPIDController(p, i, d, new Constraints(maxVelocity, maxAcceleration));
     pid.setGoal(setpoint);
-    pid.setTolerance(.1);
+    // pid.setTolerance(.1);
     pid.setIntegratorRange(-.125, .25);
 
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
@@ -324,12 +324,12 @@ public class Arm extends SubsystemBase {
     double voltage = forward_power;
     pid.setGoal(setpoint);
     double pid_power = pid.calculate(angle);
-    if(Math.abs(angle - setpoint) < 3 &&  setpoint - angle < 0){
-      voltage += Math.signum(setpoint-angle) * .5;
+    // if(Math.abs(angle - setpoint) < 3 &&  setpoint - angle < 0 ){
+      // voltage += Math.signum(setpoint-angle) * .5;
       //  voltage = pid_power + forward_power;  
-    }else{
+    // }else{
       voltage += pid_power ;
-    }
+    // }
       
 
     // Update the network table with the forward and PID power

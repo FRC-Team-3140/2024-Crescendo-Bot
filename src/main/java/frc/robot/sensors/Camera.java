@@ -580,8 +580,8 @@ public class Camera extends SubsystemBase {
     return (double) (System.currentTimeMillis() - programStartTime);
   }
 
-  public double getLatency() {
-    return april.getLatestResult().getLatencyMillis();
+  public double getLatencySeconds() {
+    return april.getLatestResult().getLatencyMillis()/1000;
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {

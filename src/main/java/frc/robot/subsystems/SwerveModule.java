@@ -79,7 +79,9 @@ public class SwerveModule extends SubsystemBase {
         turnEncoder = new AbsoluteEncoder(analogID);
         turnEncoder.setPositionOffset(baseAngle);
         driveEncoder = driveMotor.getEncoder();
-
+        driveEncoder.setVelocityConversionFactor(Constants.encoderRotationToMeters);
+        driveEncoder.setPositionConversionFactor(42 * Constants.encoderRotationToMeters);
+        
         turnPID = new PIDController(P, 0, 0);
         // we don't use I or D since P works well enough
         turnPID.enableContinuousInput(0, 360);
@@ -89,8 +91,6 @@ public class SwerveModule extends SubsystemBase {
         drivePID.setTolerance(driveSetpointTolerance);
 
     }
-
-    boolean encoderSets = false;
 
     // runs while the bot is running
     @Override
