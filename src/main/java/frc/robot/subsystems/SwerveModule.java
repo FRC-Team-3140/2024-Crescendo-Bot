@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.libs.AbsoluteEncoder;
 
-public class SwerveModule extends SubsystemBase implements Constants {
+public class SwerveModule extends SubsystemBase {
 
     // Zero : 0.697578
     // One : 0.701239
@@ -39,19 +39,19 @@ public class SwerveModule extends SubsystemBase implements Constants {
     public RelativeEncoder driveEncoder;
 
     public double botMass = 24.4;
-    
+
     public double P = .01;
 
     public double driveSetpointTolerance = .5;
     public double turnSetpointTolerance;
     public double turnVelocityTolerance;
 
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706 * .712, 2.4433 * .712,
+            0.10133 * .712);
+    // realised the feedforward was off by a factor of .712, corrected it
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Constants.maxChassisSpeed,
+            Constants.maxAcceleration);
 
-    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706*.712, 2.4433* .712 , 0.10133* .712); 
-    //realised the feedforward was off by a factor of .712, corrected it
-    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxChassisSpeed, maxAcceleration);
-    
-    
     // private State initialState = new TrapezoidProfile.State(0, 0);
     // private TrapezoidProfile trapezoidProfile;
 
@@ -79,14 +79,14 @@ public class SwerveModule extends SubsystemBase implements Constants {
         turnEncoder = new AbsoluteEncoder(analogID);
         turnEncoder.setPositionOffset(baseAngle);
         driveEncoder = driveMotor.getEncoder();
-        driveEncoder.setVelocityConversionFactor(encoderRotationToMeters);
-        driveEncoder.setPositionConversionFactor(42 * encoderRotationToMeters);
+        driveEncoder.setVelocityConversionFactor(Constants.encoderRotationToMeters);
+        driveEncoder.setPositionConversionFactor(42 * Constants.encoderRotationToMeters);
         
         turnPID = new PIDController(P, 0, 0);
         // we don't use I or D since P works well enough
         turnPID.enableContinuousInput(0, 360);
         turnPID.setTolerance(turnSetpointTolerance, turnVelocityTolerance);
-        //determined from a SYSID scan
+        // determined from a SYSID scan
         drivePID = new ProfiledPIDController(.11, 0, .015, constraints);
         drivePID.setTolerance(driveSetpointTolerance);
 
@@ -94,8 +94,11 @@ public class SwerveModule extends SubsystemBase implements Constants {
 
     // runs while the bot is running
     @Override
-    public void periodic() {}
-    SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -maxAcceleration, 0);
+    public void periodic() {
+    }
+
+    SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -Constants.maxAcceleration, 0);
+
     public void setStates(SwerveModuleState state, boolean locked) {
         state = SwerveModuleState.optimize(state, Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()));
         setAngle(state.angle.getDegrees());
@@ -108,7 +111,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
         turnMotor.set(-turnPID.calculate(turnEncoder.getAbsolutePosition()));
     }
 
-    public void setDriveSpeed(double velocity){
+    public void setDriveSpeed(double velocity) {
         drivePID.setGoal(new State(velocity, 0));
         driveMotor.setVoltage(driveFeedforward.calculate(velocity) + drivePID.calculate(driveEncoder.getVelocity()));
         NetworkTableInstance.getDefault().getTable(moduleID).getEntry("Set Speed").setDouble(velocity);
@@ -119,7 +122,7 @@ public class SwerveModule extends SubsystemBase implements Constants {
     }
 
     public void setTurnSpeed(double speed) {
-        speed = Math.max(Math.min(speed, maxTurnSpeed), -maxTurnSpeed);
+        speed = Math.max(Math.min(speed, Constants.maxTurnSpeed), -Constants.maxTurnSpeed);
         turnMotor.set(speed);
     }
 

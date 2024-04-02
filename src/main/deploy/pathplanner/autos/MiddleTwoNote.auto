@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "SetArmToIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "PickupNoteMiddle"

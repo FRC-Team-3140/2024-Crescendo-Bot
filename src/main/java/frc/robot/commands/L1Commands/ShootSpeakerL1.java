@@ -9,13 +9,12 @@ package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
-public class ShootSpeakerL1 extends Command implements Constants {
+public class ShootSpeakerL1 extends Command {
 
     private final Shooter shooter;
     private final Intake intake;
@@ -24,10 +23,10 @@ public class ShootSpeakerL1 extends Command implements Constants {
     private double freeSpeed;
     private double deadband = 20;
 
-    public ShootSpeakerL1(double shooterSpeed, double intakeVoltage) {
+    public ShootSpeakerL1(double shooterVoltage, double intakeVoltage) {
         this.intake = Intake.getInstance();
         this.shooter = Shooter.getInstance();
-        this.shooterSpeed = shooterSpeed;
+        this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
         freeSpeed = (473*shooterSpeed) - deadband;
@@ -51,31 +50,31 @@ public class ShootSpeakerL1 extends Command implements Constants {
 
     double timeSinceSpinUp = Double.MAX_VALUE;
     boolean hitSpeed = false;
-
+    double timeSinceIntakeSpinUp = Double.MAX_VALUE;
     @Override
     public void execute() {
-        // shooter.setShooterSpeed(shooterSpeed);
-        if(shooter.getShooterSpeed() >= freeSpeed && !hitSpeed){
+        if (shooter.getShooterSpeed() >= freeSpeed && !hitSpeed) {
             hitSpeed = true;
             timeSinceSpinUp = System.currentTimeMillis();
-            RobotContainer.controller2.setRumble().schedule();
+            // RobotContainer.controller2.setRumble().schedule();
         }
-        if(System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed){
+        if (System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed) {
+            timeSinceIntakeSpinUp = System.currentTimeMillis();
             intake.setIntakeVoltage(voltage2);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        // intakeShooter.setIntakeVoltage(0);
-        // intakeShooter.setShooterVoltage(0);
+        intake.setIntakeVoltage(0);
+        shooter.setShooterVoltage(0);
 
     }
 
     @Override
     public boolean isFinished() {
-        
-        return System.currentTimeMillis() - timeSinceSpinUp > 600 && shooter.getShooterSpeed() >= freeSpeed;
+
+        return System.currentTimeMillis() - timeSinceIntakeSpinUp > 600 && shooter.getShooterSpeed() >= freeSpeed;
         // return System.currentTimeMillis() - startTime > 3000 ;//||
         // IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel
         // or the current it is greater than is correct. Please check that

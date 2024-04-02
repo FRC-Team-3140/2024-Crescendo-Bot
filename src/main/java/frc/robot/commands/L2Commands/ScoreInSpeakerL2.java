@@ -7,9 +7,6 @@ import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.subsystems.Arm;
 
-
-//Work 
-// TODO: This needs testing - DB
 /**
  * This class represents a command to score in the speaker.
  * It extends SequentialCommandGroup to perform a sequence of commands.

@@ -11,23 +11,27 @@ public class Intake extends SubsystemBase {
     public CANSparkMax intakeMotor = new CANSparkMax(11, MotorType.kBrushless);
     private final DigitalInput peSensor = new DigitalInput(0);
     public static Intake intake = new Intake();
-    private Intake(){
+
+    private Intake() {
         intakeMotor.restoreFactoryDefaults();
         intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeMotor.setInverted(true);
         intakeMotor.setSmartCurrentLimit(30);
         intakeMotor.burnFlash();
     }
-    public static Intake getInstance(){
-        if(intake == null){
+
+    public static Intake getInstance() {
+        if (intake == null) {
             intake = new Intake();
         }
         return intake;
     }
+
     public void setIntakeVoltage(double voltage) {
         intakeMotor.setVoltage(voltage);
     }
-    public boolean noteDetected(){
+
+    public boolean noteDetected() {
         return !peSensor.get();
     }
 }

@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-
 
 public class IntakeUntilNoteDetectedL1 extends Command {
   // Refrence to the intake shooter refrence
@@ -22,6 +20,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
     addRequirements(intake);
   }
 
+  // tyler you need to go program the entire bot because itll probably be better
+  // than pragya and channing.
   long startTime; // Called when the command is initially scheduled.
   double lastVoltage;
 
@@ -31,7 +31,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
