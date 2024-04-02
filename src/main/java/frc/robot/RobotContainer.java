@@ -144,7 +144,7 @@ public class RobotContainer implements Constants {
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpoiintIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(35.5));
+    new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
     // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
     new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
     new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(()-> {if(DriverStation.getAlliance().get().equals(Alliance.Blue)){swerve.resetPose(new Pose2d(1.3,5.5, new Rotation2d()));}

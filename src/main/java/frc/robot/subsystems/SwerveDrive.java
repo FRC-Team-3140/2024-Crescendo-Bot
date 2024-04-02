@@ -117,7 +117,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
         },
         new Pose2d(),
         VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(2)),
-        VecBuilder.fill(.01, .01, Units.degreesToRadians(30
+        VecBuilder.fill(1, 1, Units.degreesToRadians(30
         )));
 
     Logger.recordOutput("Actual States", states);
@@ -236,7 +236,7 @@ public class SwerveDrive extends SubsystemBase implements Constants {
          ) {
 
           poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
-              Timer.getFPGATimestamp()-Camera.getInstance().getLatencySeconds());
+              Timer.getFPGATimestamp()-.04);
           // System.out.println("Target Detected");
         }//  else {
         //    poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
