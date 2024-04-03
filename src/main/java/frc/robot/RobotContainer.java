@@ -17,6 +17,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.Autos.CameraLeftThreeNote;
+import frc.robot.commands.Autos.CameraLeftTwoNote;
+import frc.robot.commands.Autos.CameraMiddleTwoNote;
+import frc.robot.commands.Autos.CameraRightTwoNote;
 import frc.robot.commands.Autos.LeftThreeNote;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
@@ -30,6 +34,7 @@ import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L2Commands.SetArmToDistanceWhileMovingL2;
 import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
@@ -68,7 +73,7 @@ public class RobotContainer {
   public static Arm arm = Arm.getInstance();
   // private final Camera camera;
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
-  SendableChooser<Command> autobuilder;
+  SendableChooser<Command> autobuilder =  new SendableChooser<>();
   public static Climber climber = Climber.getInstance();
   public static ControllerHelper controller2 = new ControllerHelper(1);
   public static Intake intake;
@@ -107,9 +112,22 @@ public class RobotContainer {
     NamedCommands.registerCommand("Turn To Speaker", new DriveFacingSpeaker(swerve, Constants.maxChassisSpeed));
     NamedCommands.registerCommand("Wait", new WaitCommand(2));
 
-    autobuilder = AutoBuilder.buildAutoChooser();
+    // autobuilder = AutoBuilder.buildAutoChooser();
     autobuilder.addOption("One Note Auto", new OneNoteAuto());
     autobuilder.addOption("Left Three Note REAL", new LeftThreeNote());
+    
+    autobuilder.addOption("LeftTwoNote", AutoBuilder.buildAuto("LeftTwoNote"));
+    autobuilder.addOption("LeftTwoNoteTwo", AutoBuilder.buildAuto("LeftTwoNoteTwo"));
+    autobuilder.addOption("MiddleTwoNote", AutoBuilder.buildAuto("MiddleTwoNote"));
+    autobuilder.addOption("MiddleTwoNoteTwo", AutoBuilder.buildAuto("MiddleTwoNoteTwo"));
+    autobuilder.addOption("RightTwoNote", AutoBuilder.buildAuto("Far"));
+
+
+
+    autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());
+    autobuilder.addOption("CameraMiddleTwoNote", new CameraMiddleTwoNote());
+    autobuilder.addOption("CameraRightTwoNote", new CameraRightTwoNote());
+    autobuilder.addOption("CameraLeftThreeNote", new CameraLeftThreeNote());
 
     // Additional Commands (Not automatically improted by Pathplanner) - TK
     // autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
