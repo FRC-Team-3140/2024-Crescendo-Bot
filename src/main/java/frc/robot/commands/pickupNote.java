@@ -20,6 +20,8 @@ public class pickupNote extends Command {
   /** Creates a new pickupNote. */
   private boolean run = true;
 
+  private Timer timeout = new Timer();
+
   private SwerveDrive swerve = null;
   private Camera camera = null;
 
@@ -126,8 +128,6 @@ public class pickupNote extends Command {
               Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
               false);
         } else {
-          Timer timeout = new Timer();
-
           if (!camera.getNoteDetected()) {
             timeout.start();
           } else {
