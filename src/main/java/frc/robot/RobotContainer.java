@@ -123,10 +123,10 @@ public class RobotContainer {
 
 
 
-    autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());
-    autobuilder.addOption("CameraMiddleTwoNote", new CameraMiddleTwoNote());
-    autobuilder.addOption("CameraRightTwoNote", new CameraRightTwoNote());
-    autobuilder.addOption("CameraLeftThreeNote", new CameraLeftThreeNote());
+    // autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());
+    // autobuilder.addOption("CameraMiddleTwoNote", new CameraMiddleTwoNote());
+    // autobuilder.addOption("CameraRightTwoNote", new CameraRightTwoNote());
+    // autobuilder.addOption("CameraLeftThreeNote", new CameraLeftThreeNote());
 
     // Additional Commands (Not automatically improted by Pathplanner) - TK
     // autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());

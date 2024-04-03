@@ -25,7 +25,7 @@ public class pickupNote extends Command {
   private SwerveDrive swerve = null;
   private Camera camera = null;
 
-  private double driveSpeed = .3;
+  private double driveSpeed = 3;
 
   // Run with SwerveDrive Controller
   private Boolean withController = false;
@@ -111,7 +111,7 @@ public class pickupNote extends Command {
       double ang = camera.getNoteAngle();
 
       double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
-      
+
       if (ang != 999) {
         turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
 
@@ -123,24 +123,24 @@ public class pickupNote extends Command {
       }
 
       if (withController) {
-          swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
-              -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-              Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
-              false);
+        swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
+            -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
+            Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
+            false);
+      } else {
+        if (!camera.getNoteDetected()) {
+          timeout.start();
         } else {
-          if (!camera.getNoteDetected()) {
-            timeout.start();
-          } else {
-            timeout.stop();
-            timeout.reset();
-          }
-
-          if (timeout.hasElapsed(exploreTimeout)) {
-            run = false;
-          } else {
-            swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
-          }
+          timeout.stop();
+          timeout.reset();
         }
+
+        if (timeout.hasElapsed(exploreTimeout)) {
+          run = false;
+        } else {
+          swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
+        }
+      }
     } catch (Error e) {
       System.out.println("An error has occured in pickupNote: \n" + e);
     }
