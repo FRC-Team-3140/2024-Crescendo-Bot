@@ -62,6 +62,8 @@ public class DetectAprilTagL1 extends Command {
         if (target != null) {
             double ambiguity = target.getPoseAmbiguity();
             if(ambiguity > 0.1) {
+                RobotContainer.controller.setRumble().schedule();
+                RobotContainer.controller2.setRumble().schedule();
                 // Skip this measurement if the pose is ambiguous
                 return;
             }

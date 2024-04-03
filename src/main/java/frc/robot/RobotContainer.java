@@ -22,6 +22,7 @@ import frc.robot.commands.Autos.CameraLeftTwoNote;
 import frc.robot.commands.Autos.CameraMiddleTwoNote;
 import frc.robot.commands.Autos.CameraRightTwoNote;
 import frc.robot.commands.Autos.LeftThreeNote;
+import frc.robot.commands.L1Commands.DetectAprilTagL1;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
@@ -32,6 +33,7 @@ import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
+import frc.robot.commands.L1Commands.TurnBotToSpeakerL1;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L3Commands.CameraShootDistanceL3;
@@ -151,85 +153,56 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    //Boolean suppliers 
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    // BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+    
+    BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
+    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
+    
+    BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
+    BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
+    //Primary Driver Controls
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    // new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(() -> {
-    //   if (pickupNote) {
-    //     pickupNote = false;
-    //   } else {
-    //     pickupNote = true;
-    //     new pickupNote(true, swerve, intake, camera).schedule();
-    //   }
-    // }));
     new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
+    new JoystickButton(controller, Button.kA.value).onTrue(new TurnBotToSpeakerL1(new DetectAprilTagL1(1)));
+    
+    new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {BasicSwerveControlL2.fieldRelative = false;})).onFalse(new InstantCommand(() -> {BasicSwerveControlL2.fieldRelative = true;}));
+    
+    
 
-    new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
-      BasicSwerveControlL2.fieldRelative = false;
-    })).onFalse(new InstantCommand(() -> {
-      BasicSwerveControlL2.fieldRelative = true;
-    }));
-    // new JoystickButton(controller, Button.kA.value).whileTrue(new
-    // DriveFacingSpeaker(swerve, maxChassisSpeed));
-    // controller.setRumble();
-    // Arm Controls
+  //Secondary Driver Controls 
+
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
-    new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
     new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(()-> {if(DriverStation.getAlliance().get().equals(Alliance.Blue)){swerve.resetPose(new Pose2d(1.3,5.5, new Rotation2d()));}
     else{
       swerve.resetPose(new Pose2d(15.28,5.58,new Rotation2d()));
     }
   })); //Optimal angle for shooting from against the speaker.  
-    //Intake/Shooter Controls     
+    new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
+    new POVButton(controller2, 90).onTrue(new SetArmToAngleL1(35.5));
+
+    new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
     new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1()).onFalse(new ShootSpeakerL1(0, 0));//.onFalse(new ShootSpeakerL1(0,0));
     new JoystickButton(controller2, Button.kLeftBumper.value).onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
-    new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(35.5));
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new
-    // SpeakerShootDistanceL3()).onFalse(new ShooterSpeedL1(0));
+
     new JoystickButton(controller2, Button.kStart.value).whileTrue(new CameraShootDistanceL3());
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-        swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
-      } else {
-        swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
-      }
-    })); // Optimal angle for shooting from against the speaker.
-    // Intake/Shooter Controls
-    new JoystickButton(controller2, Button.kRightBumper.value).whileTrue(new ShootAmpL1())
-        .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new ShootSpeakerL1(0,0));
-    new JoystickButton(controller2, Button.kLeftBumper.value)
-        .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
-    BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
-    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
+    new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
+   
     new Trigger(lefttTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
-        .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new
-    // ShootSpeakerL1(0,
-    // 0));
-    BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
-    BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
-    // BooleanSupplier upControllerRightC2 = () -> (controller2.getRightY() > 0.3);
-    // BooleanSupplier downControllerRightC2 = () -> (controller2.getRightY() <
-    // -0.3);
+        .onFalse(new ShootSpeakerL1(0, 0));
+   
+
 
     new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
-    // .onFalse(new InstantCommand(climber::stopBoth));
-    // new Trigger(upControllerRightC2).onTrue(climber.increaseRightHeight())
-    // .onFalse(new InstantCommand(climber::stopRight));
-    // new Trigger(downControllerRightC2).onTrue(new
-    // InstantCommand(climber::lowerRight))
-    // .onFalse(new InstantCommand(climber::stopRight));
     new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
-    // .onFalse(new InstantCommand(climber::stopBoth));
+
 
     new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 0));
-        // .onFalse(new ShootSpeakerL1(0, 0));
-    new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
 
   }
 
@@ -256,3 +229,5 @@ public class RobotContainer {
   }
 
 }
+
+// TODO: When we get to comp, make sure to calibrate camera for apriltag and note detection. Test out Mr. Bolme's Turn to shoot code seperated. If that doesnt work, put it back to the way it was

@@ -153,14 +153,6 @@ public class SwerveDrive extends SubsystemBase {
     odometryStruct.set(getPose());
 
   }
-  /*  TODO: For Camera Translation Camera offset from center of the bot; take it to the wall and add any offsets
-      Average 3 camera values for pose
-      Add back in distance rejection
-        Make sure it does not kill the codebase this time
-      Merge main into dev 
-      Merge camera into dev (then into main)
-
-      */
 
   /**
    * Method to drive the robot using joystick info.
@@ -223,25 +215,25 @@ public class SwerveDrive extends SubsystemBase {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
 
-    try {
-      if (Camera.getInstance().getStatus()) {
-        Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-        DistAmb reading = Camera.getInstance().getApriltagDistX();
-        if (pose.isPresent() && reading != null  
-        // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
-         ) {
+  //   try {
+  //     if (Camera.getInstance().getStatus()) {
+  //       Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
+  //       DistAmb reading = Camera.getInstance().getApriltagDistX();
+  //       if (pose.isPresent() && reading != null  
+  //       // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
+  //        ) {
 
-          poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
-              Timer.getFPGATimestamp()-.04);
-          // System.out.println("Target Detected");
-        } // else {
-          // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
-          // }
-      }
-    } catch (Error test) {
-      System.err.println(test);
-    }
-  }
+  //         poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
+  //             Timer.getFPGATimestamp()-.04);
+  //         // System.out.println("Target Detected");
+  //       } // else {
+  //         // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
+  //         // }
+  //     }
+  //   } catch (Error test) {
+  //     System.err.println(test);
+  //   }
+ }
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];

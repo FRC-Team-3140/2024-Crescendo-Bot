@@ -4,15 +4,30 @@
 
 package frc.robot;
 
+import java.time.Instant;
+
 import org.littletonrobotics.junction.LoggedRobot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
+import frc.robot.commands.L1Commands.SetClimberToTopL1;
+import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
+import frc.robot.commands.L1Commands.StopSpinningShooter;
+import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 
 public class Robot extends LoggedRobot {
@@ -32,7 +47,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    // DataLogManager.start();
+    DataLogManager.start();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
@@ -142,31 +157,21 @@ public class Robot extends LoggedRobot {
     // Camera.getInstance().pathfindToAprilTag().schedule();
 
     // Climber climber = Climber.getInstance();
-    // new SequentialCommandGroup(
-    // new SetArmToAngleL1(80),
-    // new ParallelCommandGroup(new InstantCommand(()->
-    // {intakeShooter.setIntakeVoltage(7);}), new WaitCommand(2)),
-    // new ParallelRaceGroup(new InstantCommand(()->
-    // {intakeShooter.setIntakeVoltage(0);}), new WaitCommand(1)),
-    // new ParallelCommandGroup(new InstantCommand(()->
-    // {intakeShooter.setShooterVoltage(10);}), new WaitCommand(2)),
-    // new ParallelRaceGroup(new InstantCommand(()->
-    // {intakeShooter.setShooterVoltage(0);}), new WaitCommand(1)),
-    // new SetArmToAngleL1(20),
-    // new ParallelRaceGroup(new InstantCommand(()-> {climber.raiseBoth();}), new
-    // WaitCommand(1)),
-    // new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new
-    // WaitCommand(1)),
-    // new ParallelRaceGroup(new InstantCommand(()-> {climber.lowerBoth();}), new
-    // WaitCommand(1)),
-    // new ParallelRaceGroup(new InstantCommand(()-> {climber.stopBoth();}), new
-    // WaitCommand(1)),
 
-    // AutoBuilder.buildAuto("Straight Line"),
-    // AutoBuilder.buildAuto("Turn")
-    // ).schedule();
+    //Test Command: Run before each round
+    new SequentialCommandGroup(
+    new SetArmToAngleL1(80),
+    new ParallelRaceGroup(new ShootSpeakerOverrideL1(9.5, 5), new WaitCommand(2)),
+    new ParallelRaceGroup(new InstantCommand(()-> {Intake.getInstance().setIntakeVoltage(0);}), new StopSpinningShooter(), new WaitCommand(1)),
+    new SetArmToAngleL1(10),
+    new ZeroClimbersL1(),
+    new SetClimberToTopL1(),
+    new ZeroClimbersL1(),
+    AutoBuilder.buildAuto("Straight Line"),
+    AutoBuilder.buildAuto("Turn")
+    ).schedule();
 
-    new pickupNote(false, RobotContainer.swerve, RobotContainer.camera).schedule();
+    // new pickupNote(false, RobotContainer.swerve, RobotContainer.camera).schedule();
   }
 
   /** This function is called periodically during test mode. */
