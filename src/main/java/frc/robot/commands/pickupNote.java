@@ -108,16 +108,19 @@ public class pickupNote extends Command {
     try {
       double ang = camera.getNoteAngle();
 
+      double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
+      
       if (ang != 999) {
         turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
-
-        double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
 
         if (Math.abs(ang) < deadzone) {
           driveAng = 0;
         }
+      } else {
+        System.out.println("Not valid angle returned!");
+      }
 
-        if (withController) {
+      if (withController) {
           swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
               -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
               Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
@@ -138,9 +141,6 @@ public class pickupNote extends Command {
             swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
           }
         }
-      } else {
-        System.out.println("Not valid angle returned!");
-      }
     } catch (Error e) {
       System.out.println("An error has occured in pickupNote: \n" + e);
     }
