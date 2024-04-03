@@ -18,12 +18,12 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class pickupNote extends Command {
   /** Creates a new pickupNote. */
-  private boolean run = true; 
+  private boolean run = true;
 
   private SwerveDrive swerve = null;
   private Camera camera = null;
 
-  private double driveSpeed = 3;
+  private double driveSpeed = .3;
 
   // Run with SwerveDrive Controller
   private Boolean withController = false;
@@ -35,16 +35,16 @@ public class pickupNote extends Command {
   private double exploreTimeout = 2;
 
   /***********************************************************************
-   *                                                                     *
+   * *
    * This class has the provides the option to pass in a drive speed and *
-   * exploration timeout duration.                                       *
-   * - Default drive speed is 3                                          *
-   * - Set in driveSpeed variable                                        *
-   *                                                                     *
-   * - Default timeout is 2 SECONDS!                                     *
-   * - Set in exploreTimeout                                             *
-   *    * This timeout is only used when no notes are in frame!          *
-   *                                                                     *
+   * exploration timeout duration. *
+   * - Default drive speed is 3 *
+   * - Set in driveSpeed variable *
+   * *
+   * - Default timeout is 2 SECONDS! *
+   * - Set in exploreTimeout *
+   * * This timeout is only used when no notes are in frame! *
+   * *
    ***********************************************************************/
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
@@ -105,46 +105,53 @@ public class pickupNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double ang = camera.getNoteAngle();
+    try {
+      double ang = camera.getNoteAngle();
 
-    turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
+      if (ang != 999) {
+        turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
 
-    double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
+        double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
 
-    if (Math.abs(ang) < deadzone) {
-      driveAng = 0;
-    }
+        if (Math.abs(ang) < deadzone) {
+          driveAng = 0;
+        }
 
-    // double turnSpeed = 0.025 * camera.getNoteAngle();
-    // turnSpeed = Math.min(Math.max(turnSpeed, -0.3 * Constants.maxChassisSpeed),
-    // 0.3 * Constants.maxChassisSpeed);
+        if (withController) {
+          swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
+              -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
+              Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
+              false);
+        } else {
+          Timer timeout = new Timer();
 
-    if (withController) {
-      swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
-          -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-          Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
-          false);
-    } else {
-      Timer timeout = new Timer();
+          if (!camera.getNoteDetected()) {
+            timeout.start();
+          } else {
+            timeout.stop();
+            timeout.reset();
+          }
 
-      if (!camera.getNoteDetected()) {
-        timeout.start();
+          if (timeout.hasElapsed(exploreTimeout)) {
+            run = false;
+          } else {
+            swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
+          }
+        }
       } else {
-        timeout.stop();
-        timeout.reset();
+        System.out.println("Not valid angle returned!");
       }
-
-      if (!timeout.hasElapsed(exploreTimeout)) {
-        run = false; 
-      } else { 
-        swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
-      }
+    } catch (Error e) {
+      System.out.println("An error has occured in pickupNote: \n" + e);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Intake.getInstance().setIntakeVoltage(0);
+    System.out.println(
+        "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nFINISHED\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   }
 
   // Returns true when the command should end.
@@ -152,8 +159,8 @@ public class pickupNote extends Command {
   public boolean isFinished() {
     if (run) {
       return Intake.getInstance().noteDetected();
-    } else { 
-      return true; 
+    } else {
+      return true;
     }
   }
 }

@@ -504,7 +504,7 @@ public class Camera extends SubsystemBase {
 
       return requiredTurnDegrees;
     } else {
-      return 0;
+      return 999;
     }
   }
 
@@ -532,9 +532,9 @@ public class Camera extends SubsystemBase {
           return requiredTurnDegrees;
         }
       }
-      return 0;
+      return 999;
     } else {
-      return 0;
+      return 9999;
     }
   }
 
@@ -575,7 +575,7 @@ public class Camera extends SubsystemBase {
     if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
       return notes.getLatestResult().getBestTarget().getYaw();
     }
-    return 0.0;
+    return 999;
   }
 
   public double getNoteArea() {
