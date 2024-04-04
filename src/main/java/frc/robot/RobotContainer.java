@@ -17,10 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.pickupNote;
-import frc.robot.commands.Autos.CameraLeftThreeNote;
-import frc.robot.commands.Autos.CameraLeftTwoNote;
-import frc.robot.commands.Autos.CameraMiddleTwoNote;
-import frc.robot.commands.Autos.CameraRightTwoNote;
 import frc.robot.commands.Autos.LeftThreeNote;
 import frc.robot.commands.L1Commands.DetectAprilTagL1;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
@@ -155,7 +151,7 @@ public class RobotContainer {
   private void configureBindings() {
     //Boolean suppliers 
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+    // BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
     
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);

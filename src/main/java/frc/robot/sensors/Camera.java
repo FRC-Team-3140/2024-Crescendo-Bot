@@ -105,7 +105,7 @@ public class Camera extends SubsystemBase {
   public class aprilTagLocation {
     public final boolean isDetected;
     public final double distance;
-    public final double ambiguity;    
+    public final double ambiguity;
     public final double angle;
     public final int id;
 
@@ -272,15 +272,19 @@ public class Camera extends SubsystemBase {
 
   private void setNetworktableStatus() {
     try {
-      // TODO: ensure this publishes properly. Especially PhotonVersion.version! - TK
       inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
       inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
           .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
       inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
           .setString(PhotonVersion.versionString);
       inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
-      inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("April Connection: ").setBoolean(april.isConnected());
-      inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("Notes Connection: ").setBoolean(notes.isConnected());
+
+      if (connected && versionMatches && april != null) {
+        inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("April Connection: ")
+            .setBoolean(april.isConnected());
+        inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("Notes Connection: ")
+            .setBoolean(notes.isConnected());
+      }
     } catch (Error e) {
       System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
     }
@@ -309,11 +313,15 @@ public class Camera extends SubsystemBase {
       }
 
       // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("ID: ").setInteger(tag.id);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected: ").setBoolean(tag.isDetected);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist: ").setDouble(tag.distance);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("ID:
+      // ").setInteger(tag.id);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected:
+      // ").setBoolean(tag.isDetected);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist:
+      // ").setDouble(tag.distance);
       // inst.getTable("Vision").getSubTable("Camera").getEntry("Ambiguity").setDouble(tag.ambiguity);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees: ").setDouble(tag.angle);
+      // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees:
+      // ").setDouble(tag.angle);
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
     }
@@ -330,13 +338,14 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  public PhotonTrackedTarget latestAprilTagDetection(int tag_id){
+  public PhotonTrackedTarget latestAprilTagDetection(int tag_id) {
     // Check if hasTargets is true, then check if the tag_id is equal to the
 
-    if (april.getLatestResult().hasTargets()){
+    if (april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == tag_id) {
-          System.out.println("Tag ID: " + target.getFiducialId() + " X: " + target.getBestCameraToTarget().getX() + " Y: " + target.getBestCameraToTarget().getY());
+          System.out.println("Tag ID: " + target.getFiducialId() + " X: " + target.getBestCameraToTarget().getX()
+              + " Y: " + target.getBestCameraToTarget().getY());
           return target;
         }
       }
@@ -556,7 +565,6 @@ public class Camera extends SubsystemBase {
     return new aprilTagLocation(false, 0, 0, 0, -1);
   }
 
-
   public aprilTagLayout getAprilTagLayout() {
     // TODO: Check to see if this variable matches the one I just added for the
     // photonvision pose estimator - TK
@@ -595,7 +603,7 @@ public class Camera extends SubsystemBase {
   }
 
   public double getLatencySeconds() {
-    return april.getLatestResult().getLatencyMillis()/1000;
+    return april.getLatestResult().getLatencyMillis() / 1000;
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {

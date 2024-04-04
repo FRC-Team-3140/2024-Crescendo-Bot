@@ -4,10 +4,7 @@
 
 package frc.robot.subsystems;
 
-import java.util.Optional;
-
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,13 +30,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.Camera;
-import frc.robot.sensors.Camera.DistAmb;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase {
@@ -48,7 +43,7 @@ public class SwerveDrive extends SubsystemBase {
   ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, .1, new Constraints(360, 720));
   SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
   private final SwerveDrivePoseEstimator poseEstimator;
-  private Camera camera = Camera.getInstance();
+  // private Camera camera = Camera.getInstance();
   public static AHRS gyro;
 
   private final Translation2d[] locations = {
@@ -301,7 +296,7 @@ public class SwerveDrive extends SubsystemBase {
       // turnPID.enableContinuousInput(0, 360);
       try {
         double botAngle = getPose().getRotation().getDegrees();
-        double offsetAngle = camera.getDegToApriltag(ID);
+        double offsetAngle = Camera.getInstance().getDegToApriltag(ID);
         double setpoint = 0;
       if (botAngle - offsetAngle <= 0)
         setpoint = botAngle + offsetAngle;
