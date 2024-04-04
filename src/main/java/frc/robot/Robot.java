@@ -61,6 +61,7 @@ public class Robot extends LoggedRobot {
    * SmartDashboard integrated updating.
    */
   Tracer tracer = new Tracer();
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -154,20 +155,24 @@ public class Robot extends LoggedRobot {
 
     // Climber climber = Climber.getInstance();
 
-    //Test Command: Run before each round
+    // Test Command: Run before each round
     new SequentialCommandGroup(
-    new SetArmToAngleL1(80),
-    new ParallelRaceGroup(new ShootSpeakerOverrideL1(9.5, 5), new WaitCommand(2)),
-    new ParallelRaceGroup(new InstantCommand(()-> {Intake.getInstance().setIntakeVoltage(0);}), new StopSpinningShooter(), new WaitCommand(1)),
-    new SetArmToAngleL1(10),
-    new ZeroClimbersL1(),
-    new SetClimberToTopL1(),
-    new ZeroClimbersL1(),
-    AutoBuilder.buildAuto("Straight Line"),
-    AutoBuilder.buildAuto("Turn")
-    ).schedule();
+        new SetArmToAngleL1(80),
+        new ParallelRaceGroup(new ShootSpeakerOverrideL1(9.5, 5), new WaitCommand(2)),
+        new ParallelRaceGroup(new InstantCommand(() -> {
+          Intake.getInstance().setIntakeVoltage(0);
+        }), new StopSpinningShooter(), new WaitCommand(1)),
+        new SetArmToAngleL1(10),
+        new ZeroClimbersL1(),
+        new WaitCommand(3),
+        new SetClimberToTopL1(),
+        new WaitCommand(3),
+        new ZeroClimbersL1(),
+        AutoBuilder.buildAuto("Straight Line"),
+        AutoBuilder.buildAuto("Turn")).schedule();
 
-    // new pickupNote(false, RobotContainer.swerve, RobotContainer.camera).schedule();
+    // new pickupNote(false, RobotContainer.swerve,
+    // RobotContainer.camera).schedule();
   }
 
   /** This function is called periodically during test mode. */

@@ -163,7 +163,7 @@ public class RobotContainer {
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
     new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
-    new JoystickButton(controller, Button.kA.value).onTrue(new TurnBotToSpeakerL1(new DetectAprilTagL1(1)));
+    new JoystickButton(controller, Button.kA.value).whileTrue(new TurnBotToSpeakerL1(new DetectAprilTagL1(1)));
     
     new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {BasicSwerveControlL2.fieldRelative = false;})).onFalse(new InstantCommand(() -> {BasicSwerveControlL2.fieldRelative = true;}));
     
