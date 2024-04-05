@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
@@ -16,25 +17,25 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 
-public class pickupNote extends Command {
+public class pickupNote extends SequentialCommandGroup {
   /** Creates a new pickupNote. */
-  private boolean run = true;
+  private static boolean run = true;
 
-  private Timer timeout = new Timer();
+  private static Timer timeout = new Timer();
 
-  private SwerveDrive swerve = null;
-  private Camera camera = null;
+  private static SwerveDrive swerve = null;
+  private static Camera camera = null;
 
-  private double driveSpeed = 3;
+  private static double driveSpeed = 3;
 
   // Run with SwerveDrive Controller
-  private Boolean withController = false;
+  private static Boolean withController = false;
 
-  private PIDController turnController = new PIDController(0.025, 0, 0.0025);
+  private static PIDController turnController = new PIDController(0.025, 0, 0.0025);
 
-  private double deadzone = 5;
+  private static double deadzone = 5;
 
-  private double exploreTimeout = 2;
+  private static double exploreTimeout = 2;
 
   /***********************************************************************
    * *
@@ -51,114 +52,129 @@ public class pickupNote extends Command {
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
-    this.swerve = swerve;
-    this.camera = camera;
+    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
+        !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(), new PickUpNoteCommand());
 
-    this.withController = withController;
+    pickupNote.swerve = swerve;
+    pickupNote.camera = camera;
+
+    pickupNote.withController = withController;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve, camera);
+    // TODO: Test with following line commented out in all overriding constructors!
+    addRequirements(swerve);
   }
 
   public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, Camera camera) {
-    this.swerve = swerve;
-    this.camera = camera;
+    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
+        !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(), new PickUpNoteCommand());
 
-    this.withController = withController;
-    this.exploreTimeout = exploreTimeout;
+    pickupNote.swerve = swerve;
+    pickupNote.camera = camera;
+
+    pickupNote.withController = withController;
+    pickupNote.exploreTimeout = exploreTimeout;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve, camera);
+    // TODO: Test with following line commented out in all overriding constructors!
+    addRequirements(swerve);
   }
 
   public pickupNote(Boolean withController, SwerveDrive swerve, double driveSpeed, Camera camera) {
-    this.swerve = swerve;
-    this.driveSpeed = driveSpeed;
-    this.camera = camera;
+    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
+        !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(), new PickUpNoteCommand());
 
-    this.withController = withController;
+    pickupNote.swerve = swerve;
+    pickupNote.driveSpeed = driveSpeed;
+    pickupNote.camera = camera;
+
+    pickupNote.withController = withController;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve, camera);
+    // TODO: Test with following line commented out in all overriding constructors!
+    addRequirements(swerve);
   }
 
   public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, double driveSpeed,
       Camera camera) {
-    this.swerve = swerve;
-    this.driveSpeed = driveSpeed;
-    this.camera = camera;
+    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
+        !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(), new PickUpNoteCommand());
 
-    this.withController = withController;
-    this.exploreTimeout = exploreTimeout;
+    pickupNote.swerve = swerve;
+    pickupNote.driveSpeed = driveSpeed;
+    pickupNote.camera = camera;
+
+    pickupNote.withController = withController;
+    pickupNote.exploreTimeout = exploreTimeout;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve, camera);
+    // TODO: Test with following line commented out in all overriding constructors!
+    addRequirements(swerve);
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    if (!withController) {
-      new SetArmToAngleL1(Arm.kSetpointIntakeDown).schedule();
-      new IntakeUntilNoteDetectedL1().schedule();
+  private static class PickUpNoteCommand extends Command {
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
     }
-  }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    try {
-      double ang = camera.getNoteAngle();
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+      try {
+        double ang = camera.getNoteAngle();
 
-      double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
+        double driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
 
-      if (ang != 999) {
-        turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
+        if (ang != 999) {
+          turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
 
-        if (Math.abs(ang) < deadzone) {
-          driveAng = 0;
+          if (Math.abs(ang) < deadzone) {
+            driveAng = 0;
+          }
+        } else {
+          System.out.println("Not valid angle returned!");
         }
+
+        if (withController) {
+          swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
+              -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
+              Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
+              false);
+        } else {
+          if (!camera.getNoteDetected()) {
+            timeout.start();
+          } else {
+            timeout.stop();
+            timeout.reset();
+          }
+
+          if (timeout.hasElapsed(exploreTimeout)) {
+            run = false;
+          } else {
+            swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
+          }
+        }
+      } catch (Error e) {
+        System.out.println("An error has occured in pickupNote: \n" + e);
+      }
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+      Intake.getInstance().setIntakeVoltage(0);
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+      if (run) {
+        return Intake.getInstance().noteDetected();
       } else {
-        System.out.println("Not valid angle returned!");
+        return true;
       }
 
-      if (withController) {
-        swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
-            -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-            Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
-            false);
-      } else {
-        if (!camera.getNoteDetected()) {
-          timeout.start();
-        } else {
-          timeout.stop();
-          timeout.reset();
-        }
-
-        if (timeout.hasElapsed(exploreTimeout)) {
-          run = false;
-        } else {
-          swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
-        }
-      }
-    } catch (Error e) {
-      System.out.println("An error has occured in pickupNote: \n" + e);
-    }
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    Intake.getInstance().setIntakeVoltage(0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    if (run) {
-      return Intake.getInstance().noteDetected();
-    } else {
-      return true;
     }
   }
 }

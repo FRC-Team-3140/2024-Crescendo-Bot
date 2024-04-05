@@ -47,6 +47,7 @@ public class DetectAprilTagL1 extends Command {
         m_distance_sum = 0;
         m_angle_sum = 0;
         m_count = 0;
+
         if(DriverStation.getAlliance().get().equals(Alliance.Blue)){
             tag_id = 7; // TODO: Don't hardcode this.  Change it based on team assignment.
         }else{
@@ -57,9 +58,11 @@ public class DetectAprilTagL1 extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        target = m_camera.latestAprilTagDetection(tag_id);
-
-        if (target != null) {
+        try {
+            
+            target = m_camera.latestAprilTagDetection(tag_id);
+            
+            if (target != null) {
             double ambiguity = target.getPoseAmbiguity();
             if(ambiguity > 0.1) {
                 RobotContainer.controller.setRumble().schedule();
@@ -73,19 +76,21 @@ public class DetectAprilTagL1 extends Command {
             double distance = Math.sqrt(x * x + y * y);
             // double angle = Math.atan2(y, x);
             double yaw = target.getYaw();
-
+            
             // Update the running sum
             m_distance_sum += distance;
             m_angle_sum += yaw;
             m_count++;
-
+            
             // TODO: Remove this print statement
             //System.out.println("AprilTag detected: " + tag_id + " at distance " + distance + " and angle " + angle + " and Yaw " + yaw);
-        }else{
-            RobotContainer.controller.setRumble().schedule();
-            RobotContainer.controller2.setRumble().schedule();
+            }else{
+                RobotContainer.controller.setRumble().schedule();
+                RobotContainer.controller2.setRumble().schedule();
+            }
+        }catch (Exception e) {
+            System.err.println(e + "Line 92");
         }
-
     }
     public PhotonTrackedTarget getTarget(){
         return target;

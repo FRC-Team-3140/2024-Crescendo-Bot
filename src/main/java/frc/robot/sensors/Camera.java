@@ -37,8 +37,8 @@ public class Camera extends SubsystemBase {
   private long programStartTime = System.currentTimeMillis();
 
   // Gets initial instantiation of Cameras - TK
-  private PhotonCamera april = aprilGetInstance();
-  private PhotonCamera notes = notesGetInstance();
+  public PhotonCamera april = aprilGetInstance();
+  public PhotonCamera notes = notesGetInstance();
 
   // Measurements to Cameras
   private Transform3d robotToApril = new Transform3d(new Translation3d(-Constants.botLength / 2, 0.0, 0.5),
@@ -86,7 +86,7 @@ public class Camera extends SubsystemBase {
 
   // Global fiducial ids for important landmark apriltags - TK
   public aprilTagLayout aprilTagLayout;
-  private int speakerAprilTag;
+  private int speakerAprilTagC;
   private int ampAprilTag;
   private int sourceAprilTag;
 
@@ -206,17 +206,17 @@ public class Camera extends SubsystemBase {
 
   private void configureTeam() {
     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      speakerAprilTag = 4; // Apriltag on left
+      speakerAprilTagC = 4; // Apriltag on left
       ampAprilTag = 5;
       sourceAprilTag = 10; // Apriltag on left
 
-      aprilTagLayout = new aprilTagLayout(speakerAprilTag, ampAprilTag, sourceAprilTag);
+      aprilTagLayout = new aprilTagLayout(speakerAprilTagC, ampAprilTag, sourceAprilTag);
     } else {
-      speakerAprilTag = 8; // Apriltag on left
+      speakerAprilTagC = 7; // Apriltag on left
       ampAprilTag = 6;
       sourceAprilTag = 2; // Apriltag on left
 
-      aprilTagLayout = new aprilTagLayout(speakerAprilTag, ampAprilTag, sourceAprilTag);
+      aprilTagLayout = new aprilTagLayout(speakerAprilTagC, ampAprilTag, sourceAprilTag);
     }
   }
 
