@@ -8,18 +8,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of Far2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SpeakerShoot1"
+            "pathName": "Backwards Line"
           }
         }
       ]
     }
   },
-  "folder": "Right",
+  "folder": "Test",
   "choreoAuto": false
 }

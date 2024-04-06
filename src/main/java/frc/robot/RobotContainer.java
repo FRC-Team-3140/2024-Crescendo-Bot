@@ -91,7 +91,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("SpeakerShoot1",
         new SequentialCommandGroup(new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2.5)),
-            new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
+            new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(2))));
 
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
 

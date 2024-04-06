@@ -147,8 +147,8 @@
   "reversed": false,
   "folder": "Left",
   "previewStartingState": {
-    "rotation": 20.0,
-    "velocity": 0
+    "rotation": 0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }
