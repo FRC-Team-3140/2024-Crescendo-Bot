@@ -312,6 +312,7 @@ public class Camera extends SubsystemBase {
         }
       }
 
+      // Debugging Networktable Entries
       // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
       // inst.getTable("Vision").getSubTable("Camera").getEntry("ID:
       // ").setInteger(tag.id);
@@ -340,10 +341,9 @@ public class Camera extends SubsystemBase {
 
   public PhotonTrackedTarget latestAprilTagDetection(int tag_id) {
     // Check if hasTargets is true, then check if the tag_id is equal to the
-
     if (april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-        if (target.getFiducialId() == tag_id) {
+        if (target != null && target.getFiducialId() == tag_id) {
           System.out.println("Tag ID: " + target.getFiducialId() + " X: " + target.getBestCameraToTarget().getX()
               + " Y: " + target.getBestCameraToTarget().getY());
           return target;
@@ -363,9 +363,10 @@ public class Camera extends SubsystemBase {
 
   public int getApriltagID() {
     // If this function returns a 0, that means there is not any detected targets
+    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
-      return april.getLatestResult().getBestTarget().getFiducialId();
+      return target.getFiducialId();
     } else {
       return -1;
     }
@@ -373,9 +374,10 @@ public class Camera extends SubsystemBase {
 
   public double getApriltagYaw() {
     // If this function returns a 999, that means there is not any detected targets
+    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
-      return april.getLatestResult().getBestTarget().getYaw();
+      return target.getYaw();
     } else {
       return 999;
     }
@@ -383,10 +385,9 @@ public class Camera extends SubsystemBase {
 
   public double getApriltagYaw(int id) {
     // If this function returns a 999, that means there is not any detected targets
-
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-        if (target.getFiducialId() == id) {
+        if (target != null && target.getFiducialId() == id) {
           return target.getYaw();
         }
       }
@@ -398,9 +399,10 @@ public class Camera extends SubsystemBase {
 
   public double getApriltagPitch() {
     // If this function returns a 999, that means there is not any detected targets
+    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
-      return april.getLatestResult().getBestTarget().getPitch();
+      return target.getPitch();
     } else {
       return 999;
     }
@@ -408,10 +410,9 @@ public class Camera extends SubsystemBase {
 
   public double getApriltagPitch(int id) {
     // If this function returns a 999, that means there is not any detected targets
-
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-        if (target.getFiducialId() == id) {
+        if (target != null && target.getFiducialId() == id) {
           return target.getPitch();
         }
       }
@@ -424,8 +425,9 @@ public class Camera extends SubsystemBase {
   public DistAmb getApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
-      PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+
+    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets() && target != null) {
       return new DistAmb(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
     } else {
       return null;
@@ -437,7 +439,7 @@ public class Camera extends SubsystemBase {
     // phase.
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-        if (target.getFiducialId() == id) {
+        if (target != null && target.getFiducialId() == id) {
           return new DistAmb(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
         }
       }
@@ -450,8 +452,9 @@ public class Camera extends SubsystemBase {
   public DistAmb getApriltagDistY() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
-      PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+
+    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets() && target != null) {
       return new DistAmb(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
     } else {
       return null;
@@ -463,7 +466,7 @@ public class Camera extends SubsystemBase {
     // phase.
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
-        if (target.getFiducialId() == id) {
+        if (target != null && target.getFiducialId() == id) {
           return new DistAmb(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
         }
       }
@@ -579,16 +582,20 @@ public class Camera extends SubsystemBase {
   }
 
   public double getNoteAngle() {
+    PhotonTrackedTarget target = notes.getLatestResult().getBestTarget();
+
     // Robot relative angle
-    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
-      return notes.getLatestResult().getBestTarget().getYaw();
+    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets() && target != null) {
+      return target.getYaw();
     }
     return 999;
   }
 
   public double getNoteArea() {
-    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets()) {
-      return notes.getLatestResult().getBestTarget().getArea();
+    PhotonTrackedTarget target = notes.getLatestResult().getBestTarget();
+
+    if (connected && versionMatches && notes != null && notes.getLatestResult().hasTargets() && target != null) {
+      return target.getArea();
     }
     return 0.0;
   }
