@@ -8,6 +8,10 @@ import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.SwerveDrive;
 
+/**
+ * Represents a command group for executing the autonomous routine "CameraMiddleTwoNote".
+ * This command group includes the pickupNote command and the CameraShootDistanceL3 command.
+ */
 public class CameraMiddleTwoNote extends SequentialCommandGroup{
     static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
     static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
