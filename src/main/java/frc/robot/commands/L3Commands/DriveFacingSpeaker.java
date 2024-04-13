@@ -15,11 +15,10 @@ public class DriveFacingSpeaker extends Command {
     public static boolean fieldRelative = true;
 
     /**
-     * Creates a new BasicSwerveControlL2 command.
+     * Creates a new DriveFacingSpeaker command.
      *
-     * @param swerveDrive         The swerve drive subsystem
-     * @param maxSpeed            The maximum speed for the swerve drive
-     * @param maxChassisTurnSpeed The maximum turn speed for the chassis
+     * @param swerveDrive The swerve drive subsystem
+     * @param maxSpeed    The maximum speed for the swerve drive
      */
     public DriveFacingSpeaker(SwerveDrive swerveDrive, double maxSpeed) {
         this.swerveDrive = swerveDrive;
@@ -29,8 +28,9 @@ public class DriveFacingSpeaker extends Command {
     }
 
     /**
-     * The command execution logic.
-     * Gets the joystick inputs and drives the swerve drive accordingly.
+     * Executes the command by calculating the x and y speeds based on the joystick
+     * input,
+     * and drives the swerve drive robot facing the speaker.
      */
     @Override
     public void execute() {

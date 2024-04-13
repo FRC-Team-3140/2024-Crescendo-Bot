@@ -15,8 +15,6 @@ public class BasicSwerveControlL2 extends Command {
     private final double maxChassisTurnSpeed; // The maximum turn speed for the chassis
     public static boolean fieldRelative = true;
 
-    // private double speed;
-    // private double turnSpeed;
     /**
      * Creates a new BasicSwerveControlL2 command.
      *
