@@ -16,6 +16,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * The Arm class represents the subsystem responsible for controlling the arm mechanism of the robot.
+ * It handles the PID control, motor configuration, setpoints, and network table communication.
+ */
 public class Arm extends SubsystemBase {
 
   // Constants for the PID controller
@@ -116,8 +120,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * The constructor for the Arm class. It is private to prevent multiple
-   * instances
-   * of the class from being created.
+   * instances of the class from being created.
    */
   private Arm() {
     armR = new CANSparkMax(kArmRightID, MotorType.kBrushless);
@@ -139,7 +142,8 @@ public class Arm extends SubsystemBase {
     NetworkTableEntry pEntry = inst.getTable(kNTArm).getEntry(kNTP);
     NetworkTableEntry iEntry = inst.getTable(kNTArm).getEntry(kNTI);
     NetworkTableEntry dEntry = inst.getTable(kNTArm).getEntry(kNTD);
-    // NetworkTableEntry setpointEntry = inst.getTable(kNTArm).getEntry(kNTSetpoint);
+    // NetworkTableEntry setpointEntry =
+    // inst.getTable(kNTArm).getEntry(kNTSetpoint);
     NetworkTableEntry fcpEntry = inst.getTable(kNTArm).getEntry(kNTForwardParam);
     inst.getTable(kNTArm).getEntry(kNTP).setDouble(kDefaultP);
     inst.getTable(kNTArm).getEntry(kNTI).setDouble(kDefaultI);
@@ -166,43 +170,23 @@ public class Arm extends SubsystemBase {
     armEncoder = new DutyCycleEncoder(kArmEncoderID);
     encoderConnected();
 
-    angleInterpolator = new InterpolatingDoubleTreeMap();//Add your inverseInterpolator, interp2lator, and comparator here
+    angleInterpolator = new InterpolatingDoubleTreeMap();// Add your inverseInterpolator, interp2lator, and comparator
+                                                         // here
 
-    angleInterpolator.put(1.3,16.0);
-    angleInterpolator.put(2.067,22.0);
-    angleInterpolator.put(2.923,30.0);
-    angleInterpolator.put(3.287,34.0);
-    angleInterpolator.put(4.266,38.0);
-    // angleInterpolator.put(5.2,23.0);
-
-
-
-
-
-    // angleInterpolator.put(1.4605, 15.0); // 14 Degrees and 42 inches measured to the inside of the bot perimiter
-    // angleInterpolator.put(1.700, 21.0);
-    // angleInterpolator.put(1.9685, 24.5);
-    // angleInterpolator.put(2.4003, 31.0);
-    // angleInterpolator.put(3.0048, 34.8);
-    // angleInterpolator.put(3.2385, 34.4);
-    // angleInterpolator.put(3.4163, 37.4);
-    // angleInterpolator.put(3.5146, 37.7);
-    // angleInterpolator.put(3.9116, 38.6);
-
-  
-    // angleInterpolator.put()
-
-    // angleInterpolator = new InterpolatingDoubleTreeMap();//Add your
-    // inverseInterpolator, interpolator, and comparator here
-    // angleInterpolator.put(1.35, 13.0); // 14 Degrees and 42 inches measured to
-    // the inside of the bot perimiter
-    // angleInterpolator.put(2.42, 21.0);
-    // angleInterpolator.put(3.14, 27.0);
+    angleInterpolator.put(1.3, 16.0);
+    angleInterpolator.put(2.067, 22.0);
+    angleInterpolator.put(2.923, 30.0);
+    angleInterpolator.put(3.287, 34.0);
+    angleInterpolator.put(4.266, 38.0);
 
     // Set the arm to disabled by default.
     disable();
   }
 
+  /**
+   * Checks if the ArmEncoder is connected.
+   * If the ArmEncoder is not connected, it sets an error message and disables the arm.
+   */
   private void encoderConnected() {
     // check that ArmEncoder is connected
     if (!armEncoder.isConnected()) {
@@ -211,10 +195,13 @@ public class Arm extends SubsystemBase {
     }
   }
 
+
   /**
-   * This method is called periodically and updates the PID controller with the
-   * current setpoint
-   * and PID values from the network table.
+   * This method is called periodically to update the arm subsystem.
+   * It ensures that the PID values are updated from the network table,
+   * retrieves the current setpoint from the network table, checks the limits,
+   * and updates the PID controller with the current setpoint. Finally, it
+   * updates the power of the arm motor based on the calculated PID output.
    */
   @Override
   public void periodic() {
@@ -240,7 +227,13 @@ public class Arm extends SubsystemBase {
 
   }
 
-  // TODO: I think this function is wrong and needs to be removed.  It seems to be a dublicate of setAngle.
+  // TODO: I think this function is wrong and needs to be removed. It seems to be
+  // a dublicate of setAngle.
+  /**
+   * Sets the arm to the specified angle.
+   * 
+   * @param setPoint the desired angle to set the arm to
+   */
   public void setArmToAngle(double setPoint) {
     double angle = getAngle();
     double setpoint = setPoint;
@@ -271,16 +264,15 @@ public class Arm extends SubsystemBase {
    * @return The setpoint angle for the arm
    */
   public double setArmToShootDistance(double distance) {
-    double interpolatedAngle = angleInterpolator.get(distance);    
+    double interpolatedAngle = angleInterpolator.get(distance);
     // setArmToAngle(interpolatedAngle);
     // double interpolatedAngle = angleInterpolator.get(distance);
 
-
-    // double interpolatedAngle = Math.max(16, -130.725 * Math.exp(distance*-1.07775) + 43.0501); 
+    // double interpolatedAngle = Math.max(16, -130.725 *
+    // Math.exp(distance*-1.07775) + 43.0501);
     setArmToAngle(interpolatedAngle);
-    return -149.003 * Math.max(16, -132.744 * Math.exp(distance*-1.06174) + 45.2311); // TODO: BAD! Fix this.
+    return -149.003 * Math.max(16, -132.744 * Math.exp(distance * -1.06174) + 45.2311); // TODO: BAD! Fix this.
   }
-
 
   /**
    * Estimates the angle for a given distance.
@@ -289,12 +281,10 @@ public class Arm extends SubsystemBase {
    * @return the estimated angle
    */
   public double estimateAngleForDistance(double distance) {
-    double interpolatedAngle = angleInterpolator.get(distance);  
-    
-    System.out.println("   Interp Angle: " + interpolatedAngle);
+    double interpolatedAngle = angleInterpolator.get(distance);
 
     // The trim for the shooting distance makes small adjustments to the angle
-    return (1.0+kDistanceShootLinearTrim) * interpolatedAngle + kDistanceShootAdditiveTrim;
+    return (1.0 + kDistanceShootLinearTrim) * interpolatedAngle + kDistanceShootAdditiveTrim;
   }
 
   /**
@@ -305,7 +295,7 @@ public class Arm extends SubsystemBase {
   private void updatePower(double power) {
     // check that the arm is not disabled
     if (is_disabled || !armEncoder.isConnected()) {
-      // System.err.println("Arm Encoder not connected. Disabled.");
+
       armR.setVoltage(0);
       armL.setVoltage(0);
       return;
@@ -324,13 +314,12 @@ public class Arm extends SubsystemBase {
     double voltage = forward_power;
     pid.setGoal(setpoint);
     double pid_power = pid.calculate(angle);
-    // if(Math.abs(angle - setpoint) < 3 &&  setpoint - angle < 0 ){
-      // voltage += Math.signum(setpoint-angle) * .5;
-      //  voltage = pid_power + forward_power;  
+    // if(Math.abs(angle - setpoint) < 3 && setpoint - angle < 0 ){
+    // voltage += Math.signum(setpoint-angle) * .5;
+    // voltage = pid_power + forward_power;
     // }else{
-      voltage += pid_power ;
+    voltage += pid_power;
     // }
-      
 
     // Update the network table with the forward and PID power
     inst.getTable(kNTArm).getEntry(kForwardPower).setDouble(forward_power);
@@ -368,6 +357,13 @@ public class Arm extends SubsystemBase {
     armR.setVoltage(kDefaultForwardParam * Math.cos(Math.toRadians(getAngle())));
   }
 
+  /**
+   * Returns the current angle of the arm.
+   * This method reads the arm encoder and calculates the angle based on the encoder value.
+   * The calculated angle is then stored in the network table for monitoring purposes.
+   * 
+   * @return The current angle of the arm in degrees.
+   */
   public double getAngle() {
     // This is the only place where the arm encoder is read
     double angle = 360 * (armEncoder.getAbsolutePosition()) + kArmEncoderOffset;
@@ -383,7 +379,9 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * Enable the arm for movement and set the motors to coast
+   * Enable the arm for movement and set the motors to coast.
+   * 
+   * @param setpoint_update true if the setpoint should be updated, false otherwise
    */
   public void enable(boolean setpoint_update) {
     if (setpoint_update) {
