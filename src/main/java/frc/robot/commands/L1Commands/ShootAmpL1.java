@@ -22,6 +22,12 @@ public class ShootAmpL1 extends Command {
   public Intake intake;
   public Shooter shooter;
 
+  long startTime;
+
+
+  /**
+   * A command that shoots the ball with increased power and speed.
+   */
   public ShootAmpL1() {
     intake = Intake.getInstance();
     shooter = Shooter.getInstance();
@@ -29,11 +35,9 @@ public class ShootAmpL1 extends Command {
   }
 
   /**
-   * Initializes the AmpShootL1 command.
-   * Sets the intake and shooter voltages.
+   * Initializes the ShootAmpL1 command.
+   * Sets the intake and shooter voltages to 3.
    */
-  long startTime;
-
   @Override
   public void initialize() {
     startTime = System.currentTimeMillis();
@@ -42,15 +46,20 @@ public class ShootAmpL1 extends Command {
   }
 
   /**
-   * Determines whether the command has finished executing.
-   * 
-   * @return true if the command has finished, false otherwise
+   * Executes the ShootAmpL1 command.
+   * This method does nothing, as the intake and shooter voltages are set in the initialize method.
    */
   @Override
   public boolean isFinished() {
     return System.currentTimeMillis() - startTime > 5000; // || IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 7;
   }
 
+  /**
+   * This method is called when the command ends.
+   * It sets the intake and shooter voltages to 0.
+   * 
+   * @param interrupted true if the command was interrupted, false otherwise
+   */
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeVoltage(0);

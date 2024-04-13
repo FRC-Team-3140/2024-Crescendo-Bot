@@ -12,7 +12,16 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-/** Set the shooter speed to ~max and then shoot the note at the speaker. */
+
+/**
+ * Represents a command to shoot the speaker in the L1 position.
+ * This command sets the shooter speed and intake voltage, and adds the intake and shooter subsystems as requirements.
+ * The desired voltage can be adjusted using the `shooterVoltage` parameter.
+ * This command can be used in the robot's command scheduler or bound to a button for control.
+ * 
+ * @param shooterVoltage the voltage to set the shooter to (in volts)
+ * @param intakeVoltage the voltage to set the intake to (in volts)
+ */
 public class ShootSpeakerL1 extends Command {
 
     private final Shooter shooter;
@@ -22,22 +31,41 @@ public class ShootSpeakerL1 extends Command {
     private double freeSpeed;
     private double deadband = 20;
 
+    // Called when the command is initially scheduled.
+    SequentialCommandGroup test;
+
+    long startTime;
+    double timeSinceSpinUp = Double.MAX_VALUE;
+
+    boolean hitSpeed = false;
+
+    double timeSinceIntakeSpinUp = Double.MAX_VALUE;
+
+    /**
+     * Represents a command to shoot the speaker in the L1 position.
+     * This command sets the shooter speed and intake voltage, and adds the intake and shooter subsystems as requirements.
+     * The desired voltage can be adjusted using the `shooterVoltage` parameter.
+     * This command can be used in the robot's command scheduler or bound to a button for control.
+     * 
+     * @param shooterVoltage the voltage to set the shooter to (in volts)
+     * @param intakeVoltage the voltage to set the intake to (in volts)
+     */
     public ShootSpeakerL1(double shooterVoltage, double intakeVoltage) {
         this.intake = Intake.getInstance();
         this.shooter = Shooter.getInstance();
         this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
-        freeSpeed = (473*shooterSpeed) - deadband;
+        freeSpeed = (473 * shooterSpeed) - deadband;
         // Adjust the desiredVoltage variable to the voltage value you want to use.
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.
     }
 
-    // Called when the command is initially scheduled.
-    SequentialCommandGroup test;
-    long startTime;
-
+    /**
+     * Initializes the ShootSpeakerL1 command.
+     * Sets the shooter voltage for the top and bottom motors to the specified shooter speed.
+     */
     @Override
     public void initialize() {
         startTime = System.currentTimeMillis();
@@ -47,9 +75,13 @@ public class ShootSpeakerL1 extends Command {
         shooter.setShooterVoltageBottom(shooterSpeed);
     }
 
-    double timeSinceSpinUp = Double.MAX_VALUE;
-    boolean hitSpeed = false;
-    double timeSinceIntakeSpinUp = Double.MAX_VALUE;
+    /**
+     * Executes the shoot speaker command.
+     * If the shooter speed is greater than or equal to the free speed and the hit speed flag is false,
+     * it sets the hit speed flag to true and records the current time.
+     * If the time since spin up is greater than 300 milliseconds and the shooter speed is still greater than or equal to the free speed,
+     * it records the current time and sets the intake voltage to voltage2.
+     */
     @Override
     public void execute() {
         if (shooter.getShooterSpeed() >= freeSpeed && !hitSpeed) {
@@ -63,13 +95,25 @@ public class ShootSpeakerL1 extends Command {
         }
     }
 
+    /**
+     * This method is called when the command ends.
+     * It stops the intake and shooter by setting their voltages to 0.
+     * 
+     * @param interrupted true if the command was interrupted, false otherwise
+     */
     @Override
     public void end(boolean interrupted) {
         intake.setIntakeVoltage(0);
         shooter.setShooterVoltage(0);
-
     }
 
+    /**
+     * Determines whether the command is finished or not.
+     * The command is considered finished if the time since the intake spin-up is greater than 600 milliseconds
+     * and the shooter speed is greater than or equal to the free speed.
+     *
+     * @return true if the command is finished, false otherwise
+     */
     @Override
     public boolean isFinished() {
 

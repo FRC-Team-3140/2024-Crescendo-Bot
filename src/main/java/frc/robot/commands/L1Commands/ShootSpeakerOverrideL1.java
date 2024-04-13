@@ -13,6 +13,11 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 /** Set the shooter speed to ~max and then shoot the note at the speaker. */
+/**
+ * This class represents a command to override the shooter and intake speeds for shooting with a speaker.
+ * It sets the shooter speed and intake voltage to the specified values.
+ * This command can be used in the robot's command scheduler or bound to a button for control.
+ */
 public class ShootSpeakerOverrideL1 extends Command {
 
     private final Shooter shooter;
@@ -20,6 +25,20 @@ public class ShootSpeakerOverrideL1 extends Command {
     private final double shooterSpeed;
     private final double voltage2;
 
+    // Called when the command is initially scheduled.
+    SequentialCommandGroup test;
+
+    long startTime;
+    double timeSinceSpinUp = Double.MAX_VALUE;
+
+    boolean hitSpeed = false;
+
+    /**
+     * A command that overrides the shooter speed and intake voltage for shooting with a speaker.
+     * 
+     * @param shooterSpeed The desired speed of the shooter.
+     * @param intakeVoltage The desired voltage of the intake.
+     */
     public ShootSpeakerOverrideL1(double shooterSpeed, double intakeVoltage) {
         this.intake = Intake.getInstance();
         this.shooter = Shooter.getInstance();
@@ -31,20 +50,20 @@ public class ShootSpeakerOverrideL1 extends Command {
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.
     }
-
-    // Called when the command is initially scheduled.
-    SequentialCommandGroup test;
-    long startTime;
-
+    /**
+     * Initializes the ShootSpeakerOverrideL1 command.
+     * Sets the start time and sets the shooter speed.
+     */
     @Override
     public void initialize() {
         startTime = System.currentTimeMillis();
         shooter.setShooterSpeed(shooterSpeed);
     }
 
-    double timeSinceSpinUp = Double.MAX_VALUE;
-    boolean hitSpeed = false;
-
+    /**
+        * Executes the command by setting the shooter voltage for the top and bottom motors
+        * and setting the intake voltage.
+        */
     @Override
     public void execute() {
         shooter.setShooterVoltageTop(shooterSpeed);
@@ -52,12 +71,23 @@ public class ShootSpeakerOverrideL1 extends Command {
         intake.setIntakeVoltage(voltage2);
     }
 
+    /**
+        * Called when the command ends or is interrupted.
+        * This method is responsible for stopping the intake shooter.
+        *
+        * @param interrupted true if the command was interrupted, false otherwise
+        */
     @Override
     public void end(boolean interrupted) {
         // intakeShooter.setIntakeVoltage(0);
         // intakeShooter.setShooterVoltage(0);
     }
 
+    /**
+     * Determines whether the command has finished executing.
+     * 
+     * @return true if the command is finished, false otherwise
+     */
     @Override
     public boolean isFinished() {
         return false;

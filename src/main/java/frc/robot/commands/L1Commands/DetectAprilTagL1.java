@@ -16,7 +16,6 @@ import frc.robot.sensors.Camera;
  * 
  * Distance seems to be along the ground and over estimates by about 7 percent.
  */
-
 public class DetectAprilTagL1 extends Command {
 
     private Camera m_camera = Camera.getInstance();
@@ -31,6 +30,12 @@ public class DetectAprilTagL1 extends Command {
     private int tag_id = 0;
     PhotonTrackedTarget target;
     
+    /**
+     * This command is responsible for detecting an AprilTag in Level 1.
+     * It takes a timeout value as a parameter.
+     * 
+     * @param timeout The time in seconds to run the command before it times out.
+     */
     public DetectAprilTagL1(double timeout) {
 
         m_timeout = timeout;
@@ -38,10 +43,13 @@ public class DetectAprilTagL1 extends Command {
         // addRequirements(RobotContainer.m_subsystem);
     }
     
-    // Called when the command is initially scheduled.
+    /**
+     * Initializes the DetectAprilTagL1 command.
+     * This method is called once when the command is first scheduled.
+     * It sets up the necessary variables and assigns the tag ID based on the alliance color.
+     */
     @Override
     public void initialize() {
-        // TODO System.out.print("INIT DETECT APRIL TAG");
         m_end_time = System.currentTimeMillis() / 1000.0 + m_timeout;
 
         m_distance_sum = 0;
@@ -49,13 +57,18 @@ public class DetectAprilTagL1 extends Command {
         m_count = 0;
 
         if(DriverStation.getAlliance().get().equals(Alliance.Blue)){
-            tag_id = 7; // TODO: Don't hardcode this.  Change it based on team assignment.
+            tag_id = 7; 
         }else{
             tag_id = 4;
         }
     }
     
-    // Called every time the scheduler runs while the command is scheduled.
+    /**
+     * Executes the command to detect an AprilTag and update the running sum of distance and angle.
+     * If the pose of the detected tag is ambiguous, the measurement is skipped.
+     * 
+     * @throws Exception if an error occurs during the execution of the command.
+     */
     @Override
     public void execute() {
         try {
@@ -82,8 +95,6 @@ public class DetectAprilTagL1 extends Command {
             m_angle_sum += yaw;
             m_count++;
             
-            // TODO: Remove this print statement
-            //System.out.println("AprilTag detected: " + tag_id + " at distance " + distance + " and angle " + angle + " and Yaw " + yaw);
             }else{
                 RobotContainer.controller.setRumble().schedule();
                 RobotContainer.controller2.setRumble().schedule();
@@ -92,41 +103,64 @@ public class DetectAprilTagL1 extends Command {
             System.err.println(e + "Line 92");
         }
     }
+
+    /**
+     * Returns the PhotonTrackedTarget object representing the detected target.
+     *
+     * @return The PhotonTrackedTarget object representing the detected target.
+     */
     public PhotonTrackedTarget getTarget(){
         return target;
     }
 
+    /**
+     * Calculates and returns the average distance based on the sum of distances and the count of measurements.
+     * 
+     * @return The average distance.
+     */
     public double getDistance() {
         return m_distance_sum / m_count;
     }   
 
+    /**
+     * Returns the average yaw angle calculated from the sum of angles and the count of measurements.
+     *
+     * @return the average yaw angle
+     */
     public double getYawAngle() {
         return m_angle_sum / m_count;
     }   
 
+    /**
+     * Returns the count of values in the average.
+     *
+     * @return the count
+     */
     public int count() {
         return m_count;
     }
     
-    // Called once the command ends or is interrupted.
+    /**
+     * This method is called when the command ends.
+     * 
+     * @param interrupted true if the command was interrupted, false otherwise
+     */
     @Override
     public void end(boolean interrupted) {
     }
     
-    // Returns true when the command should end.
+    /**
+     * Checks if the command has finished executing.
+     * The command is considered finished if either the count exceeds 2 or the current time exceeds the end time.
+     * @return true if the command is finished, false otherwise.
+     */
     @Override
     public boolean isFinished() {
         if (m_count > 2 ) {
-            // double avg_distance = m_distance_sum / m_count;
-            // double avg_angle = m_angle_sum / m_count;
-            // TODO: Remove this print statement
-            //System.out.println("AprilTag average distance: " + avg_distance + " and angle " + avg_angle);
             return true;
         }
 
         if (System.currentTimeMillis() / 1000.0 > m_end_time) {
-            // TODO: Remove this print statement
-            //System.out.println("AprilTag timed out");
             return true;
         }
 
