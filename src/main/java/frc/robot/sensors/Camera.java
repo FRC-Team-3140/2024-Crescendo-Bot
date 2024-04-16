@@ -75,11 +75,22 @@ public class Camera extends SubsystemBase {
   private int ampAprilTag;
   private int sourceAprilTag;
 
+
+  /**
+   * Represents the layout of AprilTags in the camera's field of view.
+   */
   public class aprilTagLayout {
     public final int speakerAprilTag;
     public final int ampAprilTag;
     public final int sourceAprilTag;
 
+    /**
+     * Constructs a new instance of the AprilTag layout.
+     * 
+     * @param speaker The AprilTag ID for the speaker.
+     * @param amp The AprilTag ID for the amplifier.
+     * @param source The AprilTag ID for the audio source.
+     */
     public aprilTagLayout(int speaker, int amp, int source) {
       this.speakerAprilTag = speaker;
       this.ampAprilTag = amp;
@@ -87,6 +98,9 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Represents data related to an AprilTag detection.
+   */
   public class aprilTagData {
     public final boolean isDetected;
     public final double distance;
@@ -94,6 +108,15 @@ public class Camera extends SubsystemBase {
     public final double angle;
     public final int id;
 
+    /**
+     * Constructs an instance of the AprilTag data.
+     *
+     * @param isDetected  true if an AprilTag is detected, false otherwise
+     * @param dist        the distance to the AprilTag
+     * @param ambiguity   the ambiguity of the AprilTag detection
+     * @param angle       the angle to the AprilTag
+     * @param id          the ID of the AprilTag
+     */
     public aprilTagData(boolean isDetected, double dist, double ambiguity, double angle, int id) {
       this.isDetected = isDetected;
       this.distance = dist;
@@ -103,28 +126,55 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  public class ShapeData {
-    public final boolean isDetected;
-    public final double distance;
-    public final double angle;
+  /**
+     * Represents data about a detected shape.
+     */
+    public class ShapeData {
+      public final boolean isDetected;
+      public final double distance;
+      public final double angle;
 
-    public ShapeData(boolean isDetected, double dist, double angle) {
-      this.isDetected = isDetected;
-      this.distance = dist;
-      this.angle = angle;
+      /**
+       * Constructs a new ShapeData object.
+       * 
+       * @param isDetected true if a shape is detected, false otherwise
+       * @param distance the distance to the detected shape
+       * @param angle the angle to the detected shape
+       */
+      public ShapeData(boolean isDetected, double distance, double angle) {
+        this.isDetected = isDetected;
+        this.distance = distance;
+        this.angle = angle;
+      }
     }
-  }
 
+  /**
+   * Represents a distance measurement obtained from a camera sensor.
+   */
   public class DistMeasurement {
     public final double distance;
     public final double ambiguity;
 
+    /**
+     * Constructs a new DistMeasurement object with the specified distance and ambiguity values.
+     * 
+     * @param distance   the measured distance
+     * @param ambiguity  the ambiguity of the distance measurement
+     */
     public DistMeasurement(double distance, double ambiguity) {
       this.distance = distance;
       this.ambiguity = ambiguity;
     }
   }
 
+  /**
+   * Represents a camera used for vision processing.
+   * This class handles the connection and configuration of the camera.
+   *
+   * @param PhotonvisionConnectionAttempts The number of connection attempts to make to PhotonVision.
+   * @param delayBetweenAttempts The delay in seconds between each connection attempt.
+   * @param minAmbiguity The minimum ambiguity value for AprilTags.
+   */
   private Camera(int PhotonvisionConnectionAttempts, double delayBetweenAttempts, double minAmbiguity) {
     attemptDelay = delayBetweenAttempts;
 
@@ -155,6 +205,9 @@ public class Camera extends SubsystemBase {
     configureTeam();
   }
 
+  /**
+   * Represents a camera used for vision processing.
+   */
   public static Camera getInstance() {
     if (instance == null) {
       instance = new Camera(5, 1, 0.1);
@@ -162,10 +215,14 @@ public class Camera extends SubsystemBase {
     return instance;
   }
 
-  // Attempt reconnection method attempts to reinstantiate cameras on
-  // reconnection.
-  // The "singleton" is just here to return the already created instance if there
-  // is one - TK
+  /**
+   * This method attempts to get an instance of the PhotonCamera for AprilTag detection.
+   * If an instance already exists, it returns that instance. If not, it creates a new instance.
+   * Before creating a new instance, it checks if the version of the library matches the expected version.
+   * It will be reinstated if it loses connection.
+   * 
+   * @return The existing or newly created PhotonCamera instance for AprilTag detection.
+   */
   private PhotonCamera aprilGetInstance() {
     checkVersion();
     if (versionMatches && april == null) {
@@ -174,10 +231,14 @@ public class Camera extends SubsystemBase {
     return april;
   }
 
-  // Attempt reconnection method attempts to reinstantiate cameras on
-  // reconnection.
-  // The "singleton" is just here to return the already created instance if there
-  // is one - TK
+  /**
+   * This method attempts to get an instance of the PhotonCamera for shape detection.
+   * If an instance already exists, it returns that instance. If not, it creates a new instance.
+   * Before creating a new instance, it checks if the version of the library matches the expected version.
+   * It will be reinstated if it loses connection.
+   * 
+   * @return The existing or newly created PhotonCamera instance for shape detection.
+   */
   private PhotonCamera notesGetInstance() {
     checkVersion();
     if (versionMatches && shape == null) {
@@ -186,6 +247,11 @@ public class Camera extends SubsystemBase {
     return shape;
   }
 
+  /**
+   * Configures the team-specific settings for the camera.
+   * If the alliance is Red, it sets the apriltag constant id's for the left side.
+   * If the alliance is not Red, it sets the apriltag constant id's for the right side.
+   */
   private void configureTeam() {
     // Configures apriltag constant id's
     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
@@ -203,6 +269,11 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Checks the version of the connected PhotonVision camera.
+   * 
+   * @return true if the version matches the expected version, false otherwise.
+   */
   private boolean checkVersion() {
     Timer timeout = new Timer();
     String version = "";
@@ -222,6 +293,13 @@ public class Camera extends SubsystemBase {
     return PhotonVersion.versionMatches(version);
   }
 
+  /**
+   * Checks the connection status of the cameras.
+   * If either camera is working or connected, sets the 'connected' flag to true.
+   * Otherwise, sets the 'connected' flag to false.
+   * 
+   * @return the connection status of the cameras
+   */
   private boolean testConnection() {
     // If either camera is working || connected == true
     if (april.isConnected() || shape.isConnected()) {
@@ -233,6 +311,10 @@ public class Camera extends SubsystemBase {
     return connected;
   }
 
+  /**
+   * Attempts to reconnect to PhotonVision if the connection is lost.
+   * This method continuously checks for a connection until it is successfully established.
+   */
   private void attemptToReconnect() {
     System.err.println(
         "!!!!!!!!!!!!!!!!!!!!\nPhotonvision is no longer connected properly.\nAttempting reconnection\n!!!!!!!!!!!!!!!!!!!!");
@@ -253,8 +335,14 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Sets the status of the network table.
+   * This method updates various entries in the network table to reflect the current status of the camera and its connections.
+   * If an error occurs while updating the network table, an error message is printed to the console.
+   */
   private void setNetworktableStatus() {
     try {
+      // TODO: Simplify this repeated code: inst.getTable("Vision").getSubTable("Status")
       inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
       inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
           .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
@@ -273,6 +361,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * This method is called periodically to perform camera-related tasks.
+   * It checks if a certain amount of time has passed and if the camera connection is still active.
+   * If necessary, it attempts to reconnect to the camera.
+   * It also updates the network table information periodically.
+   */
   @Override
   public void periodic() {
     try {
@@ -295,6 +389,7 @@ public class Camera extends SubsystemBase {
         }
       }
 
+      // TODO: Remove this debugging code
       // Debugging Networktable Entries
       // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
       // inst.getTable("Vision").getSubTable("Camera").getEntry("ID:
@@ -311,6 +406,11 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Gets the status of the camera.
+   * 
+   * @return true if the camera is connected and the version matches, false otherwise.
+   */
   public boolean getStatus() {
     setNetworktableStatus();
 
@@ -322,6 +422,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Retrieves the latest AprilTag detection with the specified tag ID.
+   * 
+   * @param tag_id the ID of the AprilTag to search for
+   * @return the PhotonTrackedTarget object representing the detected AprilTag, or null if not found
+   */
   public PhotonTrackedTarget latestAprilTagDetection(int tag_id) {
     // Check if hasTargets is true, then check if the tag_id is equal to the
     if (april.getLatestResult().hasTargets()) {
@@ -337,6 +443,11 @@ public class Camera extends SubsystemBase {
     return null;
   }
 
+  /**
+   * Checks if an AprilTag is detected by the camera.
+   * 
+   * @return true if an AprilTag is detected, false otherwise.
+   */
   public boolean getAprilTagDetected() {
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       return april.getLatestResult().hasTargets();
@@ -344,6 +455,12 @@ public class Camera extends SubsystemBase {
     return false;
   }
 
+  /**
+   * Returns the ID of the detected AprilTag.
+   * If the function returns 0, it means that no targets were detected.
+   *
+   * @return The ID of the detected AprilTag, or -1 if no targets were detected.
+   */
   public int getApriltagID() {
     // If this function returns a 0, that means there is not any detected targets
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
@@ -355,6 +472,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Returns the yaw angle of the detected AprilTag target.
+   * If no targets are detected, it returns 999. TODO:  codes are not a good way to do this. 
+   *
+   * @return The yaw angle of the detected AprilTag target, or 999 if no targets are detected.
+   */
   public double getApriltagYaw() {
     // If this function returns a 999, that means there is not any detected targets
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
@@ -366,6 +489,13 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Returns the yaw angle of the specified Apriltag target.
+   * If the function returns 999, it means there are no detected targets.
+   *
+   * @param id The ID of the Apriltag target.
+   * @return The yaw angle of the specified Apriltag target, or 999 if no targets are detected.
+   */
   public double getApriltagYaw(int id) {
     // If this function returns a 999, that means there is not any detected targets
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -380,6 +510,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Returns the pitch angle of the detected AprilTag target.
+   * If no targets are detected, it returns 999.
+   *
+   * @return The pitch angle of the detected AprilTag target, or 999 if no targets are detected.
+   */
   public double getApriltagPitch() {
     // If this function returns a 999, that means there is not any detected targets
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
@@ -391,6 +527,13 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Returns the pitch angle of the specified AprilTag target.
+   * If no targets are detected, it returns 999.
+   *
+   * @param id The ID of the AprilTag target.
+   * @return The pitch angle of the target, or 999 if no targets are detected.
+   */
   public double getApriltagPitch(int id) {
     // If this function returns a 999, that means there is not any detected targets
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -405,7 +548,14 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  public DistMeasurement getApriltagDistX() {
+  /**
+   * Represents a distance measurement from the camera to the best (largest) target.
+   * The distance is measured along the X-axis.
+   * The pose ambiguity indicates the uncertainty in the target's pose estimation.
+   * 
+   * @return The distance measurement from the camera to the best target, or null if no targets are detected or the camera is not connected.
+   */
+  public DistMeasurement getBestApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
@@ -416,7 +566,13 @@ public class Camera extends SubsystemBase {
       return null;
     }
   }
-
+  
+  /**
+   * Retrieves the distance measurement for a specific AprilTag ID.
+   *
+   * @param id The ID of the AprilTag.
+   * @return The distance measurement for the specified AprilTag ID, or null if the tag is not found or the camera is not connected.
+   */
   public DistMeasurement getApriltagDistX(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
@@ -432,7 +588,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
-  public DistMeasurement getApriltagDistY() {
+  /**
+   * Represents a distance measurement from the camera to the best (largest) target.
+   * 
+   * @return The distance measurement from the camera to the best target, or 0 if no targets are detected.
+   */
+  public DistMeasurement getBestApriltagDistY() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
@@ -444,6 +605,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Represents a distance measurement from the camera to a specific target id.
+   * 
+   * @param id The ID of the target.
+   * @return The distance measurement from the camera to the specified target ID, or null if the tag is not found or the camera is not connected.
+   */
   public DistMeasurement getApriltagDistY(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
@@ -461,9 +628,17 @@ public class Camera extends SubsystemBase {
 
   /**************************************************************************************/
 
-  public double getAprilTagDist() {
-    DistMeasurement distX = getApriltagDistX();
-    DistMeasurement distY = getApriltagDistY();
+  /**
+   * Calculates the distance to an AprilTag using the best available measurements.
+   * If both the X and Y distances are available and the average ambiguity is below the minimum ambiguity threshold,
+   * the distance is calculated using the Pythagorean theorem.
+   * If any of the measurements are missing or the average ambiguity is above the threshold, the distance is considered 0.
+   *
+   * @return The calculated distance to the AprilTag.
+   */
+  public double getBestAprilTagDist() {
+    DistMeasurement distX = getBestApriltagDistX();
+    DistMeasurement distY = getBestApriltagDistY();
 
     if (distX != null && distY != null && (distX.ambiguity + distY.ambiguity) / 2 <= minAmbiguity) {
       return Math.sqrt((Math.pow(distX.distance, 2) + Math.pow(distY.distance, 2)));
@@ -472,6 +647,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Calculates the distance to an AprilTag based on its ID.
+   * 
+   * @param id The ID of the AprilTag.
+   * @return The distance to the AprilTag, or 0 if the distance cannot be determined.
+   */
   public double getAprilTagDist(int id) {
     DistMeasurement distX = getApriltagDistX(id);
     DistMeasurement distY = getApriltagDistY(id);
@@ -483,9 +664,14 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Calculates the angle in degrees to the Apriltag.
+   * 
+   * @return The angle in degrees to the Apriltag. Returns 999 if the Apriltag is not detected or if the version does not match.
+   */
   public double getDegToApriltag() {
-    DistMeasurement distX = getApriltagDistX();
-    DistMeasurement distY = getApriltagDistY();
+    DistMeasurement distX = getBestApriltagDistX();
+    DistMeasurement distY = getBestApriltagDistY();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       /*
@@ -508,6 +694,12 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Calculates the angle in degrees to an Apriltag based on its ID.
+   * 
+   * @param id The ID of the Apriltag.
+   * @return The angle in degrees to the Apriltag. Returns 999 if the Apriltag is not found or if the distance measurements are ambiguous. Returns 9999 if the camera is not connected or the version does not match.
+   */
   public double getDegToApriltag(int id) {
     DistMeasurement distX = getApriltagDistX(id);
     DistMeasurement distY = getApriltagDistY(id);
@@ -538,6 +730,9 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * Represents data related to an AprilTag.
+   */
   public aprilTagData getAprilTagData(int id) {
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
@@ -557,10 +752,20 @@ public class Camera extends SubsystemBase {
     return new aprilTagData(false, 0, 0, 0, -1);
   }
 
+  /**
+   * Retrieves the layout of the AprilTag.
+   *
+   * @return the layout of the AprilTag
+   */
   public aprilTagLayout getAprilTagLayout() {
     return aprilTagLayout;
   }
 
+  /**
+   * Returns whether a shape is detected by the camera.
+   * 
+   * @return true if a shape is detected, false otherwise.
+   */
   public boolean getShapeDetected() {
     if (connected && versionMatches && shape != null && shape.getLatestResult().hasTargets()) {
       return shape.getLatestResult().hasTargets();
@@ -568,6 +773,11 @@ public class Camera extends SubsystemBase {
     return false;
   }
 
+  /**
+   * Returns the angle of the detected shape relative to the robot.
+   * 
+   * @return The angle of the shape relative to the robot, or 999 if no shape is detected.
+   */
   public double getShapeAngle() {
     PhotonTrackedTarget target = shape.getLatestResult().getBestTarget();
 
@@ -578,6 +788,11 @@ public class Camera extends SubsystemBase {
     return 999;
   }
 
+  /**
+   * Returns the area of the shape detected by the camera.
+   * 
+   * @return The area of the shape, or 0.0 if no shape is detected or the camera is not connected.
+   */
   public double getShapeArea() {
     PhotonTrackedTarget target = shape.getLatestResult().getBestTarget();
 
@@ -587,21 +802,44 @@ public class Camera extends SubsystemBase {
     return 0.0;
   }
 
+  /**
+   * Returns the timestamp of the camera image.
+   *
+   * @return The timestamp of the camera image.
+   */
   public double getTimestamp() {
     return inst.getTable("photonvision").getSubTable("april").getEntry("heartbeat").getDouble(0);
   }
 
+  /**
+   * Returns the current time in milliseconds since the program started.
+   *
+   * @return the current time in milliseconds
+   */
   public double getCurrentTime() {
     // Shouldn't need to typecast here, but JIC :) - TK
     return (double) (System.currentTimeMillis() - programStartTime);
   }
 
+  /**
+   * Returns the latency in seconds for the camera feed.
+   * 
+   * @return The latency in seconds.
+   */
   public double getLatencySeconds() {
     return april.getLatestResult().getLatencyMillis() / 1000;
   }
 
+  /**
+   * Returns an optional EstimatedRobotPose object representing the estimated global pose of the robot.
+   * The estimated global pose is obtained by setting the reference pose of the AprilTagPoseEstimator
+   * to the current pose of the SwerveDrive instance and updating it with the latest result from the AprilTag.
+   * 
+   * @return an optional EstimatedRobotPose object representing the estimated global pose of the robot,
+   *         or an empty optional if the pose cannot be estimated.
+   */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
+    aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose()); // TODO: If this is a generic class it cannot depend on our drive train type.
     return aprilTagPoseEstimator.update(april.getLatestResult());
   }
 }
