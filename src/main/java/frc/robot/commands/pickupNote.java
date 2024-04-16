@@ -131,7 +131,7 @@ public class pickupNote extends SequentialCommandGroup {
     @Override
     public void execute() {
       try {
-        double ang = camera.getNoteAngle();
+        double ang = camera.getShapeAngle();
 
         double driveAng;
 
@@ -150,10 +150,10 @@ public class pickupNote extends SequentialCommandGroup {
         if (withController) {
           swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
               -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-              Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
+              Math.pow((1 - (camera.getShapeArea() / 100)), 2) * driveAng,
               true);
         } else {
-          if (!camera.getNoteDetected()) {
+          if (!camera.getShapeDetected()) {
             timeout.start();
           } else {
             timeout.stop();
@@ -163,7 +163,7 @@ public class pickupNote extends SequentialCommandGroup {
           if (timeout.hasElapsed(exploreTimeout)) {
             run = false;
           } else {
-            swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng, false);
+            swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getShapeArea() / 100)), 2) * driveAng, false);
           }
         }
       } catch (Error e) {
