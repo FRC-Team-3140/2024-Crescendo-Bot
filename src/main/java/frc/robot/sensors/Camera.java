@@ -66,24 +66,8 @@ public class Camera extends SubsystemBase {
   // Time to delay connection attempts is in SECONDS! - TK
   private double attemptDelay;
 
+  // minAmbiguity is a percent expressed as a decimal - TK
   private double minAmbiguity;
-
-  // TODO: Determine if we need the pathfind to apriltag code
-  /*
-   * // Global variables for updating Pathplanner poses - TK
-   * private SwerveDrive swerveDrive;
-   * private Pose2d currentSwervePose2d;
-   * private double currentX;
-   * private double currentY;
-   * private double newX;
-   * private double newY;
-   *
-   * 
-   * // percentage of forward distance you want to drive before stopping (to
-   * prevent
-   * // crashing). - TK
-   * private double percentTravelDist = 0.8; // Must be < 1
-   */
 
   // Global fiducial ids for important landmark apriltags - TK
   public aprilTagLayout aprilTagLayout;
