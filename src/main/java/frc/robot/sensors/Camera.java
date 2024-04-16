@@ -151,8 +151,9 @@ public class Camera extends SubsystemBase {
   /**
    * Represents a distance measurement obtained from a camera sensor.
    */
-  public class DistMeasurement {
+  public class Measurement {
     public final double distance;
+    public final double angle;
     public final double ambiguity;
 
     /**
@@ -161,8 +162,9 @@ public class Camera extends SubsystemBase {
      * @param distance   the measured distance
      * @param ambiguity  the ambiguity of the distance measurement
      */
-    public DistMeasurement(double distance, double ambiguity) {
+    public Measurement(double distance, double angle, double ambiguity) {
       this.distance = distance;
+      this.angle = angle;
       this.ambiguity = ambiguity;
     }
   }
@@ -555,13 +557,13 @@ public class Camera extends SubsystemBase {
    * 
    * @return The distance measurement from the camera to the best target, or null if no targets are detected or the camera is not connected.
    */
-  public DistMeasurement getBestApriltagDistX() {
+  public Measurement getBestApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets() && target != null) {
-      return new DistMeasurement(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
+      return new Measurement(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
     } else {
       return null;
     }
@@ -573,13 +575,13 @@ public class Camera extends SubsystemBase {
    * @param id The ID of the AprilTag.
    * @return The distance measurement for the specified AprilTag ID, or null if the tag is not found or the camera is not connected.
    */
-  public DistMeasurement getApriltagDistX(int id) {
+  public Measurement getApriltagDistX(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target != null && target.getFiducialId() == id) {
-          return new DistMeasurement(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
+          return new Measurement(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
         }
       }
       return null;
@@ -593,13 +595,13 @@ public class Camera extends SubsystemBase {
    * 
    * @return The distance measurement from the camera to the best target, or 0 if no targets are detected.
    */
-  public DistMeasurement getBestApriltagDistY() {
+  public Measurement getBestApriltagDistY() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets() && target != null) {
-      return new DistMeasurement(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
+      return new Measurement(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
     } else {
       return null;
     }
@@ -611,13 +613,13 @@ public class Camera extends SubsystemBase {
    * @param id The ID of the target.
    * @return The distance measurement from the camera to the specified target ID, or null if the tag is not found or the camera is not connected.
    */
-  public DistMeasurement getApriltagDistY(int id) {
+  public Measurement getApriltagDistY(int id) {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target != null && target.getFiducialId() == id) {
-          return new DistMeasurement(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
+          return new Measurement(target.getBestCameraToTarget().getX(), target.getPoseAmbiguity());
         }
       }
       return null;
@@ -637,8 +639,8 @@ public class Camera extends SubsystemBase {
    * @return The calculated distance to the AprilTag.
    */
   public double getBestAprilTagDist() {
-    DistMeasurement distX = getBestApriltagDistX();
-    DistMeasurement distY = getBestApriltagDistY();
+    Measurement distX = getBestApriltagDistX();
+    Measurement distY = getBestApriltagDistY();
 
     if (distX != null && distY != null && (distX.ambiguity + distY.ambiguity) / 2 <= minAmbiguity) {
       return Math.sqrt((Math.pow(distX.distance, 2) + Math.pow(distY.distance, 2)));
@@ -654,8 +656,8 @@ public class Camera extends SubsystemBase {
    * @return The distance to the AprilTag, or 0 if the distance cannot be determined.
    */
   public double getAprilTagDist(int id) {
-    DistMeasurement distX = getApriltagDistX(id);
-    DistMeasurement distY = getApriltagDistY(id);
+    Measurement distX = getApriltagDistX(id);
+    Measurement distY = getApriltagDistY(id);
 
     if (distX != null && distY != null && (distX.ambiguity + distY.ambiguity) / 2 <= minAmbiguity) {
       return Math.sqrt((Math.pow(distX.distance, 2) + Math.pow(distY.distance, 2)));
@@ -670,8 +672,8 @@ public class Camera extends SubsystemBase {
    * @return The angle in degrees to the Apriltag. Returns 999 if the Apriltag is not detected or if the version does not match.
    */
   public double getDegToApriltag() {
-    DistMeasurement distX = getBestApriltagDistX();
-    DistMeasurement distY = getBestApriltagDistY();
+    Measurement distX = getBestApriltagDistX();
+    Measurement distY = getBestApriltagDistY();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       /*
@@ -701,8 +703,8 @@ public class Camera extends SubsystemBase {
    * @return The angle in degrees to the Apriltag. Returns 999 if the Apriltag is not found or if the distance measurements are ambiguous. Returns 9999 if the camera is not connected or the version does not match.
    */
   public double getDegToApriltag(int id) {
-    DistMeasurement distX = getApriltagDistX(id);
-    DistMeasurement distY = getApriltagDistY(id);
+    Measurement distX = getApriltagDistX(id);
+    Measurement distY = getApriltagDistY(id);
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
@@ -737,7 +739,7 @@ public class Camera extends SubsystemBase {
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target.getFiducialId() == id) {
-          DistMeasurement measurement = getApriltagDistY(id);
+          Measurement measurement = getApriltagDistY(id);
 
           if (measurement != null) {
             double deg = getDegToApriltag(id);
