@@ -41,7 +41,7 @@ public class Camera extends SubsystemBase {
 
   /******************************************************************************
    * Update the following variables to ensure that the cameras are instanciated *
-   * properly! *
+   * properly!                                                                  *
    ******************************************************************************/
   private final String aprilTagCameraName = "april";
   private final String shapeCameraName = "shape";
@@ -53,6 +53,10 @@ public class Camera extends SubsystemBase {
   // private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0,
   // 0.5), new Rotation3d(0, 0, 0));
 
+  /******************************************************************************
+   * Update the following variables to ensure that the pose is calculated       *
+   * properly!                                                                  *
+   ******************************************************************************/
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
   private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
@@ -512,7 +516,8 @@ public class Camera extends SubsystemBase {
    * Returns the pitch angle of the detected AprilTag target.
    * If no targets are detected, it returns null.
    *
-   * @return The pitch angle of the detected AprilTag target, or null if no targets
+   * @return The pitch angle of the detected AprilTag target, or null if no
+   *         targets
    *         are detected.
    */
   public Double getApriltagPitch() {

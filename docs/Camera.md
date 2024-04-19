@@ -10,8 +10,12 @@
     - [ ] Verify that cameras can be viewed using Photonvision.
     
 ## Camera class information
-* All "getDistance" functions must return 0 if Photonvision has an issue or if there's no target in view (for the methods that you specify an ID & for the best quality methods). If they didn't return 0, any methods that were using them for movement measurements would get a valid value/point to move to. 
-* Same type of thing for angle related methods (they return 999) due to it being out of the valid 360 & +- 180 ranges. 
+* __Camera Names:__ 
+  * There are two variables: 'aprilTagCameraName' 'shapeCameraName'
+* __Connection Attempts, Delay between attempts, & min ambiguity:__ 
+  * These are all fields that you configure in the Camera.getInstance() method. 
+* __AprilTag field layout:__
+  * You will need to configure the field layout for the Photonvision Pose estimator. This can be done at the top of the class.
 
 ### Error Checking related methods
 * testConnection() - Checks if previous value is equal to the new value useing the Photonvision "Heart Beat" value (basically a runtime counter) 
