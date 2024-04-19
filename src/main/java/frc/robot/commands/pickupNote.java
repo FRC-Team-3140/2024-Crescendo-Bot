@@ -14,6 +14,7 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.sensors.Camera;
+import frc.robot.sensors.Camera.ShapeData;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
@@ -131,13 +132,15 @@ public class pickupNote extends SequentialCommandGroup {
     @Override
     public void execute() {
       try {
-        double ang = camera.getShapeAngle();
+        ShapeData shapeData = camera.getShapeData(); 
+
+        double ang = 0;
 
         double driveAng;
 
-        if (ang != 999) {
-          if (Math.abs(ang) < deadzone) {
-            ang = 0;
+        if (shapeData != null) {
+          if (Math.abs(shapeData.angle) < deadzone) {
+            ang = shapeData.angle;
           }
 
           turnController.setSetpoint(swerve.getPose().getRotation().getDegrees() + ang);
@@ -150,7 +153,7 @@ public class pickupNote extends SequentialCommandGroup {
         if (withController) {
           swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
               -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-              Math.pow((1 - (camera.getShapeArea() / 100)), 2) * driveAng,
+              Math.pow((1 - (shapeData.area / 100)), 2) * driveAng,
               true);
         } else {
           if (!camera.getShapeDetected()) {
@@ -163,7 +166,7 @@ public class pickupNote extends SequentialCommandGroup {
           if (timeout.hasElapsed(exploreTimeout)) {
             run = false;
           } else {
-            swerve.drive(driveSpeed, 0, Math.pow((1 - (camera.getShapeArea() / 100)), 2) * driveAng, false);
+            swerve.drive(driveSpeed, 0, Math.pow((1 - (shapeData.area / 100)), 2) * driveAng, false);
           }
         }
       } catch (Error e) {

@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,8 +50,8 @@ public class Camera extends SubsystemBase {
   private Transform3d robotToApril = new Transform3d(new Translation3d(-Constants.botLength / 2, 0.0, 0.5),
       new Rotation3d(0, 0, Math.PI));
 
-  // TODO: get measurements for note cam - TK : private Transform3d robotToNote =
-  // new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+  // private Transform3d robotToNote = new Transform3d(new Translation3d(0.5, 0.0,
+  // 0.5), new Rotation3d(0, 0, 0));
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
@@ -108,20 +109,17 @@ public class Camera extends SubsystemBase {
    * Represents data about a detected shape.
    */
   public class ShapeData {
-    public final boolean isDetected;
-    public final double distance;
+    public final double area;
     public final double angle;
 
     /**
      * Constructs a new ShapeData object.
      * 
-     * @param isDetected true if a shape is detected, false otherwise
-     * @param distance   the distance to the detected shape
-     * @param angle      the angle to the detected shape
+     * @param area  the distance to the detected shape
+     * @param angle the angle to the detected shape
      */
-    public ShapeData(boolean isDetected, double distance, double angle) {
-      this.isDetected = isDetected;
-      this.distance = distance;
+    public ShapeData(double area, double angle) {
+      this.area = area;
       this.angle = angle;
     }
   }
@@ -324,20 +322,24 @@ public class Camera extends SubsystemBase {
    */
   private void setNetworktableStatus() {
     try {
-      // TODO: Simplify this repeated code:
-      // inst.getTable("Vision").getSubTable("Status")
-      inst.getTable("Vision").getSubTable("Status").getEntry("Version Matches: ").setBoolean(versionMatches);
-      inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Version: ")
-          .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
-      inst.getTable("Vision").getSubTable("Status").getSubTable("Version Info").getEntry("Photon Lib Version: ")
-          .setString(PhotonVersion.versionString);
-      inst.getTable("Vision").getSubTable("Status").getEntry("Connection: ").setBoolean(connected);
+      NetworkTable status = inst.getTable("Vision").getSubTable("Status");
 
-      if (connected && versionMatches && april != null) {
-        inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("April Connection: ")
-            .setBoolean(april.isConnected());
-        inst.getTable("Vision").getSubTable("Status").getSubTable("Camera Status").getEntry("Notes Connection: ")
-            .setBoolean(shape.isConnected());
+      status.getEntry("Version Matches: ").setBoolean(versionMatches);
+      status.getSubTable("Version Info").getEntry("Photon Version: ")
+          .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
+      status.getSubTable("Version Info").getEntry("Photon Lib Version: ")
+          .setString(PhotonVersion.versionString);
+      status.getEntry("Connection: ").setBoolean(connected);
+
+      if (connected && versionMatches) {
+        if (april != null) {
+          status.getSubTable("Camera Status").getEntry("April Connection: ")
+              .setBoolean(april.isConnected());
+        }
+        if (shape != null) {
+          status.getSubTable("Camera Status").getEntry("Shape Connection: ")
+              .setBoolean(shape.isConnected());
+        }
       }
     } catch (Error e) {
       System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
@@ -420,12 +422,11 @@ public class Camera extends SubsystemBase {
 
   /**
    * Returns the ID of the detected AprilTag.
-   * If the function returns 0, it means that no targets were detected.
+   * If the function returns null, it means that no targets were detected.
    *
    * @return The ID of the detected AprilTag, or null if no targets were detected.
    */
   public Integer getBestApriltagID() {
-    // If this function returns a 0, that means there is not any detected targets
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -435,6 +436,18 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * If the camera is connected, version matches, and it has targets, this class
+   * will compile all of the important apriltag information into one object.
+   * 
+   * @param xDist     the distance along the x axis
+   * @param yDist     the distance along the y axis 
+   * @param yaw       the relative yaw to the target 
+   * @param ambiguity the ambiguity of the measurement
+   * @param id        the fiducial id of the associated apriltag
+   * 
+   * @return ApriltagMeasurement object
+   */
   public AprilTagMeasurement getBestAprilTagData() {
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
@@ -466,6 +479,17 @@ public class Camera extends SubsystemBase {
     }
   }
 
+  /**
+   * If the camera is connected, version matches, and it has targets, this class
+   * will compile all of the important apriltag information into one object.
+   * 
+   * @param xDist     the distance along the x axis
+   * @param yDist     the distance along the y axis 
+   * @param yaw       the relative yaw to the target 
+   * @param ambiguity the ambiguity of the measurement
+   * 
+   * @return ApriltagMeasurement object
+   */
   public AprilTagMeasurement getAprilTagData(int id) {
     double xDist;
     double yDist;
@@ -520,6 +544,7 @@ public class Camera extends SubsystemBase {
    * If no targets are detected, it returns 999.
    *
    * @param id The ID of the AprilTag target.
+   *
    * @return The pitch angle of the target, or 999 if no targets are detected.
    */
   public Double getApriltagPitch(int id) {
@@ -563,6 +588,7 @@ public class Camera extends SubsystemBase {
    * Calculates the distance to an AprilTag based on its ID.
    * 
    * @param id The ID of the AprilTag.
+   * 
    * @return The distance to the AprilTag, or 0 if the distance cannot be
    *         determined.
    */
@@ -600,6 +626,7 @@ public class Camera extends SubsystemBase {
    * Calculates the angle in degrees to an Apriltag based on its ID.
    * 
    * @param id The ID of the Apriltag.
+   * 
    * @return The angle in degrees to the Apriltag. Returns 999 if the Apriltag is
    *         not found or if the distance measurements are ambiguous. Returns 9999
    *         if the camera is not connected or the version does not match.
@@ -640,32 +667,27 @@ public class Camera extends SubsystemBase {
   /**
    * Returns the angle of the detected shape relative to the robot.
    * 
-   * @return The angle of the shape relative to the robot, or 999 if no shape is
+   * @return The angle of the shape relative to the robot, or null if no shape is
    *         detected.
    */
-  public double getShapeAngle() {
+  public ShapeData getShapeData() {
     PhotonTrackedTarget target = shape.getLatestResult().getBestTarget();
+
+    double yaw; 
+    double area;
 
     // Robot relative angle
     if (connected && versionMatches && shape != null && shape.getLatestResult().hasTargets() && target != null) {
-      return target.getYaw();
-    }
-    return 999;
-  }
+      // realative yaw to the shape
+      yaw = target.getYaw();
 
-  /**
-   * Returns the area of the shape detected by the camera.
-   * 
-   * @return The area of the shape, or 0.0 if no shape is detected or the camera
-   *         is not connected.
-   */
-  public double getShapeArea() {
-    PhotonTrackedTarget target = shape.getLatestResult().getBestTarget();
+      // area of the shape
+      area = target.getArea();
 
-    if (connected && versionMatches && shape != null && shape.getLatestResult().hasTargets() && target != null) {
-      return target.getArea();
+      return new ShapeData(yaw, area);
+    } else {
+      return null;
     }
-    return 0.0;
   }
 
   /**
