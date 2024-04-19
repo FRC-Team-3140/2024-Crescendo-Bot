@@ -373,19 +373,6 @@ public class Camera extends SubsystemBase {
               .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
         }
       }
-
-      // TODO: Remove this debugging code
-      // Debugging Networktable Entries
-      // aprilTagLocation tag = getAprilTagLocation(speakerAprilTag);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("ID:
-      // ").setInteger(tag.id);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("Detected:
-      // ").setBoolean(tag.isDetected);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("Dist:
-      // ").setDouble(tag.distance);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("Ambiguity").setDouble(tag.ambiguity);
-      // inst.getTable("Vision").getSubTable("Camera").getEntry("Degrees:
-      // ").setDouble(tag.angle);
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
     }
@@ -441,8 +428,8 @@ public class Camera extends SubsystemBase {
    * will compile all of the important apriltag information into one object.
    * 
    * @param xDist     the distance along the x axis
-   * @param yDist     the distance along the y axis 
-   * @param yaw       the relative yaw to the target 
+   * @param yDist     the distance along the y axis
+   * @param yaw       the relative yaw to the target
    * @param ambiguity the ambiguity of the measurement
    * @param id        the fiducial id of the associated apriltag
    * 
@@ -484,8 +471,8 @@ public class Camera extends SubsystemBase {
    * will compile all of the important apriltag information into one object.
    * 
    * @param xDist     the distance along the x axis
-   * @param yDist     the distance along the y axis 
-   * @param yaw       the relative yaw to the target 
+   * @param yDist     the distance along the y axis
+   * @param yaw       the relative yaw to the target
    * @param ambiguity the ambiguity of the measurement
    * 
    * @return ApriltagMeasurement object
@@ -523,13 +510,13 @@ public class Camera extends SubsystemBase {
 
   /**
    * Returns the pitch angle of the detected AprilTag target.
-   * If no targets are detected, it returns 999.
+   * If no targets are detected, it returns null.
    *
-   * @return The pitch angle of the detected AprilTag target, or 999 if no targets
+   * @return The pitch angle of the detected AprilTag target, or null if no targets
    *         are detected.
    */
   public Double getApriltagPitch() {
-    // If this function returns a 999, that means there is not any detected targets
+    // If this function returns a null, that means there is not any detected targets
     PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
@@ -541,14 +528,13 @@ public class Camera extends SubsystemBase {
 
   /**
    * Returns the pitch angle of the specified AprilTag target.
-   * If no targets are detected, it returns 999.
+   * If no targets are detected, it returns null.
    *
    * @param id The ID of the AprilTag target.
    *
-   * @return The pitch angle of the target, or 999 if no targets are detected.
+   * @return The pitch angle of the target, or null if no targets are detected.
    */
   public Double getApriltagPitch(int id) {
-    // If this function returns a 999, that means there is not any detected targets
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target != null && target.getFiducialId() == id) {
@@ -605,12 +591,10 @@ public class Camera extends SubsystemBase {
   /**
    * Calculates the angle in degrees to the Apriltag.
    * 
-   * @return The angle in degrees to the Apriltag. Returns 999 if the Apriltag is
+   * @return The angle in degrees to the Apriltag. Returns null if the Apriltag is
    *         not detected or if the version does not match.
    */
   public Double getDegToApriltag() {
-    // TODO: remove unnecessary checks such as april.getLatestResult().hasTargets()
-    // in this method.
     AprilTagMeasurement measurement = getBestAprilTagData();
 
     if (connected && versionMatches && measurement != null && measurement.ambiguity <= minAmbiguity) {
@@ -627,8 +611,8 @@ public class Camera extends SubsystemBase {
    * 
    * @param id The ID of the Apriltag.
    * 
-   * @return The angle in degrees to the Apriltag. Returns 999 if the Apriltag is
-   *         not found or if the distance measurements are ambiguous. Returns 9999
+   * @return The angle in degrees to the Apriltag. Returns null if the Apriltag is
+   *         not found or if the distance measurements are ambiguous. Returns null
    *         if the camera is not connected or the version does not match.
    */
   public Double getDegToApriltag(int id) {
@@ -673,7 +657,7 @@ public class Camera extends SubsystemBase {
   public ShapeData getShapeData() {
     PhotonTrackedTarget target = shape.getLatestResult().getBestTarget();
 
-    double yaw; 
+    double yaw;
     double area;
 
     // Robot relative angle
@@ -722,7 +706,7 @@ public class Camera extends SubsystemBase {
    *         or an empty optional if the pose cannot be estimated.
    */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    // TODO: If this is a generic class it cannot depend on our drive train type.
+    // Update this method accordingly to get the pose of the swerveDrive
     aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
     return aprilTagPoseEstimator.update(april.getLatestResult());
   }
