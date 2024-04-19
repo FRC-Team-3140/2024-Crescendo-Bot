@@ -41,12 +41,16 @@ public class Camera extends SubsystemBase{
   // Gets initial instantiation of Cameras - TK
   private PhotonCamera april = aprilGetInstance();
   private PhotonCamera notes = notesGetInstance();
+  private PhotonCamera april2 = april2GetInstance();
+
 
   // TODO: Find the actual postition of the cameras on the bot. - TK
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
   private Transform3d robotToApril = new Transform3d(new Translation3d(-Units.inchesToMeters(29) / 2, 0.0, 0.45),
       new Rotation3d(0, .09, Math.PI));
+  private Transform3d sideRobotToApril = new Transform3d(new Translation3d(0, -Units.inchesToMeters(29) / 2, 0.6),
+      new Rotation3d(0, 0, Math.PI/2));
 
   // Cam mounted facing forward, half a meter forward of center, half a meter up
   // from center. - TK
@@ -56,6 +60,8 @@ public class Camera extends SubsystemBase{
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToApril);
+  private PhotonPoseEstimator sideAprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+      PoseStrategy.CLOSEST_TO_REFERENCE_POSE, sideRobotToApril);
 
   private boolean connected = false;
   private int connectionAttempts = 2;
@@ -211,6 +217,14 @@ public class Camera extends SubsystemBase{
     return notes;
   }
 
+  private PhotonCamera april2GetInstance() {
+    if (april2 == null) {
+      april2 = new PhotonCamera(inst, "april2");
+    }
+    return april2;
+  }
+
+
   private void configureTeam() {
     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
       speakerAprilTag = 4; // Apriltag on left
@@ -294,12 +308,17 @@ public class Camera extends SubsystemBase{
 
   public int getApriltagID() {
     // If this function returns a 0, that means there is not any detected targets
-
+    int id;
     if (connected && april.getLatestResult().hasTargets()) {
-      return april.getLatestResult().getBestTarget().getFiducialId();
-    } else {
-      return -1;
+      id = april.getLatestResult().getBestTarget().getFiducialId();
     }
+    else if (connected && april2.getLatestResult().hasTargets()) {
+      id = april2.getLatestResult().getBestTarget().getFiducialId();
+    }
+    else {
+      id= -1;
+    }
+    return id;
   }
 
   public double getApriltagYaw() {
@@ -340,7 +359,7 @@ public class Camera extends SubsystemBase{
   public DistAmb getApriltagDistX() {
     // This coordinate is relative to the robot w/t the Photonvision axis 90* out of
     // phase.
-    if (connected && april.getLatestResult().hasTargets()) {
+    if (connected && april.getLatestResult().hasTargets()&& !april2.getLatestResult().hasTargets()) {
       PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
       return new DistAmb(target.getBestCameraToTarget().getY(), target.getPoseAmbiguity());
     } else {
@@ -527,14 +546,23 @@ public class Camera extends SubsystemBase{
   }
   
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    Optional<EstimatedRobotPose> pose = null;
     aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
-    return aprilTagPoseEstimator.update(april.getLatestResult());
+    return pose;
+
+
     // aprilTagPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     // if (connected && april.getLatestResult().hasTargets() &&
     // !april.getLatestResult().equals(lastResult)){
     // } else {
     // return null;
     // }
+  }
+  PhotonCamera sideApril = new PhotonCamera("Side April");
+  public Optional<EstimatedRobotPose> getSideEstimatedGlobalPose() {
+
+    sideAprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
+    return sideAprilTagPoseEstimator.update(sideApril.getLatestResult());
   }
 
   // public SequentialCommandGroup pathfindToAprilTag() {

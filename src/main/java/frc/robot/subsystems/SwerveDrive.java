@@ -228,19 +228,22 @@ public class SwerveDrive extends SubsystemBase implements Constants {
 
 
     try {
-      if (Camera.getInstance().getStatus()) {
-        Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
+      if (true) {
+        Optional<EstimatedRobotPose> pose = Camera.getInstance().getSideEstimatedGlobalPose();
         DistAmb reading = Camera.getInstance().getApriltagDistX();
-        if (pose.isPresent() && reading != null  
+        if (pose.isPresent()  
         // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
          ) {
 
           poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
               Timer.getFPGATimestamp()-Camera.getInstance().getLatencySeconds());
           // System.out.println("Target Detected");
-        }//  else {
+          System.out.println("Working as expected");
+        }
+        else {
+          System.out.println("Not Detected");
         //    poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
-        // }
+        }
       }
     } catch (Error test) {
       System.err.println(test);
