@@ -19,6 +19,26 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 
+/**
+   * This class has the provides the option to pass in a drive speed and
+   * exploration timeout duration.
+   * - Default drive speed is 3
+   * - Set in driveSpeed variable
+   *
+   * - Default timeout is 2 SECONDS!
+   * - Set in exploreTimeout
+   *     This timeout is only used when no notes are in frame!
+   * 
+   * - Global Timeout: Default 4 SECONDS!
+   * - Ends command after set duration
+   * 
+   * @param withController Wether or not to drive with strafing controller inputs
+   * @param swerve         The SwerveDrive subsystem
+   * @param camera         The Camera subsystem
+   * @param exploreTimeout The amount of time to drive without a note in frame
+   * @param driveSpeed     The constant speed to drive at 
+   */
+
 public class pickupNote extends SequentialCommandGroup {
   /** Creates a new pickupNote. */
   private static boolean run = true;
@@ -29,30 +49,23 @@ public class pickupNote extends SequentialCommandGroup {
   private static SwerveDrive swerve = null;
   private static Camera camera = null;
 
-  private static double driveSpeed = 3;
+  private static double driveSpeed = .3;
 
   // Run with SwerveDrive Controller
   private static Boolean withController = false;
 
   private static PIDController turnController = new PIDController(0.025, 0, 0.0025);
 
-  private static double deadzone = 5;
+  private static double deadzone = 0.25;
 
   private static double globalTimeout = 4;
   private static double exploreTimeout = 2;
 
-  /***********************************************************************
-   * *
-   * This class has the provides the option to pass in a drive speed and *
-   * exploration timeout duration. *
-   * - Default drive speed is 3 *
-   * - Set in driveSpeed variable *
-   * *
-   * - Default timeout is 2 SECONDS! *
-   * - Set in exploreTimeout *
-   * * This timeout is only used when no notes are in frame! *
-   * *
-   ***********************************************************************/
+  private static ShapeData shapeData;
+
+  private static double ang = 0;
+
+  private static double driveAng;
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
@@ -121,10 +134,6 @@ public class pickupNote extends SequentialCommandGroup {
     @Override
     public void initialize() {
       run = true;
-      timeout.stop();
-      timeout.reset();
-      globalTimer.stop();
-      globalTimer.reset();
       globalTimer.start();
     }
 
@@ -132,14 +141,10 @@ public class pickupNote extends SequentialCommandGroup {
     @Override
     public void execute() {
       try {
-        ShapeData shapeData = camera.getShapeData(); 
-
-        double ang = 0;
-
-        double driveAng;
+        shapeData = camera.getShapeData();
 
         if (shapeData != null) {
-          if (Math.abs(shapeData.angle) < deadzone) {
+          if (Math.abs(shapeData.angle) > deadzone) {
             ang = shapeData.angle;
           }
 
@@ -153,8 +158,9 @@ public class pickupNote extends SequentialCommandGroup {
         if (withController) {
           swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
               -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-              Math.pow((1 - (shapeData.area / 100)), 2) * driveAng,
+              shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : 0,
               true);
+          System.out.println("Running...");
         } else {
           if (!camera.getShapeDetected()) {
             timeout.start();
@@ -166,7 +172,8 @@ public class pickupNote extends SequentialCommandGroup {
           if (timeout.hasElapsed(exploreTimeout)) {
             run = false;
           } else {
-            swerve.drive(driveSpeed, 0, Math.pow((1 - (shapeData.area / 100)), 2) * driveAng, false);
+            swerve.drive(driveSpeed, 0, shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : 0,
+                false);
           }
         }
       } catch (Error e) {
@@ -187,7 +194,7 @@ public class pickupNote extends SequentialCommandGroup {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      if (globalTimer.hasElapsed(globalTimeout)) {
+      if (!withController && globalTimer.hasElapsed(globalTimeout)) {
         return true;
       }
 
