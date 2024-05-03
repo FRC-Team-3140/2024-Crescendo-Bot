@@ -673,7 +673,7 @@ public class Camera extends SubsystemBase {
       // area of the shape
       area = target.getArea();
 
-      return new ShapeData(yaw, area);
+      return new ShapeData(area, yaw);
     } else {
       return null;
     }

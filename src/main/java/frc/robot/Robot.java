@@ -164,13 +164,14 @@ public class Robot extends LoggedRobot {
     // AutoBuilder.buildAuto("Turn")).schedule();
 
     // pickupNote test with pathplanner
-    new SequentialCommandGroup(
-      AutoBuilder.buildAuto("Straight Line").withTimeout(2), 
-      new PrintCommand("Straight Line has Ended"),
-      new pickupNote(false, RobotContainer.swerve, RobotContainer.camera),
-      AutoBuilder.buildAuto("Opposite of Straight Line"), new PrintCommand("The Command Has Ended")).schedule();
+    // new SequentialCommandGroup(
+    //   AutoBuilder.buildAuto("Straight Line").withTimeout(2), 
+    //   new PrintCommand("Straight Line has Ended"),
+    //   new pickupNote(false, RobotContainer.swerve, RobotContainer.camera),
+    //   AutoBuilder.buildAuto("Opposite of Straight Line"), new PrintCommand("The Command Has Ended")).schedule();
     // new pickupNote(true, RobotContainer.swerve,
     // RobotContainer.camera).schedule();
+    new pickupNote(false, RobotContainer.swerve, RobotContainer.camera).schedule();
   }
 
   /** This function is called periodically during test mode. */

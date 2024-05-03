@@ -7,7 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -49,7 +49,7 @@ public class pickupNote extends SequentialCommandGroup {
   private static SwerveDrive swerve = null;
   private static Camera camera = null;
 
-  private static double driveSpeed = .3;
+  private static double driveSpeed = 1;
 
   // Run with SwerveDrive Controller
   private static Boolean withController = false;
@@ -58,7 +58,7 @@ public class pickupNote extends SequentialCommandGroup {
 
   private static double deadzone = 0.25;
 
-  private static double globalTimeout = 4;
+  private static double globalTimeout = 20;
   private static double exploreTimeout = 2;
 
   private static ShapeData shapeData;
@@ -70,7 +70,7 @@ public class pickupNote extends SequentialCommandGroup {
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
+        new ParallelCommandGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
             new PickUpNoteCommand()));
 
     pickupNote.swerve = swerve;
@@ -84,7 +84,7 @@ public class pickupNote extends SequentialCommandGroup {
 
   public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, Camera camera) {
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
+        new ParallelCommandGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
             new PickUpNoteCommand()));
 
     pickupNote.swerve = swerve;
@@ -99,7 +99,7 @@ public class pickupNote extends SequentialCommandGroup {
 
   public pickupNote(Boolean withController, SwerveDrive swerve, double driveSpeed, Camera camera) {
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
+        new ParallelCommandGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
             new PickUpNoteCommand()));
 
     pickupNote.swerve = swerve;
@@ -115,7 +115,7 @@ public class pickupNote extends SequentialCommandGroup {
   public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, double driveSpeed,
       Camera camera) {
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
+        new ParallelCommandGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
             new PickUpNoteCommand()));
 
     pickupNote.swerve = swerve;
@@ -134,7 +134,9 @@ public class pickupNote extends SequentialCommandGroup {
     @Override
     public void initialize() {
       run = true;
-      globalTimer.start();
+      if (!withController) {
+        globalTimer.start();
+      }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -194,15 +196,16 @@ public class pickupNote extends SequentialCommandGroup {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      if (!withController && globalTimer.hasElapsed(globalTimeout)) {
-        return true;
-      }
+      // if (!withController && globalTimer.hasElapsed(globalTimeout)) {
+      //   return true;
+      // }
 
-      if (run) {
-        return Intake.getInstance().noteDetected();
-      } else {
-        return true;
-      }
+      // if (run) {
+      //   return Intake.getInstance().noteDetected();
+      // } else {
+      //   return true;
+      // }
+      return false; 
     }
   }
 }
