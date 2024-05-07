@@ -20,24 +20,24 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 
 /**
-   * This class has the provides the option to pass in a drive speed and
-   * exploration timeout duration.
-   * - Default drive speed is 3
-   * - Set in driveSpeed variable
-   *
-   * - Default timeout is 2 SECONDS!
-   * - Set in exploreTimeout
-   *     This timeout is only used when no notes are in frame!
-   * 
-   * - Global Timeout: Default 4 SECONDS!
-   * - Ends command after set duration
-   * 
-   * @param withController Wether or not to drive with strafing controller inputs
-   * @param swerve         The SwerveDrive subsystem
-   * @param camera         The Camera subsystem
-   * @param exploreTimeout The amount of time to drive without a note in frame
-   * @param driveSpeed     The constant speed to drive at 
-   */
+ * This class has the provides the option to pass in a drive speed and
+ * exploration timeout duration.
+ * - Default drive speed is 3
+ * - Set in driveSpeed variable
+ *
+ * - Default timeout is 2 SECONDS!
+ * - Set in exploreTimeout
+ * This timeout is only used when no notes are in frame!
+ * 
+ * - Global Timeout: Default 4 SECONDS!
+ * - Ends command after set duration
+ * 
+ * @param withController Wether or not to drive with strafing controller inputs
+ * @param swerve         The SwerveDrive subsystem
+ * @param camera         The Camera subsystem
+ * @param exploreTimeout The amount of time to drive without a note in frame
+ * @param driveSpeed     The constant speed to drive at
+ */
 
 public class pickupNote extends SequentialCommandGroup {
   /** Creates a new pickupNote. */
@@ -54,7 +54,7 @@ public class pickupNote extends SequentialCommandGroup {
   // Run with SwerveDrive Controller
   private static Boolean withController = false;
 
-  private static PIDController turnController = new PIDController(0.025, 0, 0.0025);
+  private static PIDController turnController = new PIDController(0.05, 0, 0.005);
 
   private static double deadzone = 0.25;
 
@@ -162,7 +162,6 @@ public class pickupNote extends SequentialCommandGroup {
               -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
               shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : 0,
               true);
-          System.out.println("Running...");
         } else {
           if (!camera.getShapeDetected()) {
             timeout.start();
@@ -196,16 +195,15 @@ public class pickupNote extends SequentialCommandGroup {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      // if (!withController && globalTimer.hasElapsed(globalTimeout)) {
-      //   return true;
-      // }
+      if (!withController && globalTimer.hasElapsed(globalTimeout)) {
+        return true;
+      }
 
-      // if (run) {
-      //   return Intake.getInstance().noteDetected();
-      // } else {
-      //   return true;
-      // }
-      return false; 
+      if (run) {
+        return Intake.getInstance().noteDetected();
+      } else {
+        return true;
+      }
     }
   }
 }

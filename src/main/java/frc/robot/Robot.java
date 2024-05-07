@@ -171,7 +171,7 @@ public class Robot extends LoggedRobot {
     //   AutoBuilder.buildAuto("Opposite of Straight Line"), new PrintCommand("The Command Has Ended")).schedule();
     // new pickupNote(true, RobotContainer.swerve,
     // RobotContainer.camera).schedule();
-    new pickupNote(false, RobotContainer.swerve, RobotContainer.camera).schedule();
+    new pickupNote(true, RobotContainer.swerve, RobotContainer.camera).schedule();
   }
 
   /** This function is called periodically during test mode. */
