@@ -49,12 +49,12 @@ public class pickupNote extends SequentialCommandGroup {
   private static SwerveDrive swerve = null;
   private static Camera camera = null;
 
-  private static double driveSpeed = 1;
+  private static double driveSpeed = 0.5;
 
   // Run with SwerveDrive Controller
   private static Boolean withController = false;
 
-  private static PIDController turnController = new PIDController(0.05, 0, 0.005);
+  private static PIDController turnController = new PIDController(0.05, 0.01, 0.005);
 
   private static double deadzone = 0.25;
 
@@ -190,6 +190,7 @@ public class pickupNote extends SequentialCommandGroup {
       globalTimer.stop();
       globalTimer.reset();
       Intake.getInstance().setIntakeVoltage(0);
+      swerve.drive(0, 0, 0, false);
     }
 
     // Returns true when the command should end.
