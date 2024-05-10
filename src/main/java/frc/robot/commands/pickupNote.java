@@ -160,7 +160,7 @@ public class pickupNote extends SequentialCommandGroup {
         if (withController) {
           swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
               -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-              shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : 0,
+              shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : RobotContainer.controller.getRightX() * Constants.maxTurnSpeed,
               true);
         } else {
           if (!camera.getShapeDetected()) {
