@@ -6,17 +6,14 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.pickupNote;
+// import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;

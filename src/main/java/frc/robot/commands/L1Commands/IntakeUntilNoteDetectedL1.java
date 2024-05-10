@@ -59,8 +59,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeVoltage(0);
-    RobotContainer.controller.setRumble().schedule();
-    RobotContainer.controller2.setRumble().schedule();
+    // RobotContainer.controller.setRumble().schedule();
+    // RobotContainer.controller2.setRumble().schedule();
   }
 
   /**
