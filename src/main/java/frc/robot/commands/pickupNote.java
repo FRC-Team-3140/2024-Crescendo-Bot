@@ -54,7 +54,7 @@ public class pickupNote extends SequentialCommandGroup {
   // Run with SwerveDrive Controller
   private static Boolean withController = false;
 
-  private static PIDController turnController = new PIDController(0.05, 0.01, 0.005);
+  private static PIDController turnController = new PIDController(0.05, 0.01, 0.002);
 
   private static double deadzone = 0.25;
 
@@ -160,7 +160,7 @@ public class pickupNote extends SequentialCommandGroup {
         if (withController) {
           swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
               -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-              shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : RobotContainer.controller.getRightX() * Constants.maxTurnSpeed,
+              shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : -(RobotContainer.controller.getRightX() * Constants.maxChassisTurnSpeed),
               true);
         } else {
           if (!camera.getShapeDetected()) {
