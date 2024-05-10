@@ -60,7 +60,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotContainer {
 
-  int leftBumperPresses = 0;
+  // int leftBumperPresses = 0;
   pickupNote PickUpNoteCommand;
 
   public static ControllerHelper controller = new ControllerHelper(0);
@@ -161,7 +161,8 @@ public class RobotContainer {
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(() -> {if (!PickUpNoteCommand.isScheduled()) {PickUpNoteCommand.schedule();}}));
+    new JoystickButton(controller, Button.kLeftBumper.value).onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
     new JoystickButton(controller, Button.kA.value).whileTrue(new CameraShootDistanceL3());
 
     new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
@@ -216,14 +217,14 @@ public class RobotContainer {
 
   }
 
-  private void togglePickUpNote() {
-    leftBumperPresses++;
-    if (leftBumperPresses % 2 == 1) {
-      PickUpNoteCommand.schedule();
-    } else {
-      PickUpNoteCommand.cancel();
-    }
-  }
+  // private void togglePickUpNote() {
+  // leftBumperPresses++;
+  // if (leftBumperPresses % 2 == 1) {
+  // PickUpNoteCommand.schedule();
+  // } else {
+  // PickUpNoteCommand.cancel();
+  // }
+  // }
 
 }
 

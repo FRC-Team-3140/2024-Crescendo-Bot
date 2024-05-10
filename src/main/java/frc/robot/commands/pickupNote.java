@@ -49,12 +49,12 @@ public class pickupNote extends SequentialCommandGroup {
   private static SwerveDrive swerve = null;
   private static Camera camera = null;
 
-  private static double driveSpeed = 0.5;
+  private static double driveSpeed = 2;
 
   // Run with SwerveDrive Controller
   private static Boolean withController = false;
 
-  private static PIDController turnController = new PIDController(0.05, 0.01, 0.002);
+  private static PIDController turnController = new PIDController(0.055, 0.025, 0.003);
 
   private static double deadzone = 0.25;
 

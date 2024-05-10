@@ -64,12 +64,12 @@ public class Arm extends SubsystemBase {
   // Constants for the arm setpoint
   private static final double kDefaultSetpoint = 0.0; // The starting set point for the arm
   private static final double kMaxSetpoint = 94.0; // Maximum setpoint; Test again with Amp
-  private static final double kMinSetpoint = 7.5; // Minimum setpoint
+  private static final double kMinSetpoint = 8; // Minimum setpoint
 
   // Favorite setpoints
 
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
-  public static final double kSetpointIntakeDown = 7.5; // The setpoint for intaking
+  public static final double kSetpointIntakeDown = 8; // The setpoint for intaking
   public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
                                                           // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
