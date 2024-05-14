@@ -14,7 +14,7 @@ import frc.robot.subsystems.SwerveDrive;
 public class SetArmToDistanceL1 extends Command {
     private final Arm arm = Arm.getInstance();
     private double distance;
-    private double angleTolerance = .1;
+    private double angleTolerance = .5;
 
     /**
      * Creates a new SetArmToDistance command that moves the arm to the specified distance.

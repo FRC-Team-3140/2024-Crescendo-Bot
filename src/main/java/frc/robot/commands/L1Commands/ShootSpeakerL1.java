@@ -117,7 +117,7 @@ public class ShootSpeakerL1 extends Command {
     @Override
     public boolean isFinished() {
 
-        return System.currentTimeMillis() - timeSinceIntakeSpinUp > 600 && shooter.getShooterSpeed() >= freeSpeed;
+        return System.currentTimeMillis() - timeSinceIntakeSpinUp > 200 && shooter.getShooterSpeed() >= freeSpeed;
         // return System.currentTimeMillis() - startTime > 3000 ;//||
         // IntakeUntilNoteDetectedL1.pdp.getCurrent(17) > 5;//I dont think the channel
         // or the current it is greater than is correct. Please check that

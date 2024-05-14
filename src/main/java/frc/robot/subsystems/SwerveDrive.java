@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -32,9 +35,11 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.Camera;
+import frc.robot.sensors.Camera.DistAmb;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase {
@@ -88,7 +93,7 @@ public class SwerveDrive extends SubsystemBase {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                          // Constants class
-            new PIDConstants(4, 0.0, 0), // Translation PID constants
+            new PIDConstants(2, 0.0, 0), // Translation PID constants
             new PIDConstants(4, 0.0, 0), // Rotation PID constants
             Constants.maxChassisSpeed, // Max module speed, in m/s
             Constants.botRadius, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -109,10 +114,11 @@ public class SwerveDrive extends SubsystemBase {
         },
         new Pose2d(),
         VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(2)),
-        VecBuilder.fill(1, 1, Units.degreesToRadians(30
+        VecBuilder.fill(1.5, 1.5, Units.degreesToRadians(30
         )));
 
     Logger.recordOutput("Actual States", states);
+    Logger.recordOutput("Gyro States", states);
     Logger.recordOutput("Set States", swerveModuleStates);
     Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
   }
@@ -126,7 +132,10 @@ public class SwerveDrive extends SubsystemBase {
   // WPILib
   StructArrayPublisher<SwerveModuleState> actualStates = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Actual States", SwerveModuleState.struct).publish();
-  StructArrayPublisher<SwerveModuleState> setStates = NetworkTableInstance.getDefault()
+      StructArrayPublisher<SwerveModuleState> gyroStates = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("Gyro States", SwerveModuleState.struct).publish();
+
+      StructArrayPublisher<SwerveModuleState> setStates = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Set States", SwerveModuleState.struct).publish();
   StructPublisher<Pose2d> odometryStruct = NetworkTableInstance.getDefault()
       .getStructTopic("Odometry", Pose2d.struct).publish();
@@ -138,8 +147,9 @@ public class SwerveDrive extends SubsystemBase {
       states[i] = modules[i].getState();
     }
     updateOdometry();
-    // actualStates.set(swerveModuleStates);
-    // setStates.set(states);
+    actualStates.set(swerveModuleStates);
+    setStates.set(states);
+    gyroStates.set(kinematics.toSwerveModuleStates(new ChassisSpeeds(gyro.getVelocityX(), gyro.getVelocityY(), gyro.getRawGyroX())));
     // double visionStdDev = NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev")
         // .getDouble(.02);
     // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Units.degreesToRadians(30)));
@@ -210,24 +220,32 @@ public class SwerveDrive extends SubsystemBase {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
 
-  //   try {
-  //     if (Camera.getInstance().getStatus()) {
-  //       Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-  //       DistAmb reading = Camera.getInstance().getApriltagDistX();
-  //       if (pose.isPresent() && reading != null  
-  //       // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
-  //        ) {
+    try {
 
-  //         poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
-  //             Timer.getFPGATimestamp()-.04);
-  //         // System.out.println("Target Detected");
-  //       } // else {
-  //         // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
-  //         // }
-  //     }
-  //   } catch (Error test) {
-  //     System.err.println(test);
-  //   }
+      if (Camera.getInstance().getStatus()) {
+        Optional<EstimatedRobotPose> sidePose = Camera.getInstance().getSideEstimatedGlobalPose();
+        Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
+        // DistAmb reading = Camera.getInstance().getApriltagDistX();
+        if (pose.isPresent()) {
+          System.out.println("Updating as expected");
+          poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
+              Timer.getFPGATimestamp()-.04);
+          // System.out.println("Target Detected");
+        }else {
+          System.out.println("No Pose");
+          }
+        if(sidePose.isPresent()){
+          poseEstimator.addVisionMeasurement(sidePose.get().estimatedPose.toPose2d(),
+              Timer.getFPGATimestamp()-.04);
+          
+        }
+      }else{
+        System.out.println("Camera not detected");
+      }
+
+    } catch (Error test) {
+      System.err.println(test);
+    }
  }
 
   public SwerveModulePosition[] getModulePositions() {

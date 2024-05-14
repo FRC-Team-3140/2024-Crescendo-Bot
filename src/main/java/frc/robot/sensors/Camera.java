@@ -38,11 +38,14 @@ public class Camera extends SubsystemBase {
 
   // Gets initial instantiation of Cameras - TK
   public PhotonCamera april = aprilGetInstance();
+  public PhotonCamera sideApril = new PhotonCamera("Side April"); 
   public PhotonCamera notes = notesGetInstance();
 
   // Measurements to Cameras
-  private Transform3d robotToApril = new Transform3d(new Translation3d(-Constants.botLength / 2, 0.0, 0.5),
-      new Rotation3d(0, 0, Math.PI));
+  private Transform3d robotToApril = new Transform3d(new Translation3d(-Constants.botLength / 2, 0.0, .42),
+    new Rotation3d(0, -Math.PI/120, Math.PI));
+  private Transform3d sideRobotToApril = new Transform3d(new Translation3d(0, -Constants.botLength / 2, 0.5),
+      new Rotation3d(0, 0, -Math.PI/2));
 
   // TODO: get measurements for note cam - TK : private Transform3d robotToNote =
   // new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
@@ -50,6 +53,9 @@ public class Camera extends SubsystemBase {
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator aprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToApril);
+
+  private PhotonPoseEstimator sideAprilTagPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+      PoseStrategy.CLOSEST_TO_REFERENCE_POSE, sideRobotToApril);
 
   private boolean connected = false;
   private int connectionAttempts = 2;
@@ -616,6 +622,10 @@ public class Camera extends SubsystemBase {
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     aprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
     return aprilTagPoseEstimator.update(april.getLatestResult());
+  }
+  public Optional<EstimatedRobotPose> getSideEstimatedGlobalPose() {
+    sideAprilTagPoseEstimator.setReferencePose(SwerveDrive.getInstance().getPose());
+    return sideAprilTagPoseEstimator.update(sideApril.getLatestResult());
   }
 
   // public SequentialCommandGroup pathfindToAprilTag() {

@@ -90,18 +90,18 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
     NamedCommands.registerCommand("SpeakerShoot1",
-        new SequentialCommandGroup(new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2.5)),
+        new SequentialCommandGroup(new SpeakerShootDistanceL3().withTimeout(2.5),
             new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(2))));
 
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
 
     NamedCommands.registerCommand("SpeakerShoot2",
         new SequentialCommandGroup(new SetArmToDistanceL1(),
-            new ParallelRaceGroup(new ShootSpeakerL1(10, 5), new WaitCommand(2.5)),
+            new ShootSpeakerL1(10, 5).withTimeout(2),
             new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
 
     NamedCommands.registerCommand("SpeakerShoot3",
-        new ParallelCommandGroup(new SetArmToAngleL1(16), new ShootSpeakerL1(6.5, 5).withTimeout(3)));
+        new ParallelCommandGroup(new SetArmToAngleL1(16), new ShootSpeakerL1(6.5, 5).withTimeout(3)).andThen(new ShootSpeakerOverrideL1(6.5, 2).withTimeout(.3)));
 
     NamedCommands.registerCommand("StopMoving", new InstantCommand(() -> {
       swerve.drive(0, 0, 0, false);

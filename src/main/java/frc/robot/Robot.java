@@ -43,7 +43,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    DataLogManager.start();
+    // DataLogManager.start();
+    //DO NOT USE UNTIL COMPETITION
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
@@ -93,7 +94,6 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
-    SwerveDrive.getInstance().setVisionStdDeviations(1000);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
 

@@ -27,7 +27,7 @@ public class SpeakerShootDistanceL3 extends SequentialCommandGroup {
     public SpeakerShootDistanceL3() {
 
         super(
-                new ParallelCommandGroup(
+                new SequentialCommandGroup(
                         new SetArmToDistanceL1(), // TODO: Refactored. Test that this still works. -DB
                         new ShootSpeakerL1(10, 5),
                         new PrintCommand("Command ended")));
