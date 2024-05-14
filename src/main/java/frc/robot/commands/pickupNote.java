@@ -50,11 +50,14 @@ public class pickupNote extends SequentialCommandGroup {
   private static Camera camera = null;
 
   private static double driveSpeed = 2;
+  private static double minDriveSpeed = 0.3;
 
   // Run with SwerveDrive Controller
   private static Boolean withController = false;
 
-  private static PIDController turnController = new PIDController(0.055, 0.025, 0.003);
+  private static IntakeUntilNoteDetectedL1 intakeCommand = new IntakeUntilNoteDetectedL1();
+
+  private static PIDController turnController = new PIDController(0.035, 0.01, 0.0045);
 
   private static double deadzone = 0.25;
 
@@ -103,7 +106,7 @@ public class pickupNote extends SequentialCommandGroup {
             new PickUpNoteCommand()));
 
     pickupNote.swerve = swerve;
-    pickupNote.driveSpeed = driveSpeed;
+    pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
     pickupNote.camera = camera;
 
     pickupNote.withController = withController;
@@ -119,7 +122,7 @@ public class pickupNote extends SequentialCommandGroup {
             new PickUpNoteCommand()));
 
     pickupNote.swerve = swerve;
-    pickupNote.driveSpeed = driveSpeed;
+    pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
     pickupNote.camera = camera;
 
     pickupNote.withController = withController;
@@ -137,6 +140,7 @@ public class pickupNote extends SequentialCommandGroup {
       if (!withController) {
         globalTimer.start();
       }
+      turnController.setSetpoint(swerve.getPose().getRotation().getDegrees());
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -158,10 +162,23 @@ public class pickupNote extends SequentialCommandGroup {
         driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
 
         if (withController) {
-          swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
-              -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
-              shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : -(RobotContainer.controller.getRightX() * Constants.maxChassisTurnSpeed),
-              true);
+          if (RobotContainer.controller.getAButton()) {
+            if (!intakeCommand.isScheduled()) {
+              intakeCommand.schedule();
+            }
+
+            swerve.drive(driveSpeed, 0, shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng) : 0,
+                false);
+          } else {
+            if (intakeCommand.isScheduled()) {
+              intakeCommand.cancel();
+            }
+            swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
+                -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
+                shapeData != null ? (Math.pow((1 - (shapeData.area / 100)), 2) * driveAng)
+                    : -(RobotContainer.controller.getRightX() * Constants.maxChassisTurnSpeed),
+                true);
+          }
         } else {
           if (!camera.getShapeDetected()) {
             timeout.start();

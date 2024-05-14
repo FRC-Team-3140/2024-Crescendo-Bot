@@ -31,7 +31,6 @@ import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
-import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.ControllerHelper;
@@ -163,7 +162,7 @@ public class RobotContainer {
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
     new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(() -> {if (!PickUpNoteCommand.isScheduled()) {PickUpNoteCommand.schedule();}}));
     new JoystickButton(controller, Button.kLeftBumper.value).onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
-    new JoystickButton(controller, Button.kA.value).whileTrue(new CameraShootDistanceL3());
+    // new JoystickButton(controller, Button.kA.value).whileTrue(new CameraShootDistanceL3());
 
     new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
       BasicSwerveControlL2.fieldRelative = false;
