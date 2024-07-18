@@ -148,8 +148,8 @@ public class pickupNote extends SequentialCommandGroup {
         driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
 
         if (withController) {
-          swerve.drive(-(RobotContainer.controller.getLeftY() * Constants.maxChassisSpeed),
-              -(RobotContainer.controller.getLeftX() * Constants.maxChassisSpeed),
+          swerve.drive(-(RobotContainer.driver_controller.getLeftY() * Constants.maxChassisSpeed),
+              -(RobotContainer.driver_controller.getLeftX() * Constants.maxChassisSpeed),
               Math.pow((1 - (camera.getNoteArea() / 100)), 2) * driveAng,
               true);
         } else {

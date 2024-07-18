@@ -31,6 +31,7 @@ import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L2Commands.ManualIntakeControlL2;
 import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
@@ -63,7 +64,7 @@ public class RobotContainer {
   int leftBumperPresses = 0;
   pickupNote PickUpNoteCommand;
 
-  public static ControllerHelper controller = new ControllerHelper(0);
+  public static ControllerHelper driver_controller = new ControllerHelper(0);
   public static SwerveDrive swerve;
   public static Camera camera;
   public static Arm arm = Arm.getInstance();
@@ -71,7 +72,7 @@ public class RobotContainer {
   // SendableChooser<Command> autoChooser = new SendableChooser<>();
   SendableChooser<Command> autobuilder = new SendableChooser<>();
   public static Climber climber = Climber.getInstance();
-  public static ControllerHelper controller2 = new ControllerHelper(1);
+  public static ControllerHelper operator_controller = new ControllerHelper(1);
   public static Intake intake;
   public static Shooter shooter;
 
@@ -85,6 +86,8 @@ public class RobotContainer {
     camera = Camera.getInstance();
     swerve
         .setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
+
+    arm.setDefaultCommand(new ManualIntakeControlL2(operator_controller::getLeftTriggerAxis, operator_controller::getLeftBumper));
     shooter.setDefaultCommand(new StopSpinningShooter());
     PickUpNoteCommand = new pickupNote(true, swerve, camera);
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
@@ -103,9 +106,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("SpeakerShoot3",
         new ParallelCommandGroup(new SetArmToAngleL1(16), new ShootSpeakerL1(6.5, 5).withTimeout(3)).andThen(new ShootSpeakerOverrideL1(6.5, 2).withTimeout(.3)));
 
-    NamedCommands.registerCommand("StopMoving", new InstantCommand(() -> {
-      swerve.drive(0, 0, 0, false);
-    }));
+    NamedCommands.registerCommand("StopMoving", new InstantCommand(() -> {swerve.drive(0, 0, 0, false);    }));
     NamedCommands.registerCommand("Turn To Speaker", new DriveFacingSpeaker(swerve, Constants.maxChassisSpeed));
     NamedCommands.registerCommand("Wait", new WaitCommand(2));
 
@@ -149,57 +150,60 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Boolean suppliers
-    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
+    //BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
     // BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
-    BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
-    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
+    //BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
+    //BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
 
-    BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
-    BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
+    //BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
+    //BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
     // Primary Driver Controls
 
-    // Resetting Gyro
-    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
-    new JoystickButton(controller, Button.kA.value).whileTrue(new CameraShootDistanceL3());
+    arm.setDefaultCommand(new ManualIntakeControlL2(driver_controller::getLeftTriggerAxis, driver_controller::getLeftBumper));
 
-    new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
-      BasicSwerveControlL2.fieldRelative = false;
-    })).onFalse(new InstantCommand(() -> {
-      BasicSwerveControlL2.fieldRelative = true;
-    }));
+
+    // Resetting Gyro
+    new JoystickButton(driver_controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
+    new JoystickButton(driver_controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
+    new JoystickButton(driver_controller, Button.kA.value).whileTrue(new CameraShootDistanceL3());
+
+    //new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
+    //  BasicSwerveControlL2.fieldRelative = false;
+    //})).onFalse(new InstantCommand(() -> {
+    //  BasicSwerveControlL2.fieldRelative = true;
+    //}));
 
     // Secondary Driver Controls
 
-    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
-    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
-    new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
+    new JoystickButton(operator_controller, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
+    new JoystickButton(operator_controller, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
+    new JoystickButton(operator_controller, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
+    new JoystickButton(operator_controller, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
       if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
         swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
       } else {
         swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
       }
     })); // Optimal angle for shooting from against the speaker.
-    new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
-    new POVButton(controller2, 90).onTrue(new SetArmToAngleL1(35.5));
+    new POVButton(operator_controller, 0).onTrue(new SetArmToAngleL1(33.75));
+    new POVButton(operator_controller, 90).onTrue(new SetArmToAngleL1(35.5));
 
-    new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
+    new JoystickButton(operator_controller, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
+    new JoystickButton(operator_controller, Button.kRightBumper.value).onTrue(new ShootAmpL1())
         .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new ShootSpeakerL1(0,0));
-    new JoystickButton(controller2, Button.kLeftBumper.value)
+    new JoystickButton(operator_controller, Button.kLeftBumper.value)
         .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
 
-    new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
+    new JoystickButton(operator_controller, Button.kBack.value).whileTrue(new SpitOutNote());
 
-    new Trigger(lefttTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
-        .onFalse(new ShootSpeakerL1(0, 0));
+    //new Trigger(lefttTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
+    //    .onFalse(new ShootSpeakerL1(0, 0));
 
-    new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
-    new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
+    //new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
+    //new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
 
-    new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 0));
+    //new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 0));
 
   }
 

@@ -34,9 +34,9 @@ public class DriveFacingSpeaker extends Command {
      */
     @Override
     public void execute() {
-        final var xSpeed = -RobotContainer.controller.getLeftY() * maxSpeed; // Calculate the x speed based on the
+        final var xSpeed = -RobotContainer.driver_controller.getLeftY() * maxSpeed; // Calculate the x speed based on the
                                                                              // joystick input
-        final var ySpeed = -RobotContainer.controller.getLeftX() * maxSpeed; // Calculate the y speed based on the
+        final var ySpeed = -RobotContainer.driver_controller.getLeftX() * maxSpeed; // Calculate the y speed based on the
                                                                              // joystick input
         swerveDrive.driveRobotFacingSpeaker(xSpeed, ySpeed, fieldRelative); // Drive the swerve drive
     }
