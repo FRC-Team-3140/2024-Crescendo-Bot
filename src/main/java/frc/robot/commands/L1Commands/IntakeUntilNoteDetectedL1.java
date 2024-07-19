@@ -71,7 +71,7 @@ public class IntakeUntilNoteDetectedL1 extends Command {
    */
   @Override
   public boolean isFinished() {
-    return intake.noteDetected();
+    return intake.hasNote();
     // return false;
   }
 

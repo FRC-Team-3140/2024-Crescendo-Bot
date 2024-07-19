@@ -2,6 +2,7 @@ package frc.robot.commands.L2Commands;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -11,14 +12,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class ManualIntakeControlL2 extends Command {
     private final Arm arm;
     private final Intake intake;
-    private final DoubleSupplier intakeSpeedSupplier;
-    private final BooleanSupplier armPositionSupplier;
+    private Shooter shooter;
 
-    public ManualIntakeControlL2(DoubleSupplier intakeSpeedSupplier, BooleanSupplier armPositionSupplier) {
+    private final DoubleSupplier intakeSupplier;
+    private final BooleanSupplier ampShootSupplier;
+    private BooleanSupplier defaultShootSupplier;
+
+    public ManualIntakeControlL2(DoubleSupplier intakeSupplier, BooleanSupplier defaultShootSupplier,
+            BooleanSupplier ampShootSupplier) {
+
         this.arm = Arm.getInstance();
+        this.shooter = Shooter.getInstance();
         this.intake = Intake.getInstance();
-        this.intakeSpeedSupplier = intakeSpeedSupplier;
-        this.armPositionSupplier = armPositionSupplier;
+
+        this.intakeSupplier = intakeSupplier;
+        this.defaultShootSupplier = defaultShootSupplier;
+        this.ampShootSupplier = ampShootSupplier;
 
         // Declare subsystem dependencies
         addRequirements(arm, intake);
@@ -32,33 +41,72 @@ public class ManualIntakeControlL2 extends Command {
     @Override
     public void execute() {
         // Control the intake based on the float supplier
-        double intakeSpeed = intakeSpeedSupplier.getAsDouble();
-        boolean arm_position = armPositionSupplier.getAsBoolean();
+        double intakeValue = intakeSupplier.getAsDouble();
+        boolean ampShoot = ampShootSupplier.getAsBoolean();
+        boolean defaultShoot = defaultShootSupplier.getAsBoolean();
 
-        if (intakeSpeed > 0.1) {
-            // Linear interpret
-            // 0.1 is intake ready
-            // 0.9 is intake down
-            // map from 0.0 to 1.0
-            double arm_angle = (intakeSpeed - 0.1) / 0.8;
-            if(arm_angle > 1.0) arm_angle=1.0;
-            if(arm_angle < 0.0) arm_angle=0.0;
+        // priority: defaultShoot > ampShoot > intakeSpeed
+        if (defaultShoot) {
+            arm.setAngle(Arm.kSetpointShoot);
+            shooter.set(Shooter.kShootSpeed);
 
-            arm_angle = (1.0-arm_angle)*Arm.kSetpointIntakeReady + arm_angle*Arm.kSetpointIntakeDown;
-            arm.setAngle(arm_angle);
+            double speed = shooter.getShooterSpeed();
+            System.out.printf("Shooter Speed: %f\n",speed);
+            if(arm.isAtSetpoint() && (speed > 4000.0)){ // launch
+                intake.setIntakeVoltage(Intake.kSetpointShoot);
+            } else {
+                intake.setIntakeVoltage(Intake.kSetpointStop);
+            }
+
+        } else if (ampShoot) {
+            arm.setAngle(Arm.kSetpointAmp);
+            shooter.set(Shooter.kAmpSpeed);
+
+            double speed = shooter.getShooterSpeed();
+            System.out.printf("Shooter Speed: %f\n",speed);
+            if((speed > 1000.0)){ // launch
+                intake.setIntakeVoltage(Intake.kSetpointShoot);
+            } else {
+                intake.setIntakeVoltage(Intake.kSetpointStop);
+            }
+
+
         } else {
-            arm.setAngle(Arm.kSetpointIntakeReady);
-        }
+            if (intakeValue < 0.1) {
+                
+                if (arm.getSetpoint() < Arm.kSetpointIntakeReady) {
+                    arm.setAngle(Arm.kSetpointIntakeReady);
+                }
+                if( arm.getSetpoint() > Arm.kSetpointMove){
+                    arm.setAngle(Arm.kSetpointMove);
+                }
 
-        if (intakeSpeed > 0.5) {
-            intake.setIntakeVoltage(5.0);
-        } else {
-            intake.setIntakeVoltage(0.0);
-        }
+                intake.setIntakeVoltage(Intake.kSetpointStop);
+                shooter.set(Shooter.kStopSpeed);
+            } else {
+                // Pickup the note
 
-        // Control the arm based on the boolean supplier
-        if (armPositionSupplier.getAsBoolean()) {
-            arm.setAngle(Arm.kSetpointMove);
+                shooter.set(0);
+
+                if(intake.hasNote()){
+                    intake.setIntakeVoltage(0.0);
+                } else {
+                    intake.setIntakeVoltage(5.0);
+                }
+                // Linear interpret
+                // 0.1 is intake ready
+                // 0.9 is intake down
+                // map from 0.0 to 1.0
+                double arm_angle = (intakeValue - 0.1) / 0.8;
+                if (arm_angle > 1.0)
+                    arm_angle = 1.0;
+                if (arm_angle < 0.0)
+                    arm_angle = 0.0;
+
+                arm_angle = (1.0 - arm_angle) * Arm.kSetpointIntakeReady + arm_angle * Arm.kSetpointIntakeDown;
+                arm.setAngle(arm_angle);
+
+            }
         }
     }
 

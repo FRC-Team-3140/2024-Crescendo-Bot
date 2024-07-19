@@ -87,7 +87,6 @@ public class RobotContainer {
     swerve
         .setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
 
-    arm.setDefaultCommand(new ManualIntakeControlL2(operator_controller::getLeftTriggerAxis, operator_controller::getLeftBumper));
     shooter.setDefaultCommand(new StopSpinningShooter());
     PickUpNoteCommand = new pickupNote(true, swerve, camera);
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
@@ -160,12 +159,12 @@ public class RobotContainer {
     //BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
     // Primary Driver Controls
 
-    arm.setDefaultCommand(new ManualIntakeControlL2(driver_controller::getLeftTriggerAxis, driver_controller::getLeftBumper));
+    arm.setDefaultCommand(new ManualIntakeControlL2(driver_controller::getLeftTriggerAxis, driver_controller::getRightBumper, driver_controller::getLeftBumper));
 
 
     // Resetting Gyro
     new JoystickButton(driver_controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    new JoystickButton(driver_controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
+    //new JoystickButton(driver_controller, Button.kLeftBumper.value).onTrue(new InstantCommand(this::togglePickUpNote));
     new JoystickButton(driver_controller, Button.kA.value).whileTrue(new CameraShootDistanceL3());
 
     //new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
@@ -218,15 +217,6 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return autobuilder.getSelected();
 
-  }
-
-  private void togglePickUpNote() {
-    leftBumperPresses++;
-    if (leftBumperPresses % 2 == 1) {
-      PickUpNoteCommand.schedule();
-    } else {
-      PickUpNoteCommand.cancel();
-    }
   }
 
 }

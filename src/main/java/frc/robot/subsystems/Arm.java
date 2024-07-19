@@ -371,6 +371,11 @@ public class Arm extends SubsystemBase {
     return angle;
   }
 
+  public boolean isAtSetpoint() {
+    double diff = Math.abs(getAngle() - getSetpoint());
+    return diff<2.0;
+  }
+
   /**
    * @return The current setpoint of the PID controller
    */

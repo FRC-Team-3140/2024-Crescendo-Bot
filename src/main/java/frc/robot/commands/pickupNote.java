@@ -189,7 +189,7 @@ public class pickupNote extends SequentialCommandGroup {
       }
 
       if (run) {
-        return Intake.getInstance().noteDetected();
+        return Intake.getInstance().hasNote();
       } else {
         return true;
       }

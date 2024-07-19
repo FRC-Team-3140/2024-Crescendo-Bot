@@ -15,6 +15,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Shooter extends SubsystemBase {
 
+    // Constants
+    public static final double kShootSpeed = 0.9;
+    public static final double kAmpSpeed = 0.3;
+    public static final double kStopSpeed = 0.0;
+    public static final double kPurgeSpeed = -0.3;
+
+    // Singleton instance of the Shooter class
     public static Shooter instance = new Shooter();
 
     /**
@@ -85,6 +92,11 @@ public class Shooter extends SubsystemBase {
 
     }
 
+    /* */
+    public void set(double speed) {
+        topShooter.set(speed);
+        bottomShooter.set(speed);
+    }
     /**
      * Sets the voltage for both the top and bottom shooter motors.
      * 

@@ -17,6 +17,11 @@ public class Intake extends SubsystemBase {
     private final DigitalInput peSensor = new DigitalInput(0);
     public static Intake intake = new Intake();
 
+    public static double kSetpointShoot = 5.0;
+    public static double kSetpointAmp = 5.0;
+    public static double kSetpointPickup = 5.0;
+    public static double kSetpointPurge = -5.0;
+    public static double kSetpointStop = 0.0;
     /**
      * The Intake class represents the intake subsystem of the robot.
      * It is responsible for controlling the intake motor and its settings.
@@ -56,7 +61,7 @@ public class Intake extends SubsystemBase {
      * 
      * @return true if a note is detected, false otherwise
      */
-    public boolean noteDetected() {
+    public boolean hasNote() {
         return !peSensor.get();
     }
 }
