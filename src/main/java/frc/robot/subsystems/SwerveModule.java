@@ -40,11 +40,12 @@ public class SwerveModule extends SubsystemBase {
 
     public double botMass = 24.4;
 
-    public double P = .01;
+    public double P = 0.01;
+    public double kTurnSpeedTol = 0.1;
 
     public double driveSetpointTolerance = .5;
-    public double turnSetpointTolerance;
-    public double turnVelocityTolerance;
+    public double turnSetpointTolerance=10.0;
+    public double turnVelocityTolerance=10.0;
 
     private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.084706 * .712, 2.4433 * .712,
             0.10133 * .712);
@@ -108,7 +109,15 @@ public class SwerveModule extends SubsystemBase {
 
     public void setAngle(double angle) {
         turnPID.setSetpoint(angle);
-        turnMotor.set(-turnPID.calculate(turnEncoder.getAbsolutePosition()));
+        double speed = -turnPID.calculate(turnEncoder.getAbsolutePosition());
+
+        //double drive_goal = Math.abs(drivePID.getGoal().velocity);
+        //System.out.printf("Module: %s   Speed: %f    Drivegoal: %f",moduleID,speed,drive_goal);
+        //if(drive_goal > 0.01){
+        turnMotor.set(speed);
+        //} else {
+        //    turnMotor.set(0);
+        //}
     }
 
     public void setDriveSpeed(double velocity) {

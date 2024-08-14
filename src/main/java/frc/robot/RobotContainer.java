@@ -42,6 +42,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.NavX;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -75,6 +76,7 @@ public class RobotContainer {
   public static ControllerHelper operator_controller = new ControllerHelper(1);
   public static Intake intake;
   public static Shooter shooter;
+  public static NavX navx;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commppands.
@@ -84,6 +86,8 @@ public class RobotContainer {
     intake = Intake.getInstance();
     shooter = Shooter.getInstance();
     camera = Camera.getInstance();
+    navx = NavX.getInstance();
+    
     swerve
         .setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
 
