@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.Autos.CameraRightTwoNote;
+import frc.robot.commands.Autos.CameraTest;
 import frc.robot.commands.Autos.LeftThreeNote;
 import frc.robot.commands.L1Commands.IntakeUntilNoteDetectedL1;
 import frc.robot.commands.L1Commands.OneNoteAuto;
@@ -118,6 +119,7 @@ public class RobotContainer {
     autobuilder.addOption("MiddleTwoNoteTwo", AutoBuilder.buildAuto("MiddleTwoNoteTwo"));
     autobuilder.addOption("RightTwoNote", AutoBuilder.buildAuto("Far"));
     autobuilder.addOption("Camera Right", new CameraRightTwoNote());
+    autobuilder.addOption("Camera Test", new CameraTest());
 
     // // autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());
     // autobuilder.addOption("CameraMiddleTwoNote", new CameraMiddleTwoNote());

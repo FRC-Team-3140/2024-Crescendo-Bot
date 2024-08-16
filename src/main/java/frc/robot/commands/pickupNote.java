@@ -49,7 +49,7 @@ public class pickupNote extends SequentialCommandGroup {
   private static SwerveDrive swerve = null;
   private static Camera camera = null;
 
-  private static double driveSpeed = 2;
+  private static double driveSpeed = 0.5;
   private static double minDriveSpeed = 0.3;
 
   // Run with SwerveDrive Controller
@@ -206,20 +206,24 @@ public class pickupNote extends SequentialCommandGroup {
       timeout.reset();
       globalTimer.stop();
       globalTimer.reset();
+      System.out.println("Stopping Intake");
       Intake.getInstance().setIntakeVoltage(0);
       swerve.drive(0, 0, 0, false);
+      System.out.println("Ended!");
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
       if (!withController && globalTimer.hasElapsed(globalTimeout)) {
+        System.out.println(withController ? "Finished with controller." : "Finished without controller.");
         return true;
       }
 
       if (run) {
         return Intake.getInstance().noteDetected();
       } else {
+        System.out.println(withController ? "Finished with controller." : "Finished without controller.");
         return true;
       }
     }
