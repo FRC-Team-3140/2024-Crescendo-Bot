@@ -14,8 +14,8 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class CameraTest extends SequentialCommandGroup {
   static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-  static Command out = AutoBuilder.buildAuto("Opposite of Straight Line");
-  static Command back = AutoBuilder.buildAuto("Straight Line");
+  static Command back = AutoBuilder.buildAuto("Opposite of Straight Line");
+  static Command out = AutoBuilder.buildAuto("Straight Line");
 
   /** Creates a new CameraTest. */
   public CameraTest() {

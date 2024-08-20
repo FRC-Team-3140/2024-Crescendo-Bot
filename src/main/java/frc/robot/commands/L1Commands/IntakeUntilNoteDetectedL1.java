@@ -7,7 +7,6 @@ package frc.robot.commands.L1Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
 /**
@@ -26,6 +25,7 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   long startTime; // Called when the command is initially scheduled.
 
   double lastVoltage;
+
   /**
    * A command that controls the intake until a note is detected.
    * This command requires the intake subsystem.
@@ -51,7 +51,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   }
 
   /**
-   * This method is called when the command ends, either by completing or being interrupted.
+   * This method is called when the command ends, either by completing or being
+   * interrupted.
    * It sets the intake voltage to 0 and schedules rumble for both controllers.
    *
    * @param interrupted true if the command was interrupted, false otherwise
@@ -59,8 +60,8 @@ public class IntakeUntilNoteDetectedL1 extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeVoltage(0);
-    RobotContainer.controller.setRumble().schedule();
-    RobotContainer.controller2.setRumble().schedule();
+    // RobotContainer.controller.setRumble().schedule();
+    // RobotContainer.controller2.setRumble().schedule();
   }
 
   /**

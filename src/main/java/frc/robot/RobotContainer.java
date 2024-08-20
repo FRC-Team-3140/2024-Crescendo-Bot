@@ -41,10 +41,6 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -180,13 +176,13 @@ public class RobotContainer {
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-        swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
-      } else {
-        swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
-      }
-    })); // Optimal angle for shooting from against the speaker.
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
+    //   if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+    //     swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
+    //   } else {
+    //     swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
+    //   }
+    // })); // Optimal angle for shooting from against the speaker.
     new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
     new POVButton(controller2, 90).onTrue(new SetArmToAngleL1(35.5));
 

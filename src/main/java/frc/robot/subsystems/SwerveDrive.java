@@ -80,6 +80,26 @@ public class SwerveDrive extends SubsystemBase {
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.reset();
 
+    // std deviation taken from examples
+    poseEstimator = new SwerveDrivePoseEstimator(
+        kinematics,
+        gyro.getRotation2d(),
+        new SwerveModulePosition[] {
+            modules[0].getSwerveModulePosition(),
+            modules[1].getSwerveModulePosition(),
+            modules[2].getSwerveModulePosition(),
+            modules[3].getSwerveModulePosition()
+        },
+        new Pose2d(),
+        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(2)),
+        VecBuilder.fill(1, 1, Units.degreesToRadians(30)));
+
+    Logger.recordOutput("Actual States", states);
+    Logger.recordOutput("Set States", swerveModuleStates);
+    Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
+
+    this.resetPose(new Pose2d(new Translation2d(2, 7), new Rotation2d(this.getGyroAngle())));
+
     // Autobuilder for Pathplanner Goes last in constructor! TK
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
@@ -97,24 +117,6 @@ public class SwerveDrive extends SubsystemBase {
         this::shouldFlipPath,
         this // Reference to this subsystem to set requirements
     );
-    //std deviation taken from examples
-    poseEstimator = new SwerveDrivePoseEstimator(
-        kinematics,
-        gyro.getRotation2d(),
-        new SwerveModulePosition[] {
-            modules[0].getSwerveModulePosition(),
-            modules[1].getSwerveModulePosition(),
-            modules[2].getSwerveModulePosition(),
-            modules[3].getSwerveModulePosition()
-        },
-        new Pose2d(),
-        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(2)),
-        VecBuilder.fill(1, 1, Units.degreesToRadians(30
-        )));
-
-    Logger.recordOutput("Actual States", states);
-    Logger.recordOutput("Set States", swerveModuleStates);
-    Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
   }
 
   // var alliance = DriverStation.getAlliance();
@@ -140,9 +142,11 @@ public class SwerveDrive extends SubsystemBase {
     updateOdometry();
     // actualStates.set(swerveModuleStates);
     // setStates.set(states);
-    // double visionStdDev = NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev")
-        // .getDouble(.02);
-    // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev, visionStdDev, Units.degreesToRadians(30)));
+    // double visionStdDev =
+    // NetworkTableInstance.getDefault().getTable("VisionStdDev").getEntry("VisionstdDev")
+    // .getDouble(.02);
+    // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionStdDev,
+    // visionStdDev, Units.degreesToRadians(30)));
     // poseEstimator.addVisionMeasurement(camera.getEstimatedGlobalPose(),
     // camera.getTimestamp());
     odometryStruct.set(getPose());
@@ -210,25 +214,28 @@ public class SwerveDrive extends SubsystemBase {
     // -- on
     // a real robot, this must be calculated based either on latency or timestamps.
 
-  //   try {
-  //     if (Camera.getInstance().getStatus()) {
-  //       Optional<EstimatedRobotPose> pose = Camera.getInstance().getEstimatedGlobalPose();
-  //       DistAmb reading = Camera.getInstance().getApriltagDistX();
-  //       if (pose.isPresent() && reading != null  
-  //       // && getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d()) < .5
-  //        ) {
+    // try {
+    // if (Camera.getInstance().getStatus()) {
+    // Optional<EstimatedRobotPose> pose =
+    // Camera.getInstance().getEstimatedGlobalPose();
+    // DistAmb reading = Camera.getInstance().getApriltagDistX();
+    // if (pose.isPresent() && reading != null
+    // // &&
+    // getPose().getTranslation().getDistance(Camera.getInstance().getEstimatedGlobalPose().get().estimatedPose.getTranslation().toTranslation2d())
+    // < .5
+    // ) {
 
-  //         poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
-  //             Timer.getFPGATimestamp()-.04);
-  //         // System.out.println("Target Detected");
-  //       } // else {
-  //         // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
-  //         // }
-  //     }
-  //   } catch (Error test) {
-  //     System.err.println(test);
-  //   }
- }
+    // poseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),
+    // Timer.getFPGATimestamp()-.04);
+    // // System.out.println("Target Detected");
+    // } // else {
+    // // poseEstimator.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
+    // // }
+    // }
+    // } catch (Error test) {
+    // System.err.println(test);
+    // }
+  }
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -289,27 +296,27 @@ public class SwerveDrive extends SubsystemBase {
     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(deviation, deviation, Units.degreesToRadians(30)));
   }
 
-    private PIDController turnController = new PIDController(0.025, 0, 0.0025);
+  private PIDController turnController = new PIDController(0.025, 0, 0.0025);
 
-    public void turnToAprilTag(int ID) {
-      // TODO: Potential null error unhandled here
-      // turnPID.enableContinuousInput(0, 360);
-      try {
-        double botAngle = getPose().getRotation().getDegrees();
-        double offsetAngle = Camera.getInstance().getDegToApriltag(ID);
-        double setpoint = 0;
+  public void turnToAprilTag(int ID) {
+    // TODO: Potential null error unhandled here
+    // turnPID.enableContinuousInput(0, 360);
+    try {
+      double botAngle = getPose().getRotation().getDegrees();
+      double offsetAngle = Camera.getInstance().getDegToApriltag(ID);
+      double setpoint = 0;
       if (botAngle - offsetAngle <= 0)
         setpoint = botAngle + offsetAngle;
       else
         setpoint = botAngle - offsetAngle;
 
-    turnController.setSetpoint(setpoint);
-    drive(0, 0, turnController.calculate(botAngle), false);
-  
+      turnController.setSetpoint(setpoint);
+      drive(0, 0, turnController.calculate(botAngle), false);
+
     } catch (Exception e) {
       System.err.println(e.getLocalizedMessage());
     }
-      }
+  }
 
   public void resetGyro() {
     odometryOffset += gyro.getAngle();
