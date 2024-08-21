@@ -7,8 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -74,8 +73,8 @@ public class pickupNote extends SequentialCommandGroup {
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
-            new PickUpNoteCommand()), new PrintCommand("DOOOOOOOOONNNNNNNNEEEEEE"));
+        new ParallelDeadlineGroup(new PickUpNoteCommand(),
+            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
 
     pickupNote.swerve = swerve;
     pickupNote.camera = camera;
@@ -88,8 +87,8 @@ public class pickupNote extends SequentialCommandGroup {
 
   public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, Camera camera) {
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
-            new PickUpNoteCommand()));
+        new ParallelDeadlineGroup(new PickUpNoteCommand(),
+            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
 
     pickupNote.swerve = swerve;
     pickupNote.camera = camera;
@@ -103,8 +102,8 @@ public class pickupNote extends SequentialCommandGroup {
 
   public pickupNote(Boolean withController, SwerveDrive swerve, double driveSpeed, Camera camera) {
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
-            new PickUpNoteCommand()));
+        new ParallelDeadlineGroup(new PickUpNoteCommand(),
+            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
 
     pickupNote.swerve = swerve;
     pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
@@ -119,8 +118,8 @@ public class pickupNote extends SequentialCommandGroup {
   public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, double driveSpeed,
       Camera camera) {
     super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelRaceGroup(!withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup(),
-            new PickUpNoteCommand()));
+        new ParallelDeadlineGroup(new PickUpNoteCommand(),
+            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
 
     pickupNote.swerve = swerve;
     pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
