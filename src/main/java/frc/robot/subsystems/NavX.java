@@ -35,6 +35,15 @@ public class NavX extends SubsystemBase {    private static NavX instance;
         return navx.getYaw();
     }
 
+    public double getPitch() {
+        return navx.getPitch();
+    }
+
+    public double getRoll() {
+        return navx.getRoll();
+    }   
+
+
     public double getCompassHeading() {
         return navx.getCompassHeading();
     }   
