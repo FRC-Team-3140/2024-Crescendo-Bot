@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.Autos.CameraLeftTwoNote;
 import frc.robot.commands.Autos.CameraRightTwoNote;
 import frc.robot.commands.Autos.CameraTest;
 import frc.robot.commands.Autos.LeftThreeNote;
@@ -93,6 +94,8 @@ public class RobotContainer {
             new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(2))));
 
     NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
+    
+    NamedCommands.registerCommand("Arm to shoot setpoint", new SetArmToAngleL1(Arm.kSetpointShoot));
 
     NamedCommands.registerCommand("SpeakerShoot2",
         new SequentialCommandGroup(new SetArmToDistanceL1(),
@@ -117,7 +120,8 @@ public class RobotContainer {
     autobuilder.addOption("MiddleTwoNote", AutoBuilder.buildAuto("MiddleTwoNote"));
     autobuilder.addOption("MiddleTwoNoteTwo", AutoBuilder.buildAuto("MiddleTwoNoteTwo"));
     autobuilder.addOption("RightTwoNote", AutoBuilder.buildAuto("Far"));
-    autobuilder.addOption("Camera Right", new CameraRightTwoNote());
+    autobuilder.addOption("Camera Right 2", new CameraRightTwoNote());
+    autobuilder.addOption("Camera Left 2", new CameraLeftTwoNote());
     autobuilder.addOption("Camera Test", new CameraTest());
 
     // // autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());
