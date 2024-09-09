@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase {
 
   public static final double kSetpointShoot = 14.0; // The setpoint for shooting
   public static final double kSetpointIntakeDown = 8; // The setpoint for intaking
-  public static final double kSetpointIntakeReady = 28.0; // The ready for intake but off the ground for movement and
+  public static final double kSetpointIntakeReady = 22.0; // The ready for intake but off the ground for movement and
                                                           // protection
   public static final double kSetpointAmp = 94.0; // The ready for intake but off the ground for movement and protection
   public static final double kSetpointMove = 65.0; // The ready for intake but off the ground for movement and

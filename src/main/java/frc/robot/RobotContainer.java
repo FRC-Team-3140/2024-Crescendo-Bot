@@ -28,6 +28,7 @@ import frc.robot.commands.L1Commands.SetClimberToTopL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
+import frc.robot.commands.L1Commands.ShooterSpeedL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
@@ -44,6 +45,8 @@ import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+// TODO: Pressing DRIVE LB on the controller crashes the code. Marked DSB
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -147,7 +150,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Boolean suppliers
     BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    // BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
     BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
@@ -158,30 +161,55 @@ public class RobotContainer {
 
     // Resetting Gyro
     new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    new JoystickButton(controller, Button.kLeftBumper.value)
-        .onTrue(new InstantCommand(() -> PickUpNoteCommand.schedule()));
-    new JoystickButton(controller, Button.kLeftBumper.value)
-        .onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
+    new JoystickButton(controller, Button.kStart.value).onTrue(new InstantCommand((swerve::resetGyro)));
+    // DSB new JoystickButton(controller, Button.kLeftBumper.value)
+    // DSB .onTrue(new InstantCommand(() -> PickUpNoteCommand.schedule()));
+    // DSB new JoystickButton(controller, Button.kLeftBumper.value)
+    // DSB .onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
     // new JoystickButton(controller, Button.kA.value).whileTrue(new
     // CameraShootDistanceL3());
+    // Command combo_pickup = new
+    // SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
+    // new IntakeUntilNoteDetectedL1()).andThen(
+    // new SetArmToAngleL1(Arm.kSetpointIntakeReady));
 
-    new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
-      BasicSwerveControlL2.fieldRelative = false;
-    })).onFalse(new InstantCommand(() -> {
-      BasicSwerveControlL2.fieldRelative = true;
-    }));
+    new Trigger(leftTriggerC1)
+        .whileTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
+            new IntakeUntilNoteDetectedL1()))
+        .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
+
+    new JoystickButton(controller, Button.kLeftBumper.value)
+        .whileTrue(
+            new SetArmToAngleL1(Arm.kSetpointAmp).andThen(
+                new ShootAmpL1()))
+        .onFalse(
+            new SetArmToAngleL1(Arm.kSetpointMove));
+
+    new JoystickButton(controller, Button.kRightBumper.value)
+        .whileTrue(
+            new SetArmToAngleL1(Arm.kSetpointShoot).andThen(
+                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage)))
+        .onFalse(
+            new SetArmToAngleL1(Arm.kSetpointShoot));
+
+    // new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
+    // BasicSwerveControlL2.fieldRelative = false;
+    // })).onFalse(new InstantCommand(() -> {
+    // BasicSwerveControlL2.fieldRelative = true;
+    // }));
 
     // Secondary Driver Controls
 
     new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
     new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
     new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
-    //   if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-    //     swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
-    //   } else {
-    //     swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
-    //   }
+    // new JoystickButton(controller2, Button.kA.value).onTrue(new
+    // SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
+    // if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+    // swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
+    // } else {
+    // swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
+    // }
     // })); // Optimal angle for shooting from against the speaker.
     new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
     new POVButton(controller2, 90).onTrue(new SetArmToAngleL1(35.5));
