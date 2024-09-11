@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.Autos.CameraLeftThreeNote;
 import frc.robot.commands.Autos.CameraLeftTwoNote;
+import frc.robot.commands.Autos.CameraMiddleTwoNote;
 import frc.robot.commands.Autos.CameraRightTwoNote;
 import frc.robot.commands.Autos.CameraTest;
 import frc.robot.commands.Autos.LeftThreeNote;
@@ -109,16 +111,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("Wait", new WaitCommand(2));
 
     // autobuilder = AutoBuilder.buildAutoChooser();
+    
+    autobuilder.addOption("Camera Left 2", new CameraLeftTwoNote());
+    autobuilder.addOption("Camera Left 3", new CameraLeftThreeNote());
+    autobuilder.addOption("Camera Middle 2", new CameraMiddleTwoNote());
+    autobuilder.addOption("Camera Right 2", new CameraRightTwoNote());
+    autobuilder.addOption("Just Shoot", new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+    
     autobuilder.addOption("One Note Auto", new OneNoteAuto());
     autobuilder.addOption("Left Three Note REAL", new LeftThreeNote());
-
+    
     autobuilder.addOption("LeftTwoNote", AutoBuilder.buildAuto("LeftTwoNote"));
     autobuilder.addOption("LeftTwoNoteTwo", AutoBuilder.buildAuto("LeftTwoNoteTwo"));
     autobuilder.addOption("MiddleTwoNote", AutoBuilder.buildAuto("MiddleTwoNote"));
     autobuilder.addOption("MiddleTwoNoteTwo", AutoBuilder.buildAuto("MiddleTwoNoteTwo"));
     autobuilder.addOption("RightTwoNote", AutoBuilder.buildAuto("Far"));
-    autobuilder.addOption("Camera Right 2", new CameraRightTwoNote());
-    autobuilder.addOption("Camera Left 2", new CameraLeftTwoNote());
     autobuilder.addOption("Camera Test", new CameraTest());
 
     // // autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());

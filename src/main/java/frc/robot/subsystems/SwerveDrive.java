@@ -98,7 +98,7 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Set States", swerveModuleStates);
     Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
 
-    this.resetPose(new Pose2d(new Translation2d(2, 7), new Rotation2d(this.getGyroAngle())));
+    // this.resetPose(new Pose2d(new Translation2d(2, 7), new Rotation2d(this.getGyroAngle())));
 
     // Autobuilder for Pathplanner Goes last in constructor! TK
     AutoBuilder.configureHolonomic(

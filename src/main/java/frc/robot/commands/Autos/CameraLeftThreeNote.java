@@ -4,8 +4,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.pickupNote;
-import frc.robot.commands.L3Commands.CameraShootDistanceL3;
+import frc.robot.commands.L1Commands.SetArmToAngleL1;
+import frc.robot.commands.L1Commands.ShootSpeakerL1;
+import frc.robot.Constants;
 import frc.robot.sensors.Camera;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 
 /**
@@ -17,7 +20,10 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class CameraLeftThreeNote extends SequentialCommandGroup {
     static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-    static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
+    static SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
+            new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+    // TODO: Test Camera Shoot distance!
+    // static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
 
     /**
      * Constructs a new instance of the CameraLeftThreeNote command.

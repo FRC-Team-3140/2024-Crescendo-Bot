@@ -12,8 +12,10 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 
 /**
- * Represents a command group for executing a specific autonomous routine called "CameraRightTwoNote".
- * This routine involves setting the arm to a specific angle, shooting a speaker, executing two custom autos,
+ * Represents a command group for executing a specific autonomous routine called
+ * "CameraRightTwoNote".
+ * This routine involves setting the arm to a specific angle, shooting a
+ * speaker, executing two custom autos,
  * and picking up a note using the camera.
  */
 public class CameraRightTwoNote extends SequentialCommandGroup {

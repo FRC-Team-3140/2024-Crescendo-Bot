@@ -2,7 +2,6 @@ package frc.robot.commands.Autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.pickupNote;
@@ -20,9 +19,8 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class CameraLeftTwoNote extends SequentialCommandGroup {
     static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-    // static SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-            // new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
-    static PrintCommand shoot = new PrintCommand("Shoot!");
+    static SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
+            new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
     // TODO: Test Camera Shoot distance!
     // static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
 
@@ -32,6 +30,7 @@ public class CameraLeftTwoNote extends SequentialCommandGroup {
      * and the pickupNote and CameraShootDistanceL3 commands.
      */
     public CameraLeftTwoNote() {
-        super(shoot, AutoBuilder.buildAuto("CameraLeftTwoNote"), intake, AutoBuilder.buildAuto("CameraLeftTwoNote2"), new PrintCommand("Done!"));
+        super(shoot, AutoBuilder.buildAuto("CameraLeftTwoNote"), intake, AutoBuilder.buildAuto("CameraLeftTwoNote2"),
+                shoot);
     }
 }
