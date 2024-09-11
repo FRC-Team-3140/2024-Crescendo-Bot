@@ -42,7 +42,7 @@ public class ShootAmpL1 extends Command {
   public void initialize() {
     startTime = System.currentTimeMillis();
     intake.setIntakeVoltage(3);
-    shooter.setShooterVoltage(3);
+    shooter.setShooterVoltage(6);
   }
 
   /**
