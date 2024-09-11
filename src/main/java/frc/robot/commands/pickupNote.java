@@ -61,7 +61,7 @@ public class pickupNote extends SequentialCommandGroup {
 
   private static double deadzone = 0.25;
 
-  private static double globalTimeout = 20;
+  private static double globalTimeout = 4;
   private static double exploreTimeout = 2;
 
   private static ShapeData shapeData;

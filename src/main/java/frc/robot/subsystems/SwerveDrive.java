@@ -64,7 +64,7 @@ public class SwerveDrive extends SubsystemBase {
 
   private ChassisSpeeds botSpeeds = new ChassisSpeeds(0, 0, 0);
 
-  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
       locations[0], locations[1], locations[2], locations[3]);
 
   /*
@@ -98,7 +98,8 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Set States", swerveModuleStates);
     Logger.recordOutput("Odometry", poseEstimator.getEstimatedPosition());
 
-    // this.resetPose(new Pose2d(new Translation2d(2, 7), new Rotation2d(this.getGyroAngle())));
+    // this.resetPose(new Pose2d(new Translation2d(2, 7), new
+    // Rotation2d(this.getGyroAngle())));
 
     // Autobuilder for Pathplanner Goes last in constructor! TK
     AutoBuilder.configureHolonomic(
@@ -294,6 +295,15 @@ public class SwerveDrive extends SubsystemBase {
 
   public void setVisionStdDeviations(double deviation) {
     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(deviation, deviation, Units.degreesToRadians(30)));
+  }
+
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    // Normalize wheel speeds
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.maxChassisSpeed);
+
+    for (int i = 0; i < modules.length; i++) {
+      modules[i].setState(desiredStates[i]);
+    }
   }
 
   private PIDController turnController = new PIDController(0.025, 0, 0.0025);

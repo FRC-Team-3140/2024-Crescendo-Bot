@@ -1,15 +1,14 @@
 package frc.robot.commands.Autos;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.FollowPathplannerPath;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.SwerveDrive;
 
 /**
  * Represents a command group for executing a specific autonomous routine called
@@ -19,9 +18,6 @@ import frc.robot.subsystems.SwerveDrive;
  * and shooting using a camera at a specific distance.
  */
 public class CameraLeftThreeNote extends SequentialCommandGroup {
-    static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-    static SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-            new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
     // TODO: Test Camera Shoot distance!
     // static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
 
@@ -32,7 +28,12 @@ public class CameraLeftThreeNote extends SequentialCommandGroup {
      * and uses the intake and shoot subsystems for additional actions.
      */
     public CameraLeftThreeNote() {
-        super(new CameraLeftTwoNote(), AutoBuilder.buildAuto("CameraLeftThreeNote1"), intake,
-                AutoBuilder.buildAuto("CameraLeftThreeNote2"), shoot);
+        pickupNote intake2 = new pickupNote(false, RobotContainer.swerve, Camera.getInstance());
+        SequentialCommandGroup shoot3 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
+                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+
+        addCommands(new CameraLeftTwoNote(),
+                new FollowPathplannerPath("CameraLeftThreeNote1", RobotContainer.swerve), intake2,
+                new FollowPathplannerPath("CameraLeftThreeNote2", RobotContainer.swerve), shoot3);
     }
 }
