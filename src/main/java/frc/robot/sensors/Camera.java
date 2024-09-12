@@ -345,8 +345,8 @@ public class Camera extends SubsystemBase {
               .setBoolean(shape.isConnected());
         }
       }
-    } catch (Error e) {
-      System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
+    } catch (Exception e) {
+      System.out.println("An exception occured in Camera: \nUnable to publish status to Networktables:\n" + e);
     }
   }
 
@@ -377,8 +377,8 @@ public class Camera extends SubsystemBase {
               .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
         }
       }
-    } catch (Error e) {
-      System.out.println("An error occured in Camera: \n" + e);
+    } catch (Exception e) {
+      System.out.println("An exception occured in Camera: \n" + e);
     }
   }
 

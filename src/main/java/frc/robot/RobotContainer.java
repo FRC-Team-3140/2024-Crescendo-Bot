@@ -159,7 +159,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Boolean suppliers
-    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
+    // TODO: Don't seem to be suing rightTriggerC1 currently.
+    // BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
     BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
     BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
