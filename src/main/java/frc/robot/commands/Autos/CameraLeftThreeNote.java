@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
+import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
@@ -31,7 +32,8 @@ public class CameraLeftThreeNote extends SequentialCommandGroup {
     public CameraLeftThreeNote() {
         pickupNote intake2 = new pickupNote(false, RobotContainer.swerve, Camera.getInstance());
         SequentialCommandGroup shoot3 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3)
+                        .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
 
         addCommands(new CameraLeftTwoNote(),
                 AutoBuilder.buildAuto("CameraLeftThreeNote1"), intake2,
