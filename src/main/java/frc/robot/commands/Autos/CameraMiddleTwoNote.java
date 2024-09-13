@@ -1,9 +1,10 @@
 package frc.robot.commands.Autos;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.FollowPathplannerPath;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
@@ -26,7 +27,7 @@ public class CameraMiddleTwoNote extends SequentialCommandGroup {
         SequentialCommandGroup shoot2 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
                 new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
 
-        addCommands(shoot, new FollowPathplannerPath("CameraMiddleTwoNote", RobotContainer.swerve), intake, shoot2);
+        addCommands(shoot, AutoBuilder.buildAuto("CameraMiddleTwoNote"), intake, shoot2);
     }
 
 }

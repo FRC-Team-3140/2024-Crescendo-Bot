@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.resetSwerveStates;
 import frc.robot.commands.Autos.CameraLeftThreeNote;
 import frc.robot.commands.Autos.CameraLeftTwoNote;
 import frc.robot.commands.Autos.CameraMiddleTwoNote;
@@ -34,7 +35,6 @@ import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
-import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.ControllerHelper;
@@ -81,11 +81,12 @@ public class RobotContainer {
    */
   public RobotContainer() {
     swerve = SwerveDrive.getInstance();
+
+    swerve.setDefaultCommand(new resetSwerveStates(swerve));
+
     intake = Intake.getInstance();
     shooter = Shooter.getInstance();
     camera = Camera.getInstance();
-    swerve
-        .setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
     shooter.setDefaultCommand(new StopSpinningShooter());
     PickUpNoteCommand = new pickupNote(true, swerve, camera);
     NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());

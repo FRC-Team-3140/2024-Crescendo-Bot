@@ -298,11 +298,8 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    // Normalize wheel speeds
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.maxChassisSpeed);
-
     for (int i = 0; i < modules.length; i++) {
-      modules[i].setState(desiredStates[i]);
+      modules[i].setStates(desiredStates[i], false);
     }
   }
 

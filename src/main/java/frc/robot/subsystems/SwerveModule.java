@@ -148,9 +148,4 @@ public class SwerveModule extends SubsystemBase {
         return new SwerveModuleState(driveEncoder.getVelocity(),
                 Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()));
     }
-
-    public void setState(SwerveModuleState state) {
-        setDriveSpeed(state.speedMetersPerSecond);
-        setAngle(state.angle.getDegrees());
-    }
 }
