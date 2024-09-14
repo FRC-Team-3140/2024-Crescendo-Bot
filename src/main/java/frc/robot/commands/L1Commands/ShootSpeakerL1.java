@@ -29,7 +29,7 @@ public class ShootSpeakerL1 extends Command {
     private final double shooterSpeed;
     private final double voltage2;
     private double freeSpeed;
-    private double deadband = 20;
+    private double deadband = 40;
 
     // Called when the command is initially scheduled.
     SequentialCommandGroup test;
@@ -89,7 +89,7 @@ public class ShootSpeakerL1 extends Command {
             timeSinceSpinUp = System.currentTimeMillis();
             // RobotContainer.controller2.setRumble().schedule();
         }
-        if (System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed) {
+        if ((System.currentTimeMillis() - timeSinceSpinUp) > 300 && shooter.getShooterSpeed() >= freeSpeed) {
             timeSinceIntakeSpinUp = System.currentTimeMillis();
             intake.setIntakeVoltage(voltage2);
         }

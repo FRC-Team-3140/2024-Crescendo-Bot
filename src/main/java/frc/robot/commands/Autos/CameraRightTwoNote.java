@@ -3,13 +3,10 @@ package frc.robot.commands.Autos;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.pickupNote;
-import frc.robot.commands.L1Commands.SetArmToAngleL1;
-import frc.robot.commands.L1Commands.ShootSpeakerL1;
+import frc.robot.commands.L2Commands.ScoreInSpeakerL2;
 import frc.robot.sensors.Camera;
-import frc.robot.subsystems.Arm;
 
 /**
  * Represents a command group for executing a specific autonomous routine called
@@ -21,10 +18,8 @@ import frc.robot.subsystems.Arm;
 public class CameraRightTwoNote extends SequentialCommandGroup {
   public CameraRightTwoNote() {
     pickupNote intake = new pickupNote(false, RobotContainer.swerve, Camera.getInstance());
-    SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-        new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
-    SequentialCommandGroup shoot2 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-        new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+    ScoreInSpeakerL2 shoot = new ScoreInSpeakerL2();
+    ScoreInSpeakerL2 shoot2 = new ScoreInSpeakerL2();
 
     addCommands(shoot, AutoBuilder.buildAuto("CameraRightTwoNote1"), intake,
         AutoBuilder.buildAuto("CameraRightTwoNote2"), shoot2);

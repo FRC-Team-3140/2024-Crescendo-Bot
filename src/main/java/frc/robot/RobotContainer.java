@@ -122,7 +122,7 @@ public class RobotContainer {
         autobuilder.addOption("Camera Right 2", new CameraRightTwoNote());
         autobuilder.addOption("Just Shoot", new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage)
                 .withTimeout(3).andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
-        autobuilder.addOption("Simple Mobility", new SimpleMobility(swerve));
+        autobuilder.addOption("Simple Mobility", new SimpleMobility(swerve, 1));
 
         autobuilder.addOption("One Note Auto", new OneNoteAuto());
         autobuilder.addOption("Left Three Note REAL", new LeftThreeNote());

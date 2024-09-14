@@ -13,7 +13,7 @@ import frc.robot.subsystems.Arm;
  * It extends SequentialCommandGroup to perform a sequence of commands.
  */
 public class ScoreInSpeakerL2 extends SequentialCommandGroup {
-        static private final double kArmAngle = 14.0; // The desired arm angle in degrees
+        static private final double kArmAngle = Arm.kSetpointShoot; // The desired arm angle in degrees
         static private final double kShooterSpeed = 1.0; // The desired shooter speed as a fraction of max speed
 
         /**
