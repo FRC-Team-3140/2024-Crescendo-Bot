@@ -8,7 +8,6 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
-import frc.robot.commands.L1Commands.ShootSpeakerOverrideL1;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
 
@@ -24,11 +23,11 @@ public class CameraMiddleTwoNote extends SequentialCommandGroup {
     public CameraMiddleTwoNote() {
         pickupNote intake = new pickupNote(false, RobotContainer.swerve, Camera.getInstance());
         SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3)
-                        .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
+                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+                        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
         SequentialCommandGroup shoot2 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3)
-                        .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
+                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+                        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
 
         addCommands(shoot, AutoBuilder.buildAuto("CameraMiddleTwoNote"), intake, shoot2);
     }

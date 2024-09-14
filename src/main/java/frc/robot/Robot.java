@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.resetSwerveStates;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.subsystems.Arm;
@@ -84,6 +85,8 @@ public class Robot extends LoggedRobot {
     SwerveDrive.getInstance().setVisionStdDeviations(1000);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
+
+    RobotContainer.swerve.setDefaultCommand(new resetSwerveStates(RobotContainer.swerve));
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
