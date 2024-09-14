@@ -98,23 +98,6 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 2.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "IntakeUntilNoteDetected"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "Arm",
       "waypointRelativePos": 1.0,
       "command": {
