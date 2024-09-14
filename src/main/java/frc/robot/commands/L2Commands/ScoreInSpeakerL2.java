@@ -2,6 +2,7 @@ package frc.robot.commands.L2Commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.commands.L1Commands.ShooterSpeedL1;
@@ -14,7 +15,7 @@ import frc.robot.subsystems.Arm;
  */
 public class ScoreInSpeakerL2 extends SequentialCommandGroup {
         static private final double kArmAngle = Arm.kSetpointShoot; // The desired arm angle in degrees
-        static private final double kShooterSpeed = 1.0; // The desired shooter speed as a fraction of max speed
+        static private final double kShooterSpeed = 0.9; // The desired shooter speed as a fraction of max speed
 
         /**
          * Creates a new ScoreInSpeakerL2 command.
@@ -32,6 +33,8 @@ public class ScoreInSpeakerL2 extends SequentialCommandGroup {
                                                 new SetArmToAngleL1(kArmAngle),
                                                 // Set the shooter to the desired speed
                                                 new ShooterSpeedL1(kShooterSpeed)),
+
+                                new PrintCommand("Reached Speed!"),
 
                                 // Step 2: When both are ready, shoot at the speaker.
                                 new ShootSpeakerL1(10, 3),

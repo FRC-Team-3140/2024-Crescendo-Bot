@@ -11,7 +11,7 @@ import frc.robot.subsystems.Shooter;
 public class ShooterSpeedL1 extends Command {
     private final Shooter shooter = Shooter.getInstance();
     private final double speed;
-    private final double kShooterSpeedTolarence = 20;
+    private final double kShooterSpeedTolarence = 1000;
 
     /**
      * Creates a new ShooterSpeed command that sets the shooter to the specified speed.

@@ -29,7 +29,7 @@ public class ShootSpeakerL1 extends Command {
     private final double shooterSpeed;
     private final double voltage2;
     private double freeSpeed;
-    private double deadband = 40;
+    private double deadband = 1000;
 
     // Called when the command is initially scheduled.
     SequentialCommandGroup test;
@@ -86,6 +86,7 @@ public class ShootSpeakerL1 extends Command {
     public void execute() {
         if (shooter.getShooterSpeed() >= freeSpeed && !hitSpeed) {
             hitSpeed = true;
+            System.out.println("Hit Speed");
             timeSinceSpinUp = System.currentTimeMillis();
             // RobotContainer.controller2.setRumble().schedule();
         }

@@ -41,7 +41,7 @@ public class Camera extends SubsystemBase {
 
   /******************************************************************************
    * Update the following variables to ensure that the cameras are instanciated *
-   * properly!                                                                  *
+   * properly! *
    ******************************************************************************/
   private final String aprilTagCameraName = "april";
   private final String shapeCameraName = "shape";
@@ -54,8 +54,8 @@ public class Camera extends SubsystemBase {
   // 0.5), new Rotation3d(0, 0, 0));
 
   /******************************************************************************
-   * Update the following variables to ensure that the pose is calculated       *
-   * properly!                                                                  *
+   * Update the following variables to ensure that the pose is calculated *
+   * properly! *
    ******************************************************************************/
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
@@ -345,8 +345,8 @@ public class Camera extends SubsystemBase {
               .setBoolean(shape.isConnected());
         }
       }
-    } catch (Exception e) {
-      System.out.println("An exception occured in Camera: \nUnable to publish status to Networktables:\n" + e);
+    } catch (Error e) {
+      System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
     }
   }
 
@@ -377,8 +377,8 @@ public class Camera extends SubsystemBase {
               .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
         }
       }
-    } catch (Exception e) {
-      System.out.println("An exception occured in Camera: \n" + e);
+    } catch (Error e) {
+      System.out.println("An error occured in Camera: \n" + e);
     }
   }
 
@@ -418,9 +418,9 @@ public class Camera extends SubsystemBase {
    * @return The ID of the detected AprilTag, or null if no targets were detected.
    */
   public Integer getBestApriltagID() {
-    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
-
     if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+      PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+
       return target.getFiducialId();
     } else {
       return null;
@@ -440,7 +440,13 @@ public class Camera extends SubsystemBase {
    * @return ApriltagMeasurement object
    */
   public AprilTagMeasurement getBestAprilTagData() {
-    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = null;
+
+    try {
+      target = april.getLatestResult().getBestTarget();
+    } catch (NullPointerException e) {
+      System.out.println("There are no Apriltags in frame.");
+    }
 
     double xDist;
     double yDist;
@@ -522,9 +528,15 @@ public class Camera extends SubsystemBase {
    */
   public Double getApriltagPitch() {
     // If this function returns a null, that means there is not any detected targets
-    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = null;
 
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+    try {
+      target = april.getLatestResult().getBestTarget();
+    } catch (NullPointerException e) {
+      System.out.println("No Apriltags in frame.");
+    }
+
+    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets() && target != null) {
       return target.getPitch();
     } else {
       return null;
@@ -660,7 +672,13 @@ public class Camera extends SubsystemBase {
    *         detected.
    */
   public ShapeData getShapeData() {
-    PhotonTrackedTarget target = shape.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = null;
+
+    try {
+      target = shape.getLatestResult().getBestTarget();
+    } catch (NullPointerException e) {
+      System.out.println("No shape detected");
+    }
 
     double yaw;
     double area;
