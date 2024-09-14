@@ -2,6 +2,7 @@ package frc.robot.commands.Autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
@@ -32,10 +33,10 @@ public class CameraLeftThreeNote extends SequentialCommandGroup {
         pickupNote intake2 = new pickupNote(false, RobotContainer.swerve, Camera.getInstance());
         SequentialCommandGroup shoot3 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
                 new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
-                        /*.andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));*/
+        /* .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage))); */
+        Command path1 = AutoBuilder.buildAuto("CameraLeftThreeNote1");
+        Command path2 = AutoBuilder.buildAuto("CameraLeftThreeNote2");
 
-        addCommands(new CameraLeftTwoNote(),
-                AutoBuilder.buildAuto("CameraLeftThreeNote1"), intake2,
-                AutoBuilder.buildAuto("CameraLeftThreeNote2"), shoot3);
+        addCommands(new CameraLeftTwoNote(), path1, intake2, path2, shoot3);
     }
 }
