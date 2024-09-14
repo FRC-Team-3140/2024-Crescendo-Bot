@@ -8,9 +8,9 @@ import frc.robot.commands.pickupNote;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.sensors.Camera;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.SwerveDrive;
 
 /**
  * Represents a command group for executing a specific autonomous routine called
@@ -30,7 +30,7 @@ public class CameraLeftThreeNote extends SequentialCommandGroup {
      * and uses the intake and shoot subsystems for additional actions.
      */
     public CameraLeftThreeNote() {
-        pickupNote intake2 = new pickupNote(false, RobotContainer.swerve, Camera.getInstance());
+        pickupNote intake2 = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
         SequentialCommandGroup shoot3 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
                 new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
         /* .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage))); */
