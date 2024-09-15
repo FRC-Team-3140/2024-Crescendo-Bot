@@ -86,7 +86,7 @@ public class Robot extends LoggedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
 
-    RobotContainer.swerve.setDefaultCommand(new resetSwerveStates(RobotContainer.swerve));
+    RobotContainer.swerve.setDefaultCommand(new resetSwerveStates(RobotContainer.swerve, false));
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

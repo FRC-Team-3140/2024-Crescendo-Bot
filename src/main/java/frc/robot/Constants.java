@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 //Measurements in meters
 public interface Constants {
-    public static final double intakeVoltage = 8.5;
+    public static final double intakeVoltage = 9.5;
     public static final double shooterVoltage = 9.6;
     public static final double gearRatio = 6.12;
     public static final int detectThreshold = 1000;

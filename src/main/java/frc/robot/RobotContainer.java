@@ -83,7 +83,7 @@ public class RobotContainer {
         public RobotContainer() {
                 swerve = SwerveDrive.getInstance();
 
-                swerve.setDefaultCommand(new resetSwerveStates(swerve));
+                swerve.setDefaultCommand(new resetSwerveStates(swerve, false));
 
                 intake = Intake.getInstance();
                 shooter = Shooter.getInstance();

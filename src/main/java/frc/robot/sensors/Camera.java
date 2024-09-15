@@ -277,16 +277,25 @@ public class Camera extends SubsystemBase {
    * 
    * @return the connection status of the cameras as boolean
    */
-  private boolean testConnection() {
+  private boolean testConnection(boolean attemptReconnect) {
     // TODO: look into other alternative ways to check connection because there is
     // an issue where the .isConnected() method doesn't update even if the camera is
     // disconnected
 
     // If either camera is working || connected == true
-    if (april.isConnected() || shape.isConnected()) {
-      connected = true;
+    if (april != null && shape != null) {
+      // System.out.println(april.isConnected() + " " + shape.isConnected());
+      if (april.isConnected() && shape.isConnected()) {
+        connected = true;
+      } else {
+        connected = false;
+      }
     } else {
       connected = false;
+    }
+
+    if (!connected && attemptReconnect) {
+      attemptToReconnect();
     }
 
     return connected;
@@ -301,8 +310,7 @@ public class Camera extends SubsystemBase {
     System.err.println(
         "!!!!!!!!!!!!!!!!!!!!\nPhotonvision is no longer connected properly.\nAttempting reconnection\n!!!!!!!!!!!!!!!!!!!!");
     while (!connected) {
-      if (testConnection()) {
-        connected = true;
+      if (connected) {
         versionMatches = checkVersion();
         aprilGetInstance();
         shapeGetInstance();
@@ -313,6 +321,7 @@ public class Camera extends SubsystemBase {
         connected = false;
         System.out.println("Checking for PhotonVision connection in " + attemptDelay + " seconds.");
         Timer.delay(attemptDelay);
+        testConnection(true);
       }
     }
   }
@@ -361,20 +370,20 @@ public class Camera extends SubsystemBase {
     try {
       // Was using Timer.delay() function here, but this caused issues with the other
       // subsystems...
-      if ((System.currentTimeMillis() - programStartTime / 1000) % delayTime == 0 && attemptReconnection != null
-          && !attemptReconnection.isAlive() && !testConnection()) {
-        // Update Networktable information periodically - TK
-        setNetworktableStatus();
 
+      // Update Networktable information periodically - TK
+      setNetworktableStatus();
+
+      if ((System.currentTimeMillis() - programStartTime / 1000) % delayTime == 0 && (attemptReconnection == null
+          || !attemptReconnection.isAlive()) && !testConnection(false)) {
         try {
-          if (attemptReconnection == null || !attemptReconnection.isAlive()) {
-            attemptReconnection = new Thread(() -> this.attemptToReconnect());
+          attemptReconnection = new Thread(() -> this.attemptToReconnect());
 
-            attemptReconnection.start();
-          }
+          attemptReconnection.start();
         } catch (IllegalThreadStateException e) {
           System.out
               .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
+          attemptReconnection = null;
         }
       }
     } catch (Error e) {

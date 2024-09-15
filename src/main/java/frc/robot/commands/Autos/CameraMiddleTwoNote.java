@@ -5,6 +5,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.resetSwerveStates;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.sensors.Camera;
@@ -24,12 +25,14 @@ public class CameraMiddleTwoNote extends SequentialCommandGroup {
         pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
         SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
                 new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
-                        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
+        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
         SequentialCommandGroup shoot2 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
                 new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
-                        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
+        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
 
-        addCommands(shoot, AutoBuilder.buildAuto("CameraMiddleTwoNote"), intake, shoot2);
+        addCommands(shoot,
+                AutoBuilder.buildAuto("CameraMiddleTwoNote").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true)),
+                intake, shoot2);
     }
 
 }
