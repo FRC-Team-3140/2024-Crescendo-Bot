@@ -284,14 +284,18 @@ public class Camera extends SubsystemBase {
 
     // If either camera is working || connected == true
     if (april != null && shape != null) {
-      // System.out.println(april.isConnected() + " " + shape.isConnected());
+      System.out.println(april.isConnected() + " " + shape.isConnected());
       if (april.isConnected() && shape.isConnected()) {
         connected = true;
       } else {
         connected = false;
+        april = null;
+        shape = null;
       }
     } else {
       connected = false;
+      april = null;
+      shape = null;
     }
 
     if (!connected && attemptReconnect) {
@@ -309,20 +313,21 @@ public class Camera extends SubsystemBase {
   private void attemptToReconnect() {
     System.err.println(
         "!!!!!!!!!!!!!!!!!!!!\nPhotonvision is no longer connected properly.\nAttempting reconnection\n!!!!!!!!!!!!!!!!!!!!");
-    while (!connected) {
-      if (connected) {
-        versionMatches = checkVersion();
-        aprilGetInstance();
-        shapeGetInstance();
-        System.out.println("PhotonVision is connected and is probably working as expected...");
-        break;
-      } else {
-        System.err.println("Photonvision Not Connected Properly!");
-        connected = false;
-        System.out.println("Checking for PhotonVision connection in " + attemptDelay + " seconds.");
-        Timer.delay(attemptDelay);
-        testConnection(true);
-      }
+
+    aprilGetInstance();
+    shapeGetInstance();
+
+    System.out.println(april + " " + shape);
+
+    if (connected) {
+      versionMatches = checkVersion();
+      System.out.println("PhotonVision is connected and is probably working as expected...");
+    } else {
+      System.err.println("Photonvision Not Connected Properly!");
+      connected = false;
+      System.out.println("Checking for PhotonVision connection in " + attemptDelay + " seconds.");
+      Timer.delay(attemptDelay);
+      testConnection(true);
     }
   }
 
