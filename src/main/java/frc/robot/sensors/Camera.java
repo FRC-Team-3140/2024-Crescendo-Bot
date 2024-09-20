@@ -284,8 +284,13 @@ public class Camera extends SubsystemBase {
 
     // If either camera is working || connected == true
     if (april != null && shape != null) {
-      System.out.println(april.isConnected() + " " + shape.isConnected());
-      if (april.isConnected() && shape.isConnected()) {
+      if (attemptReconnect) {
+        aprilGetInstance();
+        shapeGetInstance();
+        System.out.println(Boolean.toString(april.isConnected()) + " " + Boolean.toString(shape.isConnected()));
+      }
+
+      if (april.isConnected() || shape.isConnected()) {
         connected = true;
       } else {
         connected = false;
@@ -317,7 +322,7 @@ public class Camera extends SubsystemBase {
     aprilGetInstance();
     shapeGetInstance();
 
-    System.out.println(april + " " + shape);
+    // System.out.println(april + " " + shape);
 
     if (connected) {
       versionMatches = checkVersion();
@@ -382,9 +387,11 @@ public class Camera extends SubsystemBase {
       if ((System.currentTimeMillis() - programStartTime / 1000) % delayTime == 0 && (attemptReconnection == null
           || !attemptReconnection.isAlive()) && !testConnection(false)) {
         try {
-          attemptReconnection = new Thread(() -> this.attemptToReconnect());
+          if (attemptReconnection == null || !attemptReconnection.isAlive()) {
+            attemptReconnection = new Thread(() -> this.attemptToReconnect());
 
-          attemptReconnection.start();
+            attemptReconnection.start();
+          }
         } catch (IllegalThreadStateException e) {
           System.out
               .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
