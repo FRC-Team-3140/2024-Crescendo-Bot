@@ -35,7 +35,7 @@ public class Camera extends SubsystemBase {
 
   private NetworkTable status = inst.getTable("Vision").getSubTable("Status");
 
-  private long lastAttemptReconnectIterration = System.currentTimeMillis();
+  private double lastAttemptReconnectIterration = Timer.getFPGATimestamp();
 
   // Gets initial instantiation of Cameras - TK
   public PhotonCamera april = aprilGetInstance();
@@ -364,8 +364,8 @@ public class Camera extends SubsystemBase {
       // Update Networktable information periodically - TK
       setNetworktableStatus();
 
-      if (((System.currentTimeMillis() - lastAttemptReconnectIterration) / 1000) > delayTime) { // test connection will
-                                                                                                // update the
+      // test connection will update the
+      if (((Timer.getFPGATimestamp() - lastAttemptReconnectIterration)) > delayTime) { 
         // connected variable and return it
         System.out.println("TEST");
         if (!testConnection()) {
@@ -385,7 +385,7 @@ public class Camera extends SubsystemBase {
           // }
         }
 
-        lastAttemptReconnectIterration = System.currentTimeMillis();
+        lastAttemptReconnectIterration = Timer.getFPGATimestamp();
       }
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
@@ -713,8 +713,7 @@ public class Camera extends SubsystemBase {
    * @return the current time in milliseconds
    */
   public double getCurrentTime() {
-    // Shouldn't need to typecast here, but JIC :) - TK
-    return (double) (System.currentTimeMillis() - lastAttemptReconnectIterration);
+    return (Timer.getFPGATimestamp() - lastAttemptReconnectIterration);
   }
 
   /**
