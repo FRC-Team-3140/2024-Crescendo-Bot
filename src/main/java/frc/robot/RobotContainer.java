@@ -48,6 +48,7 @@ import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 
 // TODO: Pressing DRIVE LB on the controller crashes the code. Marked DSB
 
@@ -189,8 +190,8 @@ public class RobotContainer {
                 // DSB .onTrue(new InstantCommand(() -> PickUpNoteCommand.schedule()));
                 // DSB new JoystickButton(controller, Button.kLeftBumper.value)
                 // DSB .onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
-                // new JoystickButton(controller, Button.kA.value).whileTrue(new
-                // CameraShootDistanceL3());
+                new JoystickButton(controller, Button.kA.value).whileTrue(new
+                CameraShootDistanceL3());
                 // Command combo_pickup = new
                 // SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
                 // new IntakeUntilNoteDetectedL1()).andThen(
