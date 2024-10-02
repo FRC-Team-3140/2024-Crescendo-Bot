@@ -343,6 +343,9 @@ public class Camera extends SubsystemBase {
           status.getSubTable("Camera Status").getEntry("Shape Connection: ")
               .setBoolean(shape.isConnected());
         }
+      } else {
+        status.getSubTable("Camera Status").getEntry("April Connection: ").setBoolean(false);
+        status.getSubTable("Camera Status").getEntry("Shape Connection: ").setBoolean(false);
       }
     } catch (Error e) {
       System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
@@ -361,31 +364,20 @@ public class Camera extends SubsystemBase {
       // Was using Timer.delay() function here, but this caused issues with the other
       // subsystems...
 
-      // Update Networktable information periodically - TK
-      setNetworktableStatus();
-
       // test connection will update the
-      if (((Timer.getFPGATimestamp() - lastAttemptReconnectIterration)) > delayTime) { 
+      if (((Timer.getFPGATimestamp() - lastAttemptReconnectIterration)) > delayTime) {
         // connected variable and return it
-        System.out.println("TEST");
+        // System.out.println((april == null ? "NO_APRIL" : april.isConnected()) + " " +
+        // (shape == null ? "NO_SHAPE" : shape.isConnected()) + " " + connected);
         if (!testConnection()) {
           attemptToReconnect();
-
-          // try {
-          // if (attemptReconnection == null || threadFinished) {
-          // attemptReconnection = new Thread(this::attemptToReconnect);
-
-          // attemptReconnection.start();
-          // }
-          // } catch (IllegalThreadStateException e) {
-          // System.out
-          // .println("Exception occured in Camera: \n" + e + "\nThread state: " +
-          // attemptReconnection.getState());
-          // attemptReconnection = null;
-          // }
         }
 
         lastAttemptReconnectIterration = Timer.getFPGATimestamp();
+
+        // Update Networktable information periodically - TK
+        setNetworktableStatus();
+        System.out.println("Network Tables Updated!");
       }
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
