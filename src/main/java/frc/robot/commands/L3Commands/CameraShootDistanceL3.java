@@ -24,7 +24,7 @@ public class CameraShootDistanceL3 extends SequentialCommandGroup {
 
         DetectAprilTagL1 detectAprilTag = new DetectAprilTagL1(1.0);
         setupShot = new ParallelCommandGroup(
-                new TurnBotToSpeakerL1(detectAprilTag).withTimeout(1),
+                new TurnBotToSpeakerL1(detectAprilTag).withTimeout(2),
                 new SetArmToSpeakerDistanceL1(detectAprilTag),
                 new ShootSpeakerL1(11, 5));
 

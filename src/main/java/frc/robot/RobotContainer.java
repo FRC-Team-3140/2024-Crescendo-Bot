@@ -34,6 +34,7 @@ import frc.robot.commands.L1Commands.SpitOutNote;
 import frc.robot.commands.L1Commands.StopSpinningShooter;
 import frc.robot.commands.L1Commands.ZeroClimbersL1;
 import frc.robot.commands.L2Commands.BasicSwerveControlL2;
+import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 import frc.robot.commands.L3Commands.DriveFacingSpeaker;
 import frc.robot.commands.L3Commands.SpeakerShootDistanceL3;
 import frc.robot.libs.ControllerHelper;
@@ -60,203 +61,208 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotContainer {
 
-  // int leftBumperPresses = 0;
-  pickupNote PickUpNoteCommand;
+    // int leftBumperPresses = 0;
+    pickupNote PickUpNoteCommand;
 
-  public static ControllerHelper controller = new ControllerHelper(0);
-  public static SwerveDrive swerve;
-  public static Camera camera;
-  public static Arm arm = Arm.getInstance();
-  // private final Camera camera;
-  // SendableChooser<Command> autoChooser = new SendableChooser<>();
-  SendableChooser<Command> autobuilder = new SendableChooser<>();
-  public static Climber climber = Climber.getInstance();
-  public static ControllerHelper controller2 = new ControllerHelper(1);
-  public static Intake intake;
-  public static Shooter shooter;
+    public static ControllerHelper controller = new ControllerHelper(0);
+    public static SwerveDrive swerve;
+    public static Camera camera;
+    public static Arm arm = Arm.getInstance();
+    // private final Camera camera;
+    // SendableChooser<Command> autoChooser = new SendableChooser<>();
+    SendableChooser<Command> autobuilder = new SendableChooser<>();
+    public static Climber climber = Climber.getInstance();
+    public static ControllerHelper controller2 = new ControllerHelper(1);
+    public static Intake intake;
+    public static Shooter shooter;
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commppands.
-   */
-  public RobotContainer() {
-    swerve = SwerveDrive.getInstance();
-    intake = Intake.getInstance();
-    shooter = Shooter.getInstance();
-    camera = Camera.getInstance();
-    swerve
-        .setDefaultCommand(new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
-    shooter.setDefaultCommand(new StopSpinningShooter());
-    PickUpNoteCommand = new pickupNote(true, swerve, camera);
-    NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commppands.
+     */
+    public RobotContainer() {
+        swerve = SwerveDrive.getInstance();
+        intake = Intake.getInstance();
+        shooter = Shooter.getInstance();
+        camera = Camera.getInstance();
+        swerve
+                .setDefaultCommand(
+                        new BasicSwerveControlL2(swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
+        shooter.setDefaultCommand(new StopSpinningShooter());
+        PickUpNoteCommand = new pickupNote(true, swerve, camera);
+        NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
-    NamedCommands.registerCommand("SpeakerShoot1",
-        new SequentialCommandGroup(new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2.5)),
-            new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(2))));
+        NamedCommands.registerCommand("SpeakerShoot1",
+                new SequentialCommandGroup(new ParallelRaceGroup(new SpeakerShootDistanceL3(), new WaitCommand(2.5)),
+                        new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(2))));
 
-    NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
-    
-    NamedCommands.registerCommand("Arm to shoot setpoint", new SetArmToAngleL1(Arm.kSetpointShoot));
+        NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
 
-    NamedCommands.registerCommand("SpeakerShoot2",
-        new SequentialCommandGroup(new SetArmToDistanceL1(),
-            new ParallelRaceGroup(new ShootSpeakerL1(10, 5), new WaitCommand(2.5)),
-            new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
+        NamedCommands.registerCommand("Arm to shoot setpoint", new SetArmToAngleL1(Arm.kSetpointShoot));
 
-    NamedCommands.registerCommand("SpeakerShoot3",
-        new ParallelCommandGroup(new SetArmToAngleL1(16), new ShootSpeakerL1(6.5, 5).withTimeout(3)));
+        NamedCommands.registerCommand("SpeakerShoot2",
+                new SequentialCommandGroup(new SetArmToDistanceL1(),
+                        new ParallelRaceGroup(new ShootSpeakerL1(10, 5), new WaitCommand(2.5)),
+                        new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3), new WaitCommand(.3))));
 
-    NamedCommands.registerCommand("StopMoving", new InstantCommand(() -> {
-      swerve.drive(0, 0, 0, false);
-    }));
-    NamedCommands.registerCommand("Turn To Speaker", new DriveFacingSpeaker(swerve, Constants.maxChassisSpeed));
-    NamedCommands.registerCommand("Wait", new WaitCommand(2));
+        NamedCommands.registerCommand("SpeakerShoot3",
+                new ParallelCommandGroup(new SetArmToAngleL1(16), new ShootSpeakerL1(6.5, 5).withTimeout(3)));
 
-    // autobuilder = AutoBuilder.buildAutoChooser();
-    autobuilder.addOption("One Note Auto", new OneNoteAuto());
-    autobuilder.addOption("Left Three Note REAL", new LeftThreeNote());
+        NamedCommands.registerCommand("StopMoving", new InstantCommand(() -> {
+            swerve.drive(0, 0, 0, false);
+        }));
+        NamedCommands.registerCommand("Turn To Speaker", new DriveFacingSpeaker(swerve, Constants.maxChassisSpeed));
+        NamedCommands.registerCommand("Wait", new WaitCommand(2));
 
-    autobuilder.addOption("LeftTwoNote", AutoBuilder.buildAuto("LeftTwoNote"));
-    autobuilder.addOption("LeftTwoNoteTwo", AutoBuilder.buildAuto("LeftTwoNoteTwo"));
-    autobuilder.addOption("MiddleTwoNote", AutoBuilder.buildAuto("MiddleTwoNote"));
-    autobuilder.addOption("MiddleTwoNoteTwo", AutoBuilder.buildAuto("MiddleTwoNoteTwo"));
-    autobuilder.addOption("RightTwoNote", AutoBuilder.buildAuto("Far"));
-    autobuilder.addOption("Camera Right 2", new CameraRightTwoNote());
-    autobuilder.addOption("Camera Left 2", new CameraLeftTwoNote());
-    autobuilder.addOption("Camera Test", new CameraTest());
+        // autobuilder = AutoBuilder.buildAutoChooser();
+        autobuilder.addOption("One Note Auto", new OneNoteAuto());
+        autobuilder.addOption("Left Three Note REAL", new LeftThreeNote());
 
-    // // autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());
-    // autobuilder.addOption("CameraMiddleTwoNote", new CameraMiddleTwoNote());
-    // autobuilder.addOption("CameraRightTwoNote", new CameraRightTwoNote());
-    // autobuilder.addOption("CameraLeftThreeNote", new CameraLeftThreeNote());
+        autobuilder.addOption("LeftTwoNote", AutoBuilder.buildAuto("LeftTwoNote"));
+        autobuilder.addOption("LeftTwoNoteTwo", AutoBuilder.buildAuto("LeftTwoNoteTwo"));
+        autobuilder.addOption("MiddleTwoNote", AutoBuilder.buildAuto("MiddleTwoNote"));
+        autobuilder.addOption("MiddleTwoNoteTwo", AutoBuilder.buildAuto("MiddleTwoNoteTwo"));
+        autobuilder.addOption("RightTwoNote", AutoBuilder.buildAuto("Far"));
+        autobuilder.addOption("Camera Right 2", new CameraRightTwoNote());
+        autobuilder.addOption("Camera Left 2", new CameraLeftTwoNote());
+        autobuilder.addOption("Camera Test", new CameraTest());
 
-    // Additional Commands (Not automatically improted by Pathplanner) - TK
-    // autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
+        // // autobuilder.addOption("CameraLeftTwoNote", new CameraLeftTwoNote());
+        // autobuilder.addOption("CameraMiddleTwoNote", new CameraMiddleTwoNote());
+        // autobuilder.addOption("CameraRightTwoNote", new CameraRightTwoNote());
+        // autobuilder.addOption("CameraLeftThreeNote", new CameraLeftThreeNote());
 
-    SmartDashboard.putData("Path planner", autobuilder);
+        // Additional Commands (Not automatically improted by Pathplanner) - TK
+        // autobuilder.addOption("Pathfind To Apriltag", camera.pathfindToAprilTag());
 
-    configureBindings();
-  }
+        SmartDashboard.putData("Path planner", autobuilder);
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    // Boolean suppliers
-    BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
-    BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
+        configureBindings();
+    }
 
-    BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
-    BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be
+     * created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+     * an arbitrary
+     * predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+     * {@link
+     * CommandXboxController
+     * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or
+     * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * joysticks}.
+     */
+    private void configureBindings() {
+        // Boolean suppliers
+        BooleanSupplier rightTriggerC1 = () -> controller.getRightTriggerAxis() > .3;
+        BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
-    BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
-    BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
-    // Primary Driver Controls
+        BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
+        BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
 
-    // Resetting Gyro
-    new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    new JoystickButton(controller, Button.kStart.value).onTrue(new InstantCommand((swerve::resetGyro)));
-    // DSB new JoystickButton(controller, Button.kLeftBumper.value)
-    // DSB .onTrue(new InstantCommand(() -> PickUpNoteCommand.schedule()));
-    // DSB new JoystickButton(controller, Button.kLeftBumper.value)
-    // DSB .onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
-    // new JoystickButton(controller, Button.kA.value).whileTrue(new
-    // CameraShootDistanceL3());
-    // Command combo_pickup = new
-    // SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
-    // new IntakeUntilNoteDetectedL1()).andThen(
-    // new SetArmToAngleL1(Arm.kSetpointIntakeReady));
+        BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
+        BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
+        // Primary Driver Controls
 
-    new Trigger(leftTriggerC1)
-        .whileTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
-            new IntakeUntilNoteDetectedL1()))
-        .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
+        // Resetting Gyro
+        new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
+        new JoystickButton(controller, Button.kStart.value).onTrue(new InstantCommand((swerve::resetGyro)));
+        // DSB new JoystickButton(controller, Button.kLeftBumper.value)
+        // DSB .onTrue(new InstantCommand(() -> PickUpNoteCommand.schedule()));
+        // DSB new JoystickButton(controller, Button.kLeftBumper.value)
+        // DSB .onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
+        // new JoystickButton(controller, Button.kA.value).whileTrue(new
+        // CameraShootDistanceL3());
+        // Command combo_pickup = new
+        // SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
+        // new IntakeUntilNoteDetectedL1()).andThen(
+        // new SetArmToAngleL1(Arm.kSetpointIntakeReady));
 
-    new JoystickButton(controller, Button.kLeftBumper.value)
-        .whileTrue(
-            new SetArmToAngleL1(Arm.kSetpointAmp).andThen(
-                new ShootAmpL1()))
-        .onFalse(
-            new SetArmToAngleL1(Arm.kSetpointMove));
+        new Trigger(leftTriggerC1)
+                .whileTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
+                        new IntakeUntilNoteDetectedL1()))
+                .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
 
-    new JoystickButton(controller, Button.kRightBumper.value)
-        .whileTrue(
-            new SetArmToAngleL1(Arm.kSetpointShoot).andThen(
-                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage)))
-        .onFalse(
-            new SetArmToAngleL1(Arm.kSetpointShoot));
+        new Trigger(rightTriggerC1)
+                .whileTrue(new CameraShootDistanceL3())
+                .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
 
-    // new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
-    // BasicSwerveControlL2.fieldRelative = false;
-    // })).onFalse(new InstantCommand(() -> {
-    // BasicSwerveControlL2.fieldRelative = true;
-    // }));
+        new JoystickButton(controller, Button.kLeftBumper.value)
+                .whileTrue(
+                        new SetArmToAngleL1(Arm.kSetpointAmp).andThen(
+                                new ShootAmpL1()))
+                .onFalse(
+                        new SetArmToAngleL1(Arm.kSetpointMove));
 
-    // Secondary Driver Controls
+        new JoystickButton(controller, Button.kRightBumper.value)
+                .whileTrue(
+                        new SetArmToAngleL1(Arm.kSetpointShoot).andThen(
+                                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage)))
+                .onFalse(
+                        new SetArmToAngleL1(Arm.kSetpointShoot));
 
-    new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
-    new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
-    new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
-    // new JoystickButton(controller2, Button.kA.value).onTrue(new
-    // SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
-    // if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-    // swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
+        // new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
+        // BasicSwerveControlL2.fieldRelative = false;
+        // })).onFalse(new InstantCommand(() -> {
+        // BasicSwerveControlL2.fieldRelative = true;
+        // }));
+
+        // Secondary Driver Controls
+
+        new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
+        new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
+        new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
+        // new JoystickButton(controller2, Button.kA.value).onTrue(new
+        // SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
+        // if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+        // swerve.resetPose(new Pose2d(1.3, 5.5, new Rotation2d()));
+        // } else {
+        // swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
+        // }
+        // })); // Optimal angle for shooting from against the speaker.
+        new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
+        new POVButton(controller2, 90).onTrue(new SetArmToAngleL1(35.5));
+
+        new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
+        new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
+                .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new ShootSpeakerL1(0,0));
+        new JoystickButton(controller2, Button.kLeftBumper.value)
+                .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
+
+        new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
+
+        new Trigger(lefttTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
+                .onFalse(new ShootSpeakerL1(0, 0));
+
+        new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
+        new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
+
+        new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 0));
+
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     * 
+     */
+
+    public Command getAutonomousCommand() {
+        // An example command will be run in autonomous
+        return autobuilder.getSelected();
+
+    }
+
+    // private void togglePickUpNote() {
+    // leftBumperPresses++;
+    // if (leftBumperPresses % 2 == 1) {
+    // PickUpNoteCommand.schedule();
     // } else {
-    // swerve.resetPose(new Pose2d(15.28, 5.58, new Rotation2d()));
+    // PickUpNoteCommand.cancel();
     // }
-    // })); // Optimal angle for shooting from against the speaker.
-    new POVButton(controller2, 0).onTrue(new SetArmToAngleL1(33.75));
-    new POVButton(controller2, 90).onTrue(new SetArmToAngleL1(35.5));
-
-    new JoystickButton(controller2, Button.kStart.value).whileTrue(new RepeatCommand(new SetArmToDistanceL1()));
-    new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
-        .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new ShootSpeakerL1(0,0));
-    new JoystickButton(controller2, Button.kLeftBumper.value)
-        .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(), new SetArmToAngleL1(16)));
-
-    new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
-
-    new Trigger(lefttTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
-        .onFalse(new ShootSpeakerL1(0, 0));
-
-    new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
-    new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
-
-    new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 0));
-
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   * 
-   */
-
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return autobuilder.getSelected();
-
-  }
-
-  // private void togglePickUpNote() {
-  // leftBumperPresses++;
-  // if (leftBumperPresses % 2 == 1) {
-  // PickUpNoteCommand.schedule();
-  // } else {
-  // PickUpNoteCommand.cancel();
-  // }
-  // }
+    // }
 
 }
 

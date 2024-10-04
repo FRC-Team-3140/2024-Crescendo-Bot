@@ -4,6 +4,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 //Measurements in meters
 public interface Constants {
+
+    // Used to quickly correct for issues with the camera calibration
+    public static final double cameraXCalibrationCorrection=1.0;
+    public static final double cameraAngleCalibrationCorrection=1.0;
     public static final double intakeVoltage = 7.5;
     public static final double shooterVoltage = 9.6;
     public static final double gearRatio = 6.12;

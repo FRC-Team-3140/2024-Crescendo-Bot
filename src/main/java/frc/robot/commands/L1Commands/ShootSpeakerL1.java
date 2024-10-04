@@ -56,7 +56,8 @@ public class ShootSpeakerL1 extends Command {
         this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
-        freeSpeed = (473 * shooterSpeed) - deadband;
+        // kv rating of neo == 
+        freeSpeed = (473 * shooterSpeed) - 1000;
         // Adjust the desiredVoltage variable to the voltage value you want to use.
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.
