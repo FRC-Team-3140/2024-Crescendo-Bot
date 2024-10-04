@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.resetSwerveStates;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootSpeakerL1;
 import frc.robot.sensors.Camera;
@@ -17,15 +18,16 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 
 public class CameraTest extends SequentialCommandGroup {
-  static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-  static Command back = AutoBuilder.buildAuto("To Speaker");
-  static Command out = AutoBuilder.buildAuto("Straight Line");
-  static Command arm = new SetArmToAngleL1(Arm.kSetpointShoot);
-  static Command shoot = new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage);
 
   /** Creates a new CameraTest. */
   public CameraTest() {
+    pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
+    Command back = AutoBuilder.buildAuto("To Speaker").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
+    Command out = AutoBuilder.buildAuto("Straight Line").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
+    Command arm = new SetArmToAngleL1(Arm.kSetpointShoot);
+    Command shoot = new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage);
+
     // Use addRequirements() here to declare subsystem dependencies.
-    super(out, intake, back, arm, shoot);
+    addCommands(out, intake, back, arm, shoot);
   }
 }

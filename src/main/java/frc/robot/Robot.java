@@ -10,7 +10,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.pickupNote;
+import frc.robot.commands.resetSwerveStates;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
+import frc.robot.commands.L2Commands.BasicSwerveControlL2;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -84,6 +86,8 @@ public class Robot extends LoggedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     Arm.getInstance().enable();
 
+    RobotContainer.swerve.setDefaultCommand(new resetSwerveStates(RobotContainer.swerve, false));
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -104,6 +108,9 @@ public class Robot extends LoggedRobot {
 
     // Ready the arm for movement.
     Arm.getInstance().enable();
+
+    RobotContainer.swerve.setDefaultCommand(
+        new BasicSwerveControlL2(RobotContainer.swerve, Constants.maxChassisSpeed, Constants.maxChassisTurnSpeed));
   }
 
   // IntakeAndShooter test = IntakeAndShooter.getInstance();
@@ -161,9 +168,9 @@ public class Robot extends LoggedRobot {
 
     // pickupNote test with pathplanner
     // new SequentialCommandGroup(
-    //     AutoBuilder.buildAuto("Straight Line").withTimeout(2),
-    //     new pickupNote(false, RobotContainer.swerve, RobotContainer.camera),
-    //     AutoBuilder.buildAuto("Opposite of Straight Line")).schedule();
+    // AutoBuilder.buildAuto("Straight Line").withTimeout(2),
+    // new pickupNote(false, RobotContainer.swerve, RobotContainer.camera),
+    // AutoBuilder.buildAuto("Opposite of Straight Line")).schedule();
     new pickupNote(true, RobotContainer.swerve, RobotContainer.camera).schedule();
   }
 

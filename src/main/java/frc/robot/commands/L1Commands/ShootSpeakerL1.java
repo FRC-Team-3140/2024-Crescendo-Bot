@@ -29,7 +29,7 @@ public class ShootSpeakerL1 extends Command {
     private final double shooterSpeed;
     private final double voltage2;
     private double freeSpeed;
-    private double deadband = 20;
+    private double deadband = 1000;
 
     // Called when the command is initially scheduled.
     SequentialCommandGroup test;
@@ -56,8 +56,7 @@ public class ShootSpeakerL1 extends Command {
         this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
-        // kv rating of neo == 
-        freeSpeed = (473 * shooterSpeed) - 1000;
+        freeSpeed = (473 * shooterSpeed) - deadband; // 473 is the KV rating of neo to calculate RPM from voltage RPM = KV * Volts - TK
         // Adjust the desiredVoltage variable to the voltage value you want to use.
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.
@@ -87,10 +86,11 @@ public class ShootSpeakerL1 extends Command {
     public void execute() {
         if (shooter.getShooterSpeed() >= freeSpeed && !hitSpeed) {
             hitSpeed = true;
+            System.out.println("Hit Speed");
             timeSinceSpinUp = System.currentTimeMillis();
             // RobotContainer.controller2.setRumble().schedule();
         }
-        if (System.currentTimeMillis() - timeSinceSpinUp > 300 && shooter.getShooterSpeed() >= freeSpeed) {
+        if ((System.currentTimeMillis() - timeSinceSpinUp) > 300 && shooter.getShooterSpeed() >= freeSpeed) {
             timeSinceIntakeSpinUp = System.currentTimeMillis();
             intake.setIntakeVoltage(voltage2);
         }

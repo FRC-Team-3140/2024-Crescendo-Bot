@@ -2,10 +2,15 @@ package frc.robot.commands.Autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.pickupNote;
-import frc.robot.commands.L3Commands.CameraShootDistanceL3;
+import frc.robot.commands.resetSwerveStates;
+import frc.robot.commands.L1Commands.SetArmToAngleL1;
+import frc.robot.commands.L1Commands.ShootSpeakerL1;
+import frc.robot.Constants;
 import frc.robot.sensors.Camera;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 
 /**
@@ -16,8 +21,8 @@ import frc.robot.subsystems.SwerveDrive;
  * and shooting using a camera at a specific distance.
  */
 public class CameraLeftThreeNote extends SequentialCommandGroup {
-    static pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-    static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
+    // TODO: Test Camera Shoot distance!
+    // static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
 
     /**
      * Constructs a new instance of the CameraLeftThreeNote command.
@@ -26,7 +31,13 @@ public class CameraLeftThreeNote extends SequentialCommandGroup {
      * and uses the intake and shoot subsystems for additional actions.
      */
     public CameraLeftThreeNote() {
-        super(new CameraLeftTwoNote(), AutoBuilder.buildAuto("CameraLeftThreeNote1"), intake,
-                AutoBuilder.buildAuto("CameraLeftThreeNote2"), shoot);
+        pickupNote intake2 = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
+        SequentialCommandGroup shoot3 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
+                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+        /* .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage))); */
+        Command path1 = AutoBuilder.buildAuto("CameraLeftThreeNote1").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
+        Command path2 = AutoBuilder.buildAuto("CameraLeftThreeNote2").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
+
+        addCommands(new CameraLeftTwoNote(), path1, intake2, path2, shoot3);
     }
 }

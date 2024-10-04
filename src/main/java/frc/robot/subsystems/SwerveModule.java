@@ -95,6 +95,7 @@ public class SwerveModule extends SubsystemBase {
     // runs while the bot is running
     @Override
     public void periodic() {
+        turnMotor.set(-turnPID.calculate(turnEncoder.getAbsolutePosition()));
     }
 
     SlewRateLimiter accelerationLimiter = new SlewRateLimiter(30.0, -Constants.maxAcceleration, 0);

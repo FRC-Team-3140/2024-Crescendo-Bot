@@ -33,7 +33,9 @@ public class Camera extends SubsystemBase {
 
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  private long programStartTime = System.currentTimeMillis();
+  private NetworkTable status = inst.getTable("Vision").getSubTable("Status");
+
+  private double lastAttemptReconnectIterration = Timer.getFPGATimestamp();
 
   // Gets initial instantiation of Cameras - TK
   public PhotonCamera april = aprilGetInstance();
@@ -41,7 +43,7 @@ public class Camera extends SubsystemBase {
 
   /******************************************************************************
    * Update the following variables to ensure that the cameras are instanciated *
-   * properly!                                                                  *
+   * properly! *
    ******************************************************************************/
   private final String aprilTagCameraName = "april";
   private final String shapeCameraName = "shape";
@@ -54,8 +56,8 @@ public class Camera extends SubsystemBase {
   // 0.5), new Rotation3d(0, 0, 0));
 
   /******************************************************************************
-   * Update the following variables to ensure that the pose is calculated       *
-   * properly!                                                                  *
+   * Update the following variables to ensure that the pose is calculated *
+   * properly! *
    ******************************************************************************/
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
@@ -64,12 +66,6 @@ public class Camera extends SubsystemBase {
 
   private boolean connected = false;
   private int connectionAttempts = 2;
-
-  private static boolean versionMatches = false;
-
-  // This thread allows this connection check to run in the background and not
-  // block other Subsystems.
-  private Thread attemptReconnection = null;
 
   // Time to delay periodic method Networktable connection check. IN
   // Seconds!!
@@ -175,22 +171,18 @@ public class Camera extends SubsystemBase {
 
     aprilTagPoseEstimator.setReferencePose(new Pose2d(0, 0, new Rotation2d()));
 
-    while (!connected && connectionAttempts <= PhotonvisionConnectionAttempts) {
-      if (inst.getTable("photonvision").getSubTables().contains("april")) {
-        connected = true;
-        versionMatches = checkVersion();
-        aprilGetInstance();
-        shapeGetInstance();
-        System.out.println("PhotonVision is connected and is probably working as expected...");
-        break;
-      } else {
-        System.err.println("Photonvision Not Connected Properly!");
-        connected = false;
-        System.out.println("Attempt: " + connectionAttempts + "\nChecking for PhotonVision connection in "
-            + attemptDelay + " seconds.");
-        Timer.delay(attemptDelay);
-        connectionAttempts++;
-      }
+    aprilGetInstance();
+    shapeGetInstance();
+
+    while (!testConnection() && connectionAttempts <= PhotonvisionConnectionAttempts) {
+      System.err.println("Photonvision Not Connected Properly!");
+      System.out.println("Attempt: " + connectionAttempts + "\nChecking for PhotonVision connection in "
+          + attemptDelay + " seconds.");
+      Timer.delay(attemptDelay);
+      connectionAttempts++;
+
+      aprilGetInstance();
+      shapeGetInstance();
     }
 
     setNetworktableStatus();
@@ -220,8 +212,7 @@ public class Camera extends SubsystemBase {
    *         detection.
    */
   private PhotonCamera aprilGetInstance() {
-    checkVersion();
-    if (versionMatches && april == null) {
+    if (april == null) {
       april = new PhotonCamera(inst, aprilTagCameraName);
     }
     return april;
@@ -239,8 +230,7 @@ public class Camera extends SubsystemBase {
    *         detection.
    */
   private PhotonCamera shapeGetInstance() {
-    checkVersion();
-    if (versionMatches && shape == null) {
+    if (shape == null) {
       shape = new PhotonCamera(inst, shapeCameraName);
     }
     return shape;
@@ -252,20 +242,16 @@ public class Camera extends SubsystemBase {
    * @return true if the version matches the expected version, false otherwise.
    */
   private boolean checkVersion() {
-    Timer timeout = new Timer();
     String version = "";
 
-    timeout.start();
+    version = inst.getTable("photonvision").getEntry("version").getString("");
 
-    while (connected && version == "" && !timeout.hasElapsed(delayTime)) {
-      version = inst.getTable("photonvision").getEntry("version").getString("");
-      if (version == "") {
-        System.err.println("Photon version not available yet...");
-      }
-      if (timeout.hasElapsed(delayTime)) {
-        System.err.println("checkVersion loop Timedout for safety!");
-      }
+    if (version == "") {
+      System.err.println("Photon version not available yet...");
     }
+
+    // Update Networktable Value
+    status.getEntry("Version Matches: ").setBoolean(PhotonVersion.versionMatches(version));
 
     return PhotonVersion.versionMatches(version);
   }
@@ -283,9 +269,20 @@ public class Camera extends SubsystemBase {
     // disconnected
 
     // If either camera is working || connected == true
-    if (april.isConnected() || shape.isConnected()) {
-      connected = true;
+    if (april != null && shape != null) {
+      if (april.isConnected() && shape.isConnected() && checkVersion()) {
+        connected = true;
+      } else {
+        connected = false;
+        april = null;
+        shape = null;
+      }
     } else {
+      if (connected) {
+        april = null;
+        shape = null;
+      }
+
       connected = false;
     }
 
@@ -300,21 +297,26 @@ public class Camera extends SubsystemBase {
   private void attemptToReconnect() {
     System.err.println(
         "!!!!!!!!!!!!!!!!!!!!\nPhotonvision is no longer connected properly.\nAttempting reconnection\n!!!!!!!!!!!!!!!!!!!!");
-    while (!connected) {
-      if (testConnection()) {
-        connected = true;
-        versionMatches = checkVersion();
-        aprilGetInstance();
-        shapeGetInstance();
-        System.out.println("PhotonVision is connected and is probably working as expected...");
-        break;
-      } else {
-        System.err.println("Photonvision Not Connected Properly!");
-        connected = false;
-        System.out.println("Checking for PhotonVision connection in " + attemptDelay + " seconds.");
-        Timer.delay(attemptDelay);
-      }
-    }
+
+    // System.out.println(april + " " + shape);
+
+    aprilGetInstance();
+    shapeGetInstance();
+
+    System.out.println("Reconnecting");
+
+    // if (connected) {
+    // versionMatches = checkVersion();
+    // System.out.println("PhotonVision is connected and is probably working as
+    // expected...");
+    // } else {
+    // System.err.println("Photonvision Not Connected Properly!");
+    // connected = false;
+    // System.out.println("Checking for PhotonVision connection in " + attemptDelay
+    // + " seconds.");
+    // Timer.delay(attemptDelay);
+    // testConnection(;
+    // }
   }
 
   /**
@@ -326,25 +328,25 @@ public class Camera extends SubsystemBase {
    */
   private void setNetworktableStatus() {
     try {
-      NetworkTable status = inst.getTable("Vision").getSubTable("Status");
-
-      status.getEntry("Version Matches: ").setBoolean(versionMatches);
       status.getSubTable("Version Info").getEntry("Photon Version: ")
           .setString(inst.getTable("photonvision").getEntry("version").getString("Version not available..."));
       status.getSubTable("Version Info").getEntry("Photon Lib Version: ")
           .setString(PhotonVersion.versionString);
       status.getEntry("Connection: ").setBoolean(connected);
 
-      if (connected && versionMatches) {
         if (april != null) {
           status.getSubTable("Camera Status").getEntry("April Connection: ")
               .setBoolean(april.isConnected());
+        } else {
+          status.getSubTable("Camera Status").getEntry("April Connection: ").setBoolean(false);
         }
+
         if (shape != null) {
           status.getSubTable("Camera Status").getEntry("Shape Connection: ")
               .setBoolean(shape.isConnected());
+        } else {
+          status.getSubTable("Camera Status").getEntry("Shape Connection: ").setBoolean(false);
         }
-      }
     } catch (Error e) {
       System.out.println("An error occured in Camera: \nUnable to publish status to Networktables:\n" + e);
     }
@@ -361,21 +363,21 @@ public class Camera extends SubsystemBase {
     try {
       // Was using Timer.delay() function here, but this caused issues with the other
       // subsystems...
-      if ((System.currentTimeMillis() - programStartTime / 1000) % delayTime == 0 && attemptReconnection != null
-          && !attemptReconnection.isAlive() && !testConnection()) {
+
+      // test connection will update the
+      if (((Timer.getFPGATimestamp() - lastAttemptReconnectIterration)) > delayTime) {
+        // connected variable and return it
+        // System.out.println((april == null ? "NO_APRIL" : april.isConnected()) + " " +
+        // (shape == null ? "NO_SHAPE" : shape.isConnected()) + " " + connected);
+        if (!testConnection()) {
+          attemptToReconnect();
+        }
+
+        lastAttemptReconnectIterration = Timer.getFPGATimestamp();
+
         // Update Networktable information periodically - TK
         setNetworktableStatus();
-
-        try {
-          if (attemptReconnection == null || !attemptReconnection.isAlive()) {
-            attemptReconnection = new Thread(() -> this.attemptToReconnect());
-
-            attemptReconnection.start();
-          }
-        } catch (IllegalThreadStateException e) {
-          System.out
-              .println("Exception occured in Camera: \n" + e + "\nThread state: " + attemptReconnection.getState());
-        }
+        System.out.println("Network Tables Updated!");
       }
     } catch (Error e) {
       System.out.println("An error occured in Camera: \n" + e);
@@ -392,7 +394,7 @@ public class Camera extends SubsystemBase {
     setNetworktableStatus();
 
     // Just returns the boolean that shows connction status - TK
-    if (versionMatches && connected) {
+    if (connected) {
       return true;
     } else {
       return false;
@@ -405,7 +407,7 @@ public class Camera extends SubsystemBase {
    * @return true if an AprilTag is detected, false otherwise.
    */
   public boolean getAprilTagDetected() {
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+    if (connected && april != null && april.getLatestResult().hasTargets()) {
       return true;
     }
     return false;
@@ -418,9 +420,9 @@ public class Camera extends SubsystemBase {
    * @return The ID of the detected AprilTag, or null if no targets were detected.
    */
   public Integer getBestApriltagID() {
-    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+    if (connected && april != null && april.getLatestResult().hasTargets()) {
+      PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
 
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
       return target.getFiducialId();
     } else {
       return null;
@@ -440,7 +442,13 @@ public class Camera extends SubsystemBase {
    * @return ApriltagMeasurement object
    */
   public AprilTagMeasurement getBestAprilTagData() {
-    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = null;
+
+    try {
+      target = april.getLatestResult().getBestTarget();
+    } catch (NullPointerException e) {
+      System.out.println("There are no Apriltags in frame.");
+    }
 
     double xDist;
     double yDist;
@@ -448,7 +456,7 @@ public class Camera extends SubsystemBase {
     double ambiguity;
     int id;
 
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets() && target != null) {
+    if (connected && april != null && april.getLatestResult().hasTargets() && target != null) {
       // Get X distance
       xDist = target.getBestCameraToTarget().getY();
 
@@ -487,7 +495,7 @@ public class Camera extends SubsystemBase {
     double yaw;
     double ambiguity;
 
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+    if (connected && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target != null && target.getFiducialId() == id) {
           // Get X distance
@@ -522,9 +530,15 @@ public class Camera extends SubsystemBase {
    */
   public Double getApriltagPitch() {
     // If this function returns a null, that means there is not any detected targets
-    PhotonTrackedTarget target = april.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = null;
 
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+    try {
+      target = april.getLatestResult().getBestTarget();
+    } catch (NullPointerException e) {
+      System.out.println("No Apriltags in frame.");
+    }
+
+    if (connected && april != null && april.getLatestResult().hasTargets() && target != null) {
       return target.getPitch();
     } else {
       return null;
@@ -540,7 +554,7 @@ public class Camera extends SubsystemBase {
    * @return The pitch angle of the target, or null if no targets are detected.
    */
   public Double getApriltagPitch(int id) {
-    if (connected && versionMatches && april != null && april.getLatestResult().hasTargets()) {
+    if (connected && april != null && april.getLatestResult().hasTargets()) {
       for (PhotonTrackedTarget target : april.getLatestResult().getTargets()) {
         if (target != null && target.getFiducialId() == id) {
           return target.getPitch();
@@ -568,7 +582,7 @@ public class Camera extends SubsystemBase {
   public Double getBestAprilTagDist() {
     AprilTagMeasurement measurement = getBestAprilTagData();
 
-    if (connected && versionMatches && measurement != null && measurement.ambiguity <= minAmbiguity) {
+    if (connected && measurement != null && measurement.ambiguity <= minAmbiguity) {
       return Math.sqrt((Math.pow(measurement.Xdistance, 2) + Math.pow(measurement.Ydistance, 2)));
     } else {
       return null;
@@ -586,7 +600,7 @@ public class Camera extends SubsystemBase {
   public Double getAprilTagDist(int id) {
     AprilTagMeasurement measurement = getAprilTagData(id);
 
-    if (connected && versionMatches && measurement != null && measurement.ambiguity <= minAmbiguity) {
+    if (connected && measurement != null && measurement.ambiguity <= minAmbiguity) {
       return Math.sqrt((Math.pow(measurement.Xdistance, 2) + Math.pow(measurement.Ydistance, 2)));
     } else {
       return null;
@@ -602,7 +616,7 @@ public class Camera extends SubsystemBase {
   public Double getDegToApriltag() {
     AprilTagMeasurement measurement = getBestAprilTagData();
 
-    if (connected && versionMatches && measurement != null && measurement.ambiguity <= minAmbiguity) {
+    if (connected && measurement != null && measurement.ambiguity <= minAmbiguity) {
       // Need to use the X distance for Y because we are calculating from the
       // Photonvision relative measurements - TK
       return Math.toDegrees(Math.atan2(measurement.Xdistance, measurement.Ydistance));
@@ -623,7 +637,7 @@ public class Camera extends SubsystemBase {
   public Double getDegToApriltag(int id) {
     AprilTagMeasurement measurement = getAprilTagData(id);
 
-    if (connected && versionMatches && measurement != null && measurement.ambiguity <= minAmbiguity) {
+    if (connected && measurement != null && measurement.ambiguity <= minAmbiguity) {
       // Need to use the X distance for Y because we are calculating from the
       // Photonvision relative measurements - TK
       return Math.toDegrees(Math.atan2(measurement.Xdistance, measurement.Ydistance));
@@ -647,7 +661,7 @@ public class Camera extends SubsystemBase {
    * @return true if a shape is detected, false otherwise.
    */
   public boolean getShapeDetected() {
-    if (connected && versionMatches && shape != null && shape.getLatestResult().hasTargets()) {
+    if (connected && shape != null && shape.getLatestResult().hasTargets()) {
       return shape.getLatestResult().hasTargets();
     }
     return false;
@@ -660,13 +674,19 @@ public class Camera extends SubsystemBase {
    *         detected.
    */
   public ShapeData getShapeData() {
-    PhotonTrackedTarget target = shape.getLatestResult().getBestTarget();
+    PhotonTrackedTarget target = null;
+
+    try {
+      target = shape.getLatestResult().getBestTarget();
+    } catch (NullPointerException e) {
+      System.out.println("No shape detected");
+    }
 
     double yaw;
     double area;
 
     // Robot relative angle
-    if (connected && versionMatches && shape != null && shape.getLatestResult().hasTargets() && target != null) {
+    if (connected && shape != null && shape.getLatestResult().hasTargets() && target != null) {
       // realative yaw to the shape
       yaw = target.getYaw();
 
@@ -685,8 +705,7 @@ public class Camera extends SubsystemBase {
    * @return the current time in milliseconds
    */
   public double getCurrentTime() {
-    // Shouldn't need to typecast here, but JIC :) - TK
-    return (double) (System.currentTimeMillis() - programStartTime);
+    return (Timer.getFPGATimestamp() - lastAttemptReconnectIterration);
   }
 
   /**
