@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * The Arm class represents the subsystem responsible for controlling the arm mechanism of the robot.
- * It handles the PID control, motor configuration, setpoints, and network table communication.
+ * The Arm class represents the subsystem responsible for controlling the arm
+ * mechanism of the robot.
+ * It handles the PID control, motor configuration, setpoints, and network table
+ * communication.
  */
 public class Arm extends SubsystemBase {
 
@@ -173,11 +175,13 @@ public class Arm extends SubsystemBase {
     angleInterpolator = new InterpolatingDoubleTreeMap();// Add your inverseInterpolator, interp2lator, and comparator
                                                          // here
 
-    angleInterpolator.put(1.3, 16.0);
-    angleInterpolator.put(2.067, 22.0);
-    angleInterpolator.put(2.923, 30.0);
-    angleInterpolator.put(3.287, 34.0);
-    angleInterpolator.put(4.266, 38.0);
+    angleInterpolator.put(0.0, 12.0);
+    angleInterpolator.put(1.3, 20.0);
+    angleInterpolator.put(2.3, 26.0);
+    angleInterpolator.put(3.3 , 34.0);
+    angleInterpolator.put(4.4, 35.0); // Maximum effective range
+    angleInterpolator.put(5.6, 35.0); // Max apriltag range
+    angleInterpolator.put(6.6, 35.0);
 
     // Set the arm to disabled by default.
     disable();
@@ -185,7 +189,8 @@ public class Arm extends SubsystemBase {
 
   /**
    * Checks if the ArmEncoder is connected.
-   * If the ArmEncoder is not connected, it sets an error message and disables the arm.
+   * If the ArmEncoder is not connected, it sets an error message and disables the
+   * arm.
    */
   private void encoderConnected() {
     // check that ArmEncoder is connected
@@ -194,7 +199,6 @@ public class Arm extends SubsystemBase {
       is_disabled = true;
     }
   }
-
 
   /**
    * This method is called periodically to update the arm subsystem.
@@ -359,8 +363,10 @@ public class Arm extends SubsystemBase {
 
   /**
    * Returns the current angle of the arm.
-   * This method reads the arm encoder and calculates the angle based on the encoder value.
-   * The calculated angle is then stored in the network table for monitoring purposes.
+   * This method reads the arm encoder and calculates the angle based on the
+   * encoder value.
+   * The calculated angle is then stored in the network table for monitoring
+   * purposes.
    * 
    * @return The current angle of the arm in degrees.
    */
@@ -381,7 +387,8 @@ public class Arm extends SubsystemBase {
   /**
    * Enable the arm for movement and set the motors to coast.
    * 
-   * @param setpoint_update true if the setpoint should be updated, false otherwise
+   * @param setpoint_update true if the setpoint should be updated, false
+   *                        otherwise
    */
   public void enable(boolean setpoint_update) {
     if (setpoint_update) {
