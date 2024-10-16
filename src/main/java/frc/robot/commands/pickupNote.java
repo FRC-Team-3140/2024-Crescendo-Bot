@@ -67,7 +67,7 @@ public class pickupNote extends SequentialCommandGroup {
 
   private static IntakeUntilNoteDetectedL1 intakeCommand = new IntakeUntilNoteDetectedL1();
 
-  private static PIDController turnController = new PIDController(0.035, 0.01, 0.0045);
+  private static PIDController turnController = new PIDController(0.025, 0.01, 0.0045);
 
   private static double deadzone = 0.25;
 
@@ -82,144 +82,195 @@ public class pickupNote extends SequentialCommandGroup {
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
-    super(new InstantCommand(() -> {
-      // pickupNote.swerve = swerve;
-      pickupNote.swerve = SwerveDrive.getInstance();
-      // pickupNote.camera = camera;
-      pickupNote.camera = Camera.getInstance();
+    // super(new InstantCommand(() -> {
+    // // pickupNote.swerve = swerve;
+    // pickupNote.swerve = SwerveDrive.getInstance();
+    // // pickupNote.camera = camera;
+    // pickupNote.camera = Camera.getInstance();
+
+    // pickupNote.withController = withController;
+
+    // System.out.println("With controller: " +
+    // pickupNote.withController.toString());
+    // }), !withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+    // SequentialCommandGroup(),
+    // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+    // !withController ? new IntakeUntilNoteDetectedL1() : new
+    // SequentialCommandGroup()));
+    // pickupNote.swerve = swerve;
+    // pickupNote.swerve = SwerveDrive.getInstance();
+    // // pickupNote.camera = camera;
+    // pickupNote.camera = Camera.getInstance();
+
+    // pickupNote.withController = withController;
+
+    addCommands(new InstantCommand(() -> {
+      pickupNote.swerve = swerve;
+      // pickupNote.swerve = SwerveDrive.getInstance();
+      pickupNote.camera = camera;
+      // pickupNote.camera = Camera.getInstance();
 
       pickupNote.withController = withController;
 
-      System.out.println("With controller: " + pickupNote.withController.toString());
-    }), !withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
+      swerve.drive(0, 0, 0, false);
+    }), new PrintCommand("With Controller: " + pickupNote.withController.toString()),
+        !withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
+        new ParallelDeadlineGroup(new PickUpNoteCommand(SwerveDrive.getInstance(), Camera.getInstance()),
             !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
   }
 
-  public pickupNote(Boolean withController, SwerveDrive swerve, boolean returnToStart, Camera camera) {
-    // TODO: sort command into respective difficulty levels if neccessary
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
-            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
+  // public pickupNote(Boolean withController, SwerveDrive swerve, boolean
+  // returnToStart, Camera camera) {
+  // // TODO: sort command into respective difficulty levels if neccessary
+  // super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+  // SequentialCommandGroup(),
+  // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+  // !withController ? new IntakeUntilNoteDetectedL1() : new
+  // SequentialCommandGroup()));
 
-    pickupNote.swerve = swerve;
-    pickupNote.returnToStart = returnToStart;
-    pickupNote.camera = camera;
+  // pickupNote.swerve = swerve;
+  // pickupNote.returnToStart = returnToStart;
+  // pickupNote.camera = camera;
 
-    pickupNote.withController = withController;
+  // pickupNote.withController = withController;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
-  }
+  // // Use addRequirements() here to declare subsystem dependencies.
+  // addRequirements(swerve);
+  // }
 
-  public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, Camera camera) {
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
-            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
+  // public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive
+  // swerve, Camera camera) {
+  // super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+  // SequentialCommandGroup(),
+  // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+  // !withController ? new IntakeUntilNoteDetectedL1() : new
+  // SequentialCommandGroup()));
 
-    pickupNote.swerve = swerve;
-    pickupNote.camera = camera;
+  // pickupNote.swerve = swerve;
+  // pickupNote.camera = camera;
 
-    pickupNote.withController = withController;
-    pickupNote.exploreTimeout = exploreTimeout;
+  // pickupNote.withController = withController;
+  // pickupNote.exploreTimeout = exploreTimeout;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
-  }
+  // // Use addRequirements() here to declare subsystem dependencies.
+  // addRequirements(swerve);
+  // }
 
-  public pickupNote(Boolean withController, double exploreTimeout, boolean returnToStart, SwerveDrive swerve,
-      Camera camera) {
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
-            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
+  // public pickupNote(Boolean withController, double exploreTimeout, boolean
+  // returnToStart, SwerveDrive swerve,
+  // Camera camera) {
+  // super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+  // SequentialCommandGroup(),
+  // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+  // !withController ? new IntakeUntilNoteDetectedL1() : new
+  // SequentialCommandGroup()));
 
-    pickupNote.swerve = swerve;
-    pickupNote.returnToStart = returnToStart;
-    pickupNote.camera = camera;
+  // pickupNote.swerve = swerve;
+  // pickupNote.returnToStart = returnToStart;
+  // pickupNote.camera = camera;
 
-    pickupNote.withController = withController;
-    pickupNote.exploreTimeout = exploreTimeout;
+  // pickupNote.withController = withController;
+  // pickupNote.exploreTimeout = exploreTimeout;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
-  }
+  // // Use addRequirements() here to declare subsystem dependencies.
+  // addRequirements(swerve);
+  // }
 
-  public pickupNote(Boolean withController, SwerveDrive swerve, double driveSpeed, Camera camera) {
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
-            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
+  // public pickupNote(Boolean withController, SwerveDrive swerve, double
+  // driveSpeed, Camera camera) {
+  // super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+  // SequentialCommandGroup(),
+  // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+  // !withController ? new IntakeUntilNoteDetectedL1() : new
+  // SequentialCommandGroup()));
 
-    pickupNote.swerve = swerve;
-    pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
-    pickupNote.camera = camera;
+  // pickupNote.swerve = swerve;
+  // pickupNote.driveSpeed = Math.max(Math.min(driveSpeed,
+  // Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
+  // pickupNote.camera = camera;
 
-    pickupNote.withController = withController;
+  // pickupNote.withController = withController;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
-  }
+  // // Use addRequirements() here to declare subsystem dependencies.
+  // addRequirements(swerve);
+  // }
 
-  public pickupNote(Boolean withController, SwerveDrive swerve, boolean returnToStart, double driveSpeed,
-      Camera camera) {
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
-            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
+  // public pickupNote(Boolean withController, SwerveDrive swerve, boolean
+  // returnToStart, double driveSpeed,
+  // Camera camera) {
+  // super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+  // SequentialCommandGroup(),
+  // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+  // !withController ? new IntakeUntilNoteDetectedL1() : new
+  // SequentialCommandGroup()));
 
-    pickupNote.swerve = swerve;
-    pickupNote.returnToStart = returnToStart;
-    pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
-    pickupNote.camera = camera;
+  // pickupNote.swerve = swerve;
+  // pickupNote.returnToStart = returnToStart;
+  // pickupNote.driveSpeed = Math.max(Math.min(driveSpeed,
+  // Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
+  // pickupNote.camera = camera;
 
-    pickupNote.withController = withController;
+  // pickupNote.withController = withController;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
-  }
+  // // Use addRequirements() here to declare subsystem dependencies.
+  // addRequirements(swerve);
+  // }
 
-  public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive swerve, double driveSpeed,
-      Camera camera) {
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
-            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
+  // public pickupNote(Boolean withController, double exploreTimeout, SwerveDrive
+  // swerve, double driveSpeed,
+  // Camera camera) {
+  // super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+  // SequentialCommandGroup(),
+  // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+  // !withController ? new IntakeUntilNoteDetectedL1() : new
+  // SequentialCommandGroup()));
 
-    pickupNote.swerve = swerve;
-    pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
-    pickupNote.camera = camera;
+  // pickupNote.swerve = swerve;
+  // pickupNote.driveSpeed = Math.max(Math.min(driveSpeed,
+  // Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
+  // pickupNote.camera = camera;
 
-    pickupNote.withController = withController;
-    pickupNote.exploreTimeout = exploreTimeout;
+  // pickupNote.withController = withController;
+  // pickupNote.exploreTimeout = exploreTimeout;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
-  }
+  // // Use addRequirements() here to declare subsystem dependencies.
+  // addRequirements(swerve);
+  // }
 
-  public pickupNote(Boolean withController, double exploreTimeout, boolean returnToStart, SwerveDrive swerve,
-      double driveSpeed,
-      Camera camera) {
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-        new ParallelDeadlineGroup(new PickUpNoteCommand(),
-            !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
+  // public pickupNote(Boolean withController, double exploreTimeout, boolean
+  // returnToStart, SwerveDrive swerve,
+  // double driveSpeed,
+  // Camera camera) {
+  // super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+  // SequentialCommandGroup(),
+  // new ParallelDeadlineGroup(new PickUpNoteCommand(),
+  // !withController ? new IntakeUntilNoteDetectedL1() : new
+  // SequentialCommandGroup()));
 
-    pickupNote.swerve = swerve;
-    pickupNote.returnToStart = returnToStart;
-    pickupNote.driveSpeed = Math.max(Math.min(driveSpeed, Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
-    pickupNote.camera = camera;
+  // pickupNote.swerve = swerve;
+  // pickupNote.returnToStart = returnToStart;
+  // pickupNote.driveSpeed = Math.max(Math.min(driveSpeed,
+  // Constants.maxChassisSpeed), pickupNote.minDriveSpeed);
+  // pickupNote.camera = camera;
 
-    pickupNote.withController = withController;
-    pickupNote.exploreTimeout = exploreTimeout;
+  // pickupNote.withController = withController;
+  // pickupNote.exploreTimeout = exploreTimeout;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
-  }
+  // // Use addRequirements() here to declare subsystem dependencies.
+  // addRequirements(swerve);
+  // }
 
   private static class PickUpNoteCommand extends Command {
-    public PickUpNoteCommand() {
-      // addRequirements(pickupNote.swerve, pickupNote.camera);
+    public PickUpNoteCommand(SwerveDrive swerveDrive, Camera cam) {
+      addRequirements(swerveDrive, cam);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+
+      System.out.println(pickupNote.withController.toString());
+
       run = true;
       startingPose = swerve.getPose();
       if (!withController) {
@@ -247,8 +298,7 @@ public class pickupNote extends SequentialCommandGroup {
         driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
 
         if (withController) {
-          System.out.println("WITH CONTROLLER");
-          if (RobotContainer.controller.getAButton()) {
+          if (RobotContainer.controller.getRightTriggerAxis() >= .3) {
             if (!intakeCommand.isScheduled()) {
               intakeCommand.schedule();
             }

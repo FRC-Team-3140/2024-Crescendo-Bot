@@ -49,7 +49,6 @@ import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.L3Commands.CameraShootDistanceL3;
 
 // TODO: Pressing DRIVE LB on the controller crashes the code. Marked DSB
 
@@ -235,7 +234,7 @@ public class RobotContainer {
                 // Secondary Driver Controls
 
                 new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
-                new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown));
+                new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointShoot));
                 new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
                 // new JoystickButton(controller2, Button.kA.value).onTrue(new
                 // SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
