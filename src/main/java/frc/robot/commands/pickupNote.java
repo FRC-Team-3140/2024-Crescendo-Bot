@@ -12,7 +12,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -80,17 +82,18 @@ public class pickupNote extends SequentialCommandGroup {
 
   public pickupNote(Boolean withController, SwerveDrive swerve, Camera camera) {
     // TODO: sort command into respective difficulty levels if neccessary
-    super(!withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
+    super(new InstantCommand(() -> {
+      // pickupNote.swerve = swerve;
+      pickupNote.swerve = SwerveDrive.getInstance();
+      // pickupNote.camera = camera;
+      pickupNote.camera = Camera.getInstance();
+
+      pickupNote.withController = withController;
+
+      System.out.println("With controller: " + pickupNote.withController.toString());
+    }), !withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
         new ParallelDeadlineGroup(new PickUpNoteCommand(),
             !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup()));
-
-    pickupNote.swerve = swerve;
-    pickupNote.camera = camera;
-
-    pickupNote.withController = withController;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerve);
   }
 
   public pickupNote(Boolean withController, SwerveDrive swerve, boolean returnToStart, Camera camera) {
@@ -210,6 +213,10 @@ public class pickupNote extends SequentialCommandGroup {
   }
 
   private static class PickUpNoteCommand extends Command {
+    public PickUpNoteCommand() {
+      // addRequirements(pickupNote.swerve, pickupNote.camera);
+    }
+
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
@@ -240,6 +247,7 @@ public class pickupNote extends SequentialCommandGroup {
         driveAng = -turnController.calculate(swerve.getPose().getRotation().getDegrees());
 
         if (withController) {
+          System.out.println("WITH CONTROLLER");
           if (RobotContainer.controller.getAButton()) {
             if (!intakeCommand.isScheduled()) {
               intakeCommand.schedule();

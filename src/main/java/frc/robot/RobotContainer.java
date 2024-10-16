@@ -64,20 +64,20 @@ import frc.robot.commands.L3Commands.CameraShootDistanceL3;
  */
 public class RobotContainer {
 
-          // int leftBumperPresses = 0;
-          pickupNote PickUpNoteCommand;
+        // int leftBumperPresses = 0;
+        // pickupNote PickUpNoteCommand;
 
-          public static ControllerHelper controller = new ControllerHelper(0);
-          public static SwerveDrive swerve;
-          public static Camera camera;
-          public static Arm arm = Arm.getInstance();
-          // private final Camera camera;
-          // SendableChooser<Command> autoChooser = new SendableChooser<>();
-          SendableChooser<Command> autobuilder = new SendableChooser<>();
-          public static Climber climber = Climber.getInstance();
-          public static ControllerHelper controller2 = new ControllerHelper(1);
-          public static Intake intake;
-          public static Shooter shooter;
+        public static ControllerHelper controller = new ControllerHelper(0);
+        public static SwerveDrive swerve;
+        public static Camera camera;
+        public static Arm arm = Arm.getInstance();
+        // private final Camera camera;
+        // SendableChooser<Command> autoChooser = new SendableChooser<>();
+        SendableChooser<Command> autobuilder = new SendableChooser<>();
+        public static Climber climber = Climber.getInstance();
+        public static ControllerHelper controller2 = new ControllerHelper(1);
+        public static Intake intake;
+        public static Shooter shooter;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commppands.
@@ -91,7 +91,7 @@ public class RobotContainer {
                 shooter = Shooter.getInstance();
                 camera = Camera.getInstance();
                 shooter.setDefaultCommand(new StopSpinningShooter());
-                PickUpNoteCommand = new pickupNote(true, swerve, camera);
+                // PickUpNoteCommand = new pickupNote(true, swerve, camera);
                 NamedCommands.registerCommand("IntakeUntilNoteDetected", new IntakeUntilNoteDetectedL1());
 
                 NamedCommands.registerCommand("SpeakerShoot1",
@@ -178,7 +178,7 @@ public class RobotContainer {
                 BooleanSupplier leftTriggerC1 = () -> controller.getLeftTriggerAxis() > .3;
 
                 BooleanSupplier rightTriggerC2 = () -> (controller2.getRightTriggerAxis() > 0.3);
-                BooleanSupplier lefttTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
+                BooleanSupplier leftTriggerC2 = () -> (controller2.getLeftTriggerAxis() > 0.3);
 
                 BooleanSupplier upControllerLeftC2 = () -> (controller2.getLeftY() > 0.3);
                 BooleanSupplier downControllerLeftC2 = () -> (controller2.getLeftY() < -0.3);
@@ -186,29 +186,29 @@ public class RobotContainer {
 
                 // Resetting Gyro
                 new JoystickButton(controller, Button.kY.value).onTrue(new InstantCommand((swerve::resetGyro)));
-                new JoystickButton(controller, Button.kStart.value).onTrue(new InstantCommand((swerve::resetGyro)));
+                // new JoystickButton(controller, Button.kStart.value).onTrue(new
+                // InstantCommand((swerve::resetGyro)));
                 // DSB new JoystickButton(controller, Button.kLeftBumper.value)
                 // DSB .onTrue(new InstantCommand(() -> PickUpNoteCommand.schedule()));
                 // DSB new JoystickButton(controller, Button.kLeftBumper.value)
                 // DSB .onFalse(new InstantCommand(() -> PickUpNoteCommand.cancel()));
-                new JoystickButton(controller, Button.kA.value).whileTrue(new
-                CameraShootDistanceL3());
+                new JoystickButton(controller, Button.kA.value).whileTrue(new CameraShootDistanceL3());
                 // Command combo_pickup = new
                 // SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
                 // new IntakeUntilNoteDetectedL1()).andThen(
                 // new SetArmToAngleL1(Arm.kSetpointIntakeReady));
+                // Arm
+                // new Trigger(leftTriggerC2)
+                // .whileTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
+                // new IntakeUntilNoteDetectedL1()))
+                // .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
 
-                new Trigger(leftTriggerC1)
-                                .whileTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
-                                                new IntakeUntilNoteDetectedL1()))
-                                .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
-
-                new JoystickButton(controller, Button.kLeftBumper.value)
-                                .whileTrue(
-                                                new SetArmToAngleL1(Arm.kSetpointAmp).andThen(
-                                                                new ShootAmpL1()))
-                                .onFalse(
-                                                new SetArmToAngleL1(Arm.kSetpointMove));
+                // new JoystickButton(controller, Button.kLeftBumper.value)
+                // .whileTrue(
+                // new SetArmToAngleL1(Arm.kSetpointAmp).andThen(
+                // new ShootAmpL1()))
+                // .onFalse(
+                // new SetArmToAngleL1(Arm.kSetpointMove));
 
                 new JoystickButton(controller, Button.kRightBumper.value)
                                 .whileTrue(
@@ -217,6 +217,14 @@ public class RobotContainer {
                                                                                 Constants.intakeVoltage)))
                                 .onFalse(
                                                 new SetArmToAngleL1(Arm.kSetpointShoot));
+
+                new JoystickButton(controller, Button.kLeftBumper.value)
+                                .whileTrue(new pickupNote(true, swerve, camera)
+                                                .alongWith(new SetArmToAngleL1(Arm.kSetpointIntakeDown)))
+                                .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
+
+                new Trigger(leftTriggerC1).onTrue(new pickupNote(false, swerve, camera));
+                new Trigger(leftTriggerC1).onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
 
                 // new Trigger(rightTriggerC1).onTrue(new InstantCommand(() -> {
                 // BasicSwerveControlL2.fieldRelative = false;
@@ -245,12 +253,13 @@ public class RobotContainer {
                 new JoystickButton(controller2, Button.kRightBumper.value).onTrue(new ShootAmpL1())
                                 .onFalse(new ShootSpeakerL1(0, 0));// .onFalse(new ShootSpeakerL1(0,0));
                 new JoystickButton(controller2, Button.kLeftBumper.value)
-                                .onTrue(new SequentialCommandGroup(new IntakeUntilNoteDetectedL1(),
-                                                new SetArmToAngleL1(16)));
+                                .whileTrue(new SetArmToAngleL1(Arm.kSetpointIntakeDown).alongWith(
+                                                new IntakeUntilNoteDetectedL1()))
+                                .onFalse(new SetArmToAngleL1(Arm.kSetpointIntakeReady));
 
-                new JoystickButton(controller2, Button.kBack.value).whileTrue(new SpitOutNote());
+                new JoystickButton(controller2, Button.kA.value).whileTrue(new SpitOutNote());
 
-                new Trigger(lefttTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
+                new Trigger(leftTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
                                 .onFalse(new ShootSpeakerL1(0, 0));
 
                 new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
