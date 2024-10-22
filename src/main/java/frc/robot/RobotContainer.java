@@ -236,6 +236,8 @@ public class RobotContainer {
                 new JoystickButton(controller2, Button.kY.value).onTrue(new SetArmToAngleL1(Arm.kSetpointAmp));
                 new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointShoot));
                 new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
+
+                new JoystickButton(controller2, Button.kBack.value).whileTrue(new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointAmp), new ShootAmpL1()));
                 // new JoystickButton(controller2, Button.kA.value).onTrue(new
                 // SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
                 // if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
