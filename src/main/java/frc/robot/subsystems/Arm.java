@@ -175,13 +175,13 @@ public class Arm extends SubsystemBase {
     angleInterpolator = new InterpolatingDoubleTreeMap();// Add your inverseInterpolator, interp2lator, and comparator
                                                          // here
 
-    angleInterpolator.put(0.0, 15.0);
-    angleInterpolator.put(1.3, 20.0);
-    angleInterpolator.put(2.3, 29.0);
-    angleInterpolator.put(3.3 , 37.0);
-    angleInterpolator.put(4.4, 28.0); // Maximum effective range
-    angleInterpolator.put(5.6, 28.0); // Max apriltag range
-    angleInterpolator.put(6.6, 28.0);
+    angleInterpolator.put(0.0, 17.0);
+    angleInterpolator.put(1.3, 22.0);
+    angleInterpolator.put(2.3, 31.0);
+    angleInterpolator.put(3.3 , 39.0);
+    angleInterpolator.put(4.4, 30.0); // Maximum effective range
+    angleInterpolator.put(5.6, 30.0); // Max apriltag range
+    angleInterpolator.put(6.6, 30.0);
 
     // Set the arm to disabled by default.
     disable();
