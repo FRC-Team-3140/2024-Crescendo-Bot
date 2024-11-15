@@ -28,7 +28,9 @@ public class CameraRightTwoNote extends SequentialCommandGroup {
         new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
 
     addCommands(shoot,
-        AutoBuilder.buildAuto("CameraRightTwoNote1").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true)), intake,
-        AutoBuilder.buildAuto("CameraRightTwoNote2").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true)), shoot2);
+        AutoBuilder.buildAuto("CameraRightTwoNote1").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true)),
+        intake,
+        AutoBuilder.buildAuto("CameraRightTwoNote2").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true)),
+        shoot2);
   }
 }

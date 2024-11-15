@@ -19,7 +19,7 @@ public class turnToFaceApriltag extends Command {
 
   /** Creates a new turnToFaceApriltag. */
   public turnToFaceApriltag(SwerveDrive swerveDrive, Camera cam) {
-    // TODO: sort command into respective difficulty levels if neccessary 
+    // TODO: sort command into respective difficulty levels if neccessary
     // Use addRequirements() here to declare subsystem dependencies.
     // addRequirements(swerveDrive, cam);
 

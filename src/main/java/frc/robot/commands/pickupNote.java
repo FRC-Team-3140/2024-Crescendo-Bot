@@ -71,22 +71,28 @@ public class pickupNote extends SequentialCommandGroup {
     // pickupNote.withController = withController;
 
     // addCommands(new InstantCommand(() -> {
-    //   pickupNote.swerve = swerve;
-    //   // pickupNote.swerve = SwerveDrive.getInstance();
-    //   pickupNote.camera = camera;
-    //   // pickupNote.camera = Camera.getInstance();
+    // pickupNote.swerve = swerve;
+    // // pickupNote.swerve = SwerveDrive.getInstance();
+    // pickupNote.camera = camera;
+    // // pickupNote.camera = Camera.getInstance();
 
-    //   pickupNote.withController = withController;
+    // pickupNote.withController = withController;
 
-    //   swerve.drive(0, 0, 0, false);
-    // }), new PrintCommand("With Controller: " + pickupNote.withController.toString()),
-    //     !withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new SequentialCommandGroup(),
-    //     new ParallelDeadlineGroup(new PickUpNoteCommand(SwerveDrive.getInstance(), Camera.getInstance()),
-    //         !withController ? new IntakeUntilNoteDetectedL1() : new SequentialCommandGroup())); 
-    
-    // TODO: Fix null passed in randomly for swerve error 
-    if(!withController) {
-      addCommands(new SetArmToAngleL1(Arm.kSetpointIntakeDown), new ParallelCommandGroup(new IntakeUntilNoteDetectedL1(), new PickUpNoteCommandWithoutController(SwerveDrive.getInstance(), Camera.getInstance())));  
+    // swerve.drive(0, 0, 0, false);
+    // }), new PrintCommand("With Controller: " +
+    // pickupNote.withController.toString()),
+    // !withController ? new SetArmToAngleL1(Arm.kSetpointIntakeDown) : new
+    // SequentialCommandGroup(),
+    // new ParallelDeadlineGroup(new PickUpNoteCommand(SwerveDrive.getInstance(),
+    // Camera.getInstance()),
+    // !withController ? new IntakeUntilNoteDetectedL1() : new
+    // SequentialCommandGroup()));
+
+    // TODO: Fix null passed in randomly for swerve error
+    if (!withController) {
+      addCommands(new SetArmToAngleL1(Arm.kSetpointIntakeDown),
+          new ParallelCommandGroup(new IntakeUntilNoteDetectedL1(),
+              new PickUpNoteCommandWithoutController(SwerveDrive.getInstance(), Camera.getInstance())));
     } else {
       addCommands(new PickUpNoteCommandWithController(SwerveDrive.getInstance(), Camera.getInstance()));
     }
@@ -261,9 +267,9 @@ public class pickupNote extends SequentialCommandGroup {
     private double driveAng;
 
     public PickUpNoteCommandWithController(SwerveDrive swerve, Camera camera) {
-      this.swerve = swerve; 
+      this.swerve = swerve;
 
-      this.camera = camera; 
+      this.camera = camera;
 
       addRequirements(swerve, camera);
     }
@@ -274,7 +280,7 @@ public class pickupNote extends SequentialCommandGroup {
       run = true;
 
       startingPose = swerve.getPose();
-      
+
       turnController.setSetpoint(swerve.getPose().getRotation().getDegrees());
     }
 
@@ -324,7 +330,8 @@ public class pickupNote extends SequentialCommandGroup {
       if (returnToStart && startingPose != null) {
         AutoBuilder.pathfindToPose(startingPose, new PathConstraints(Constants.maxChassisSpeed, 4.0,
             Units.degreesToRadians(540), Units.degreesToRadians(720))).schedule();
-      };
+      }
+      ;
       System.out.println("Stopping Intake");
       Intake.getInstance().setIntakeVoltage(0);
       swerve.drive(0, 0, 0, false);
@@ -374,9 +381,9 @@ public class pickupNote extends SequentialCommandGroup {
     private double driveAng;
 
     public PickUpNoteCommandWithoutController(SwerveDrive swerve, Camera camera) {
-      this.swerve = swerve; 
+      this.swerve = swerve;
 
-      this.camera = camera; 
+      this.camera = camera;
 
       addRequirements(swerve, camera);
     }
@@ -390,7 +397,7 @@ public class pickupNote extends SequentialCommandGroup {
       if (!withController) {
         globalTimer.start();
       }
-      
+
       turnController.setSetpoint(swerve.getPose().getRotation().getDegrees());
     }
 

@@ -19,20 +19,21 @@ import frc.robot.subsystems.SwerveDrive;
  * CameraShootDistanceL3 command.
  */
 public class CameraMiddleTwoNote extends SequentialCommandGroup {
-    // static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
+        // static CameraShootDistanceL3 shoot = new CameraShootDistanceL3();
 
-    public CameraMiddleTwoNote() {
-        pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-        SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
-        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
-        SequentialCommandGroup shoot2 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
-        // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
+        public CameraMiddleTwoNote() {
+                pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
+                SequentialCommandGroup shoot = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
+                                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+                // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
+                SequentialCommandGroup shoot2 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
+                                new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+                // .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage)));
 
-        addCommands(shoot,
-                AutoBuilder.buildAuto("CameraMiddleTwoNote").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true)),
-                intake, shoot2);
-    }
+                addCommands(shoot,
+                                AutoBuilder.buildAuto("CameraMiddleTwoNote")
+                                                .andThen(new resetSwerveStates(SwerveDrive.getInstance(), true)),
+                                intake, shoot2);
+        }
 
 }

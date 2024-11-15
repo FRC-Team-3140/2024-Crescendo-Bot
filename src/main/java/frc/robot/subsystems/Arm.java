@@ -178,10 +178,10 @@ public class Arm extends SubsystemBase {
     angleInterpolator.put(0.0, 17.0);
     angleInterpolator.put(1.3, 22.0);
     angleInterpolator.put(2.3, 31.0);
-    angleInterpolator.put(3.3 , 39.0);
-    angleInterpolator.put(4.4, 30.0); // Maximum effective range
-    angleInterpolator.put(5.6, 30.0); // Max apriltag range
-    angleInterpolator.put(6.6, 30.0);
+    angleInterpolator.put(3.3, 39.0);
+    angleInterpolator.put(4.4, 39.35); // Maximum effective range
+    angleInterpolator.put(5.6, 39.35); // Max apriltag range
+    angleInterpolator.put(6.6, 39.35);
 
     // Set the arm to disabled by default.
     disable();

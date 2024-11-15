@@ -9,16 +9,20 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 
 /**
- * This class represents a command for autonomous mode that performs a specific sequence of actions.
- * It sets the arm to a specific angle and then shoots a ball using the shooter and intake subsystems.
+ * This class represents a command for autonomous mode that performs a specific
+ * sequence of actions.
+ * It sets the arm to a specific angle and then shoots a ball using the shooter
+ * and intake subsystems.
  */
 public class OneNoteAuto extends Command {
   private double shooterVoltage;
   private double intakeVoltage;
 
   /**
-   * This class represents a command for performing a specific autonomous routine called "OneNoteAuto".
-   * It sets the shooter voltage and intake voltage to their respective constants defined in the Constants class.
+   * This class represents a command for performing a specific autonomous routine
+   * called "OneNoteAuto".
+   * It sets the shooter voltage and intake voltage to their respective constants
+   * defined in the Constants class.
    */
   public OneNoteAuto() {
     // Use addRequirements() here to declare subsystem dependencies.

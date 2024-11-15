@@ -24,7 +24,6 @@ public class ShootAmpL1 extends Command {
 
   long startTime;
 
-
   /**
    * A command that shoots the ball with increased power and speed.
    */
@@ -42,12 +41,13 @@ public class ShootAmpL1 extends Command {
   public void initialize() {
     startTime = System.currentTimeMillis();
     intake.setIntakeVoltage(3);
-    shooter.setShooterVoltage(6);
+    shooter.setShooterRpm(Shooter.kAmpShootSpeed);
   }
 
   /**
    * Executes the ShootAmpL1 command.
-   * This method does nothing, as the intake and shooter voltages are set in the initialize method.
+   * This method does nothing, as the intake and shooter voltages are set in the
+   * initialize method.
    */
   @Override
   public boolean isFinished() {
@@ -63,7 +63,7 @@ public class ShootAmpL1 extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeVoltage(0);
-    shooter.setShooterVoltage(0);
+    shooter.stop();
   }
 
 }

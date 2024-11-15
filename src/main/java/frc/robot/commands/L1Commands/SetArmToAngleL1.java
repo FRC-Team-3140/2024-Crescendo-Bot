@@ -12,7 +12,8 @@ public class SetArmToAngleL1 extends Command {
     private final double kDefaultError = .5; // in degrees
 
     /**
-     * Creates a new SetArmToAngle command that moves the arm to the specified angle.
+     * Creates a new SetArmToAngle command that moves the arm to the specified
+     * angle.
      *
      * @param targetAngle the angle to move the arm to
      */
@@ -22,11 +23,10 @@ public class SetArmToAngleL1 extends Command {
         addRequirements(arm);
     }
 
-    
     /**
-        * Initializes the command.
-        * Set the target angle when the command is initialized.
-        */
+     * Initializes the command.
+     * Set the target angle when the command is initialized.
+     */
     @Override
     public void initialize() {
         // Set the target angle when the command is initialized
@@ -34,10 +34,11 @@ public class SetArmToAngleL1 extends Command {
     }
 
     /**
-        * Executes the command.
-        * This method sets the target angle for the arm and lets the arm's PIDController handle
-        * moving the arm to the target angle.
-        */
+     * Executes the command.
+     * This method sets the target angle for the arm and lets the arm's
+     * PIDController handle
+     * moving the arm to the target angle.
+     */
     @Override
     public void execute() {
         // Nothing to do here, the arm's PIDController will handle moving the arm to the
@@ -46,7 +47,8 @@ public class SetArmToAngleL1 extends Command {
     }
 
     /**
-     * This method is called when the command ends. It resets the voltage of the arm and does nothing else,
+     * This method is called when the command ends. It resets the voltage of the arm
+     * and does nothing else,
      * as the arm's PIDController will keep the arm at the target angle.
      * 
      * @param interrupted true if the command was interrupted, false otherwise
@@ -61,6 +63,7 @@ public class SetArmToAngleL1 extends Command {
     /**
      * Checks if the command is finished.
      * The command is considered finished when the arm is at the target angle.
+     * 
      * @return true if the command is finished, false otherwise.
      */
     @Override

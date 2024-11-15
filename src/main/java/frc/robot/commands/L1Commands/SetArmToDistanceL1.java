@@ -9,7 +9,8 @@ import frc.robot.subsystems.SwerveDrive;
 /**
  * This command sets the arm to a specific distance.
  * The distance is determined by the distance from the speaker.
- * The command is finished when the arm is at the target angle within a tolerance.
+ * The command is finished when the arm is at the target angle within a
+ * tolerance.
  */
 public class SetArmToDistanceL1 extends Command {
     private final Arm arm = Arm.getInstance();
@@ -17,7 +18,8 @@ public class SetArmToDistanceL1 extends Command {
     private double angleTolerance = .1;
 
     /**
-     * Creates a new SetArmToDistance command that moves the arm to the specified distance.
+     * Creates a new SetArmToDistance command that moves the arm to the specified
+     * distance.
      */
     public SetArmToDistanceL1() {
         addRequirements(arm);
@@ -32,22 +34,24 @@ public class SetArmToDistanceL1 extends Command {
     }
 
     /**
-        * Executes the command.
-        * Retrieves the distance from the speaker of the Swerve Drive,
-        * displays it on the SmartDashboard, and sets the arm to shoot
-        * at the calculated distance.
-        */
+     * Executes the command.
+     * Retrieves the distance from the speaker of the Swerve Drive,
+     * displays it on the SmartDashboard, and sets the arm to shoot
+     * at the calculated distance.
+     */
     @Override
     public void execute() {
         // Code to initialize the command
-        distance = SwerveDrive.getInstance().getDistanceFromSpeaker(); // TODO: I am concerned this comes from the swerve drive.
+        distance = SwerveDrive.getInstance().getDistanceFromSpeaker(); // TODO: I am concerned this comes from the
+                                                                       // swerve drive.
         SmartDashboard.putNumber("Distance", distance);
         arm.setArmToShootDistance(distance);
     }
 
     /**
      * Checks if the command is finished.
-     * The command is considered finished when the arm is at the target angle within the specified angle tolerance.
+     * The command is considered finished when the arm is at the target angle within
+     * the specified angle tolerance.
      *
      * @return true if the command is finished, false otherwise
      */
@@ -59,10 +63,10 @@ public class SetArmToDistanceL1 extends Command {
     }
 
     /**
-        * This method is called when the command ends.
-        * 
-        * @param interrupted true if the command was interrupted, false otherwise
-        */
+     * This method is called when the command ends.
+     * 
+     * @param interrupted true if the command was interrupted, false otherwise
+     */
     @Override
     public void end(boolean interrupted) {
         // Code to run when the command ends

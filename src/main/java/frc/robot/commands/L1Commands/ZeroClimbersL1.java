@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
 /**
- * A command that lowers both climbers until their limit switches are pressed, effectively zeroing them.
+ * A command that lowers both climbers until their limit switches are pressed,
+ * effectively zeroing them.
  */
 public class ZeroClimbersL1 extends Command {
     Climber climber = Climber.getInstance();
@@ -14,7 +15,7 @@ public class ZeroClimbersL1 extends Command {
      * Constructs a new ZeroClimbersL1 command.
      * Adds the climber subsystem as a requirement.
      */
-    public ZeroClimbersL1(){
+    public ZeroClimbersL1() {
         addRequirements(climber);
     }
 
@@ -28,6 +29,7 @@ public class ZeroClimbersL1 extends Command {
 
     /**
      * Checks if both climbers' limit switches are pressed.
+     * 
      * @return true if both limit switches are pressed, false otherwise.
      */
     @Override

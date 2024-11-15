@@ -12,15 +12,16 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-
 /**
  * Represents a command to shoot the speaker in the L1 position.
- * This command sets the shooter speed and intake voltage, and adds the intake and shooter subsystems as requirements.
+ * This command sets the shooter speed and intake voltage, and adds the intake
+ * and shooter subsystems as requirements.
  * The desired voltage can be adjusted using the `shooterVoltage` parameter.
- * This command can be used in the robot's command scheduler or bound to a button for control.
+ * This command can be used in the robot's command scheduler or bound to a
+ * button for control.
  * 
  * @param shooterVoltage the voltage to set the shooter to (in volts)
- * @param intakeVoltage the voltage to set the intake to (in volts)
+ * @param intakeVoltage  the voltage to set the intake to (in volts)
  */
 public class ShootSpeakerL1 extends Command {
 
@@ -43,12 +44,14 @@ public class ShootSpeakerL1 extends Command {
 
     /**
      * Represents a command to shoot the speaker in the L1 position.
-     * This command sets the shooter speed and intake voltage, and adds the intake and shooter subsystems as requirements.
+     * This command sets the shooter speed and intake voltage, and adds the intake
+     * and shooter subsystems as requirements.
      * The desired voltage can be adjusted using the `shooterVoltage` parameter.
-     * This command can be used in the robot's command scheduler or bound to a button for control.
+     * This command can be used in the robot's command scheduler or bound to a
+     * button for control.
      * 
      * @param shooterVoltage the voltage to set the shooter to (in volts)
-     * @param intakeVoltage the voltage to set the intake to (in volts)
+     * @param intakeVoltage  the voltage to set the intake to (in volts)
      */
     public ShootSpeakerL1(double shooterVoltage, double intakeVoltage) {
         this.intake = Intake.getInstance();
@@ -56,7 +59,8 @@ public class ShootSpeakerL1 extends Command {
         this.shooterSpeed = shooterVoltage;
         this.voltage2 = intakeVoltage;
         addRequirements(intake, shooter);
-        freeSpeed = (473 * shooterSpeed) - deadband; // 473 is the KV rating of neo to calculate RPM from voltage RPM = KV * Volts - TK
+        freeSpeed = (473 * shooterSpeed) - deadband; // 473 is the KV rating of neo to calculate RPM from voltage RPM =
+                                                     // KV * Volts - TK
         // Adjust the desiredVoltage variable to the voltage value you want to use.
         // You can then use this instance of DefaultShoot in your robot's command
         // scheduler or bind it to a button as needed for your specific control setup.
@@ -64,22 +68,22 @@ public class ShootSpeakerL1 extends Command {
 
     /**
      * Initializes the ShootSpeakerL1 command.
-     * Sets the shooter voltage for the top and bottom motors to the specified shooter speed.
+     * Sets the shooter voltage for the top and bottom motors to the specified
+     * shooter speed.
      */
     @Override
     public void initialize() {
         startTime = System.currentTimeMillis();
-        // TODO: Recommend using encoders and PID to control the shooter speed. Much
-        // more consistant shots. See notes in IntakeShooter. -DB
-        shooter.setShooterVoltageTop(shooterSpeed);
-        shooter.setShooterVoltageBottom(shooterSpeed);
+        shooter.setShooterRpm(Shooter.kCloseShootSpeed);
     }
 
     /**
      * Executes the shoot speaker command.
-     * If the shooter speed is greater than or equal to the free speed and the hit speed flag is false,
+     * If the shooter speed is greater than or equal to the free speed and the hit
+     * speed flag is false,
      * it sets the hit speed flag to true and records the current time.
-     * If the time since spin up is greater than 300 milliseconds and the shooter speed is still greater than or equal to the free speed,
+     * If the time since spin up is greater than 300 milliseconds and the shooter
+     * speed is still greater than or equal to the free speed,
      * it records the current time and sets the intake voltage to voltage2.
      */
     @Override
@@ -105,12 +109,13 @@ public class ShootSpeakerL1 extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.setIntakeVoltage(0);
-        shooter.setShooterVoltage(0);
+        shooter.stop();
     }
 
     /**
      * Determines whether the command is finished or not.
-     * The command is considered finished if the time since the intake spin-up is greater than 600 milliseconds
+     * The command is considered finished if the time since the intake spin-up is
+     * greater than 600 milliseconds
      * and the shooter speed is greater than or equal to the free speed.
      *
      * @return true if the command is finished, false otherwise

@@ -23,7 +23,8 @@ public class CameraTest extends SequentialCommandGroup {
   public CameraTest() {
     pickupNote intake = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
     Command back = AutoBuilder.buildAuto("To Speaker").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
-    Command out = AutoBuilder.buildAuto("Straight Line").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
+    Command out = AutoBuilder.buildAuto("Straight Line")
+        .andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
     Command arm = new SetArmToAngleL1(Arm.kSetpointShoot);
     Command shoot = new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage);
 

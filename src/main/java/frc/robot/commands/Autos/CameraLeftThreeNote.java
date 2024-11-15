@@ -29,12 +29,16 @@ public class CameraLeftThreeNote extends SequentialCommandGroup {
      */
     public CameraLeftThreeNote() {
         pickupNote intake2 = new pickupNote(false, SwerveDrive.getInstance(), Camera.getInstance());
-        // SequentialCommandGroup shoot3 = new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointShoot),
-        //         new ShootSpeakerL1(Constants.shooterVoltage, Constants.intakeVoltage).withTimeout(3));
+        // SequentialCommandGroup shoot3 = new SequentialCommandGroup(new
+        // SetArmToAngleL1(Arm.kSetpointShoot),
+        // new ShootSpeakerL1(Constants.shooterVoltage,
+        // Constants.intakeVoltage).withTimeout(3));
         CameraShootDistanceL3 shoot3 = new CameraShootDistanceL3();
         /* .andThen(new ShootSpeakerOverrideL1(1, Constants.intakeVoltage))); */
-        Command path1 = AutoBuilder.buildAuto("CameraLeftThreeNote1").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
-        Command path2 = AutoBuilder.buildAuto("CameraLeftThreeNote2").andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
+        Command path1 = AutoBuilder.buildAuto("CameraLeftThreeNote1")
+                .andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
+        Command path2 = AutoBuilder.buildAuto("CameraLeftThreeNote2")
+                .andThen(new resetSwerveStates(SwerveDrive.getInstance(), true));
 
         addCommands(new CameraLeftTwoNote(), path1, intake2, path2, shoot3);
     }

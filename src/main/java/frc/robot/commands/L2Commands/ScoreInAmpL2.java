@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.L1Commands.SetArmToAngleL1;
 import frc.robot.commands.L1Commands.ShootAmpL1;
-import frc.robot.commands.L1Commands.ShooterSpeedL1;
+import frc.robot.commands.L1Commands.ShootSpeedL1;
 import frc.robot.subsystems.Arm;
 
 // TODO: This class is not used.
@@ -31,7 +31,7 @@ public class ScoreInAmpL2 extends SequentialCommandGroup {
                                                 // Set the arm to the desired angle
                                                 new SetArmToAngleL1(kArmAngle),
                                                 // Set the shooter to the desired speed
-                                                new ShooterSpeedL1(kShooterSpeed)),
+                                                new ShootSpeedL1(kShooterSpeed)),
 
                                 // Step 2: When both are ready, shoot at the speaker.
                                 new ShootAmpL1(),

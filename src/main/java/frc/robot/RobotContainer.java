@@ -97,7 +97,7 @@ public class RobotContainer {
                                 new SequentialCommandGroup(
                                                 new ParallelRaceGroup(new SpeakerShootDistanceL3(),
                                                                 new WaitCommand(2.5)),
-                                                new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3),
+                                                new ParallelRaceGroup(new ShootSpeakerOverrideL1(),
                                                                 new WaitCommand(2))));
 
                 NamedCommands.registerCommand("SetArmToIntake", new SetArmToAngleL1(Arm.kSetpointIntakeDown));
@@ -107,7 +107,7 @@ public class RobotContainer {
                 NamedCommands.registerCommand("SpeakerShoot2",
                                 new SequentialCommandGroup(new SetArmToDistanceL1(),
                                                 new ParallelRaceGroup(new ShootSpeakerL1(10, 5), new WaitCommand(2.5)),
-                                                new ParallelRaceGroup(new ShootSpeakerOverrideL1(10, 3),
+                                                new ParallelRaceGroup(new ShootSpeakerOverrideL1(),
                                                                 new WaitCommand(.3))));
 
                 NamedCommands.registerCommand("SpeakerShoot3",
@@ -237,7 +237,8 @@ public class RobotContainer {
                 new JoystickButton(controller2, Button.kB.value).onTrue(new SetArmToAngleL1(Arm.kSetpointShoot));
                 new JoystickButton(controller2, Button.kX.value).onTrue(new SetArmToAngleL1(Arm.kSetpointMove));
 
-                new JoystickButton(controller2, Button.kBack.value).whileTrue(new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointAmp), new ShootAmpL1()));
+                new JoystickButton(controller2, Button.kBack.value).whileTrue(
+                                new SequentialCommandGroup(new SetArmToAngleL1(Arm.kSetpointAmp), new ShootAmpL1()));
                 // new JoystickButton(controller2, Button.kA.value).onTrue(new
                 // SetArmToAngleL1(16)).onTrue(new InstantCommand(() -> {
                 // if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
@@ -260,13 +261,13 @@ public class RobotContainer {
 
                 new JoystickButton(controller2, Button.kA.value).whileTrue(new SpitOutNote());
 
-                new Trigger(leftTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 5))
+                new Trigger(leftTriggerC2).whileTrue(new ShootSpeakerOverrideL1())
                                 .onFalse(new ShootSpeakerL1(0, 0));
 
                 new Trigger(upControllerLeftC2).onTrue(new ZeroClimbersL1());
                 new Trigger(downControllerLeftC2).onTrue(new SetClimberToTopL1());
 
-                new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1(Constants.shooterVoltage, 0));
+                new Trigger(rightTriggerC2).whileTrue(new ShootSpeakerOverrideL1());
 
         }
 

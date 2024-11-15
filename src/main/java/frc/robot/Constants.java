@@ -2,18 +2,19 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+
 //Measurements in meters
 public interface Constants {
 
     // Used to quickly correct for issues with the camera calibration
-    public static final double cameraXCalibrationCorrection=1.0;
-    public static final double cameraAngleCalibrationCorrection=1.0;
+    public static final double cameraXCalibrationCorrection = 1.0;
+    public static final double cameraAngleCalibrationCorrection = 1.0;
     public static final double intakeVoltage = 9.5;
     public static final double shooterVoltage = 9.6;
     public static final double gearRatio = 6.12;
     public static final int detectThreshold = 1000;
     public static final double botMass = 24.4;
-    public static final double wheelDiameter = .1016;//.1016;
+    public static final double wheelDiameter = .1016;// .1016;
     public static final double maxShootingDistance = 3.768725;
     public static final double botLength = Units.inchesToMeters(29);
 
@@ -34,5 +35,5 @@ public interface Constants {
 
     public static final double topClimberPosition = 27.87;
 
-    public static final double maxAmbiguity = 0.1; 
+    public static final double maxAmbiguity = 0.1;
 }

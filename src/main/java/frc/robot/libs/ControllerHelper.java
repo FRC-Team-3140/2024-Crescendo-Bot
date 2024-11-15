@@ -13,7 +13,7 @@ public class ControllerHelper extends XboxController {
     }
 
     double deadband = .07;
-    
+
     @Override
     public double getLeftX() {
         if (Math.abs(super.getLeftX()) > deadband) {
@@ -64,8 +64,12 @@ public class ControllerHelper extends XboxController {
         }
     }
 
-    public Command setRumble(){
-            return new SequentialCommandGroup(new ParallelCommandGroup(new InstantCommand(()-> {setRumble(RumbleType.kBothRumble, 1);}), 
-            new WaitCommand(1)), new InstantCommand(()-> {setRumble(RumbleType.kBothRumble, 0);}));
+    public Command setRumble() {
+        return new SequentialCommandGroup(new ParallelCommandGroup(new InstantCommand(() -> {
+            setRumble(RumbleType.kBothRumble, 1);
+        }),
+                new WaitCommand(1)), new InstantCommand(() -> {
+                    setRumble(RumbleType.kBothRumble, 0);
+                }));
     }
 }

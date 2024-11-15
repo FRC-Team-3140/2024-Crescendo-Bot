@@ -11,7 +11,7 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class resetSwerveStates extends Command {
   private SwerveDrive swerveDrive = null;
-  private boolean finish = false; 
+  private boolean finish = false;
 
   /** Creates a new resetSwerveStates. */
   public resetSwerveStates(SwerveDrive swerveDrive, boolean finish) {

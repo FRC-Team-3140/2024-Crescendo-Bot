@@ -18,7 +18,8 @@ import frc.robot.subsystems.SwerveDrive;
 public class pathfindToPose extends Command {
   private Pose2d updatedPose;
   private Command pathToFollow;
-  // TODO: determine if we still need to not allow path mirroring for this command.
+  // TODO: determine if we still need to not allow path mirroring for this
+  // command.
   // private SwerveDrive swerveDrive;
   private boolean pathCompleted = false;
 

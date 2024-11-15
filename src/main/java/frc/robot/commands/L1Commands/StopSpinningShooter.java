@@ -21,7 +21,7 @@ public class StopSpinningShooter extends Command {
      */
     @Override
     public void initialize() {
-        Shooter.getInstance().setShooterVoltage(0);
+        Shooter.getInstance().stop();
     }
 
     /**

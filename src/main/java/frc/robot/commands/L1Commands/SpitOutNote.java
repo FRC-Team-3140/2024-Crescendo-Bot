@@ -28,7 +28,7 @@ public class SpitOutNote extends Command {
      */
     @Override
     public void execute() {
-        shooter.setShooterVoltage(-2);
+        shooter.setShooterRpm(Shooter.kAmpReverseSpeed);
         intake.setIntakeVoltage(-3);
     }
 
@@ -40,7 +40,7 @@ public class SpitOutNote extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-        shooter.setShooterVoltage(0);
+        shooter.stop();
         intake.setIntakeVoltage(0);
     }
 

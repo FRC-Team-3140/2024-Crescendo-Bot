@@ -3,23 +3,18 @@ package frc.robot.commands.L1Commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
-//Works Well
-
-/**
- * A command that sets the shooter to a specified speed using a PID controller.
- */
-public class ShooterSpeedL1 extends Command {
+public class ShooterRpmL1 extends Command {
     private final Shooter shooter = Shooter.getInstance();
-    private final double speed;
-    private final double kShooterSpeedTolarence = 1000;
+    private final double rpm;
 
     /**
-     * Creates a new ShooterSpeed command that sets the shooter to the specified speed.
+     * Creates a new ShooterSpeed command that sets the shooter to the specified
+     * speed.
      *
      * @param speed the speed to set the shooter to
      */
-    public ShooterSpeedL1(double speed) {
-        this.speed = speed;
+    public ShooterRpmL1(double rpm) {
+        this.rpm = rpm;
         addRequirements(shooter); // This command requires the IntakeShooter subsystem
     }
 
@@ -29,16 +24,21 @@ public class ShooterSpeedL1 extends Command {
      */
     @Override
     public void execute() {
-        shooter.setShooterSpeed(speed);
+        shooter.setShooterRpm(rpm);
     }
 
-    
+    @Override
+    public void end(boolean interrupted) {
+        // shooter.stop();
+    }
+
     /**
      * Checks if the shooter speed has reached the desired speed within a tolerance.
+     * 
      * @return true if the shooter speed is within the tolerance, false otherwise.
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(shooter.getShooterSpeed() - speed) < kShooterSpeedTolarence;
+        return false;
     }
 }

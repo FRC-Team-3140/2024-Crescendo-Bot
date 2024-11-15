@@ -14,13 +14,14 @@ public class SetClimberToTopL1 extends Command {
      * Constructs a new SetClimberToTopL1 command.
      * Adds the climber as a requirement.
      */
-    public SetClimberToTopL1(){
+    public SetClimberToTopL1() {
         addRequirements(climber);
     }
 
     /**
      * Initializes the command.
-     * Schedules a parallel command group to increase the height of both sides of the climber.
+     * Schedules a parallel command group to increase the height of both sides of
+     * the climber.
      */
     @Override
     public void initialize() {
@@ -30,6 +31,7 @@ public class SetClimberToTopL1 extends Command {
     /**
      * Ends the command.
      * Stops both sides of the climber.
+     * 
      * @param interrupted true if the command was interrupted, false otherwise.
      */
     @Override
@@ -39,7 +41,9 @@ public class SetClimberToTopL1 extends Command {
 
     /**
      * Checks if the command is finished.
-     * @return true if both sides of the climber have reached the top position, false otherwise.
+     * 
+     * @return true if both sides of the climber have reached the top position,
+     *         false otherwise.
      */
     @Override
     public boolean isFinished() {
